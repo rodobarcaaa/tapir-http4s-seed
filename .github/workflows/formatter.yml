@@ -1,0 +1,36 @@
+name: formatter
+
+on:
+  workflow_dispatch:
+
+jobs:
+  formatter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - name: Cache sbt
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.sbt
+            ~/.ivy2/cache
+            ~/.coursier
+            ~/.cache/coursier
+          key: sbt-cache-${{ runner.os }}-${{ matrix.target-platform }}-${{ hashFiles('project/build.properties') }}
+
+      - name: Formating your code to see very nice
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          sbt scalafmtAll
+          git add -A
+          git commit -m "Formating with scalafmt"
+          git push
