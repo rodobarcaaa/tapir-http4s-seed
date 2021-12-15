@@ -12,9 +12,9 @@ lazy val root = project
   .settings(
     name := "tapir-http4s-seed",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := scala3Version,
-    crossScalaVersions := Seq(scala2Version, scala3Version),
-    Compile / mainClass := Some("Main"),
+    scalaVersion := scala2Version,
+//    crossScalaVersions := Seq(scala2Version, scala3Version),
+    Compile / mainClass := Some("com.example.Main"),
     libraryDependencies ++= Seq(
       //base
       "com.github.pureconfig"       %% "pureconfig"                % "0.17.1",
