@@ -16,6 +16,8 @@ lazy val root = project
 //    crossScalaVersions := Seq(scala2Version, scala3Version),
     Compile / mainClass := Some("com.example.Main"),
     packageOptions += Package.ManifestAttributes("Implementation-Version" -> (ThisBuild / version).value),
+    releaseCommitMessage := s"ci: bumps version to ${(ThisBuild / version).value}",
+    releaseNextCommitMessage := s"ci: bumps version to ${(ThisBuild / version).value}",
     libraryDependencies ++= Seq(
       //base
       "com.github.pureconfig"       %% "pureconfig"                % "0.17.1",
@@ -40,6 +42,7 @@ lazy val root = project
       "org.http4s"                  %% "http4s-core"               % http4sVersion,
       "org.http4s"                  %% "http4s-dsl"                % http4sVersion,
       "org.http4s"                  %% "http4s-blaze-server"       % http4sVersion,
+      "org.http4s"                  %% "http4s-blaze-client"       % http4sVersion,
       "org.http4s"                  %% "http4s-circe"              % http4sVersion,
       "org.http4s"                  %% "http4s-prometheus-metrics" % http4sVersion,
       //prometheus
@@ -47,6 +50,10 @@ lazy val root = project
       "io.prometheus"                % "simpleclient_hotspot"      % prometheusVersion,
       //macwire
       "com.softwaremill.macwire"    %% "util"                      % macwireVersion,
-      "com.softwaremill.macwire"    %% "macros"                    % macwireVersion % "provided"
-    )
+      "com.softwaremill.macwire"    %% "macros"                    % macwireVersion % Provided,
+      //munit
+      "org.scalameta"               %% "munit"                     % "0.7.29"       % Test,
+      "org.typelevel"               %% "munit-cats-effect-3"       % "1.0.6"        % Test
+    ),
+    testFrameworks += new TestFramework("munit.Framework")
   )

@@ -22,7 +22,7 @@ class HttpApi(
   private lazy val docEndpoints     = serverEndpoints.map(_.endpoint)
   private lazy val swaggerEndpoints = SwaggerInterpreter().fromEndpoints[IO](docEndpoints, "Books Store", version)
 
-  private lazy val apiRoutes: HttpRoutes[IO] = Http4sServerInterpreter[IO]().toRoutes {
+  lazy val apiRoutes: HttpRoutes[IO] = Http4sServerInterpreter[IO]().toRoutes {
     swaggerEndpoints <+> serverEndpoints
   }
 
