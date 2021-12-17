@@ -14,3 +14,13 @@ trait MainModule extends BookModule {
   lazy val metricsApi: MetricsApi = wire[MetricsApi]
   lazy val httpApi: HttpApi       = wire[HttpApi]
 }
+
+object MainModule {
+
+  def initialize: MainModule = {
+    val initModule = new InitModule {}
+    initModule.initialize()
+    new MainModule { override def config: Config = initModule.config }
+  }
+
+}

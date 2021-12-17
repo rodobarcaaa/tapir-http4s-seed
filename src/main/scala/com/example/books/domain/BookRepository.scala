@@ -2,7 +2,10 @@ package com.example.books.domain
 
 import cats.effect.IO
 
+import java.util.concurrent.atomic.AtomicReference
+
 trait BookRepository {
+  def books: AtomicReference[List[Book]]
 
   def create(book: Book): IO[BookId]
 
