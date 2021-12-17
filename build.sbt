@@ -11,15 +11,16 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "tapir-http4s-seed",
-    version := "0.0.1-SNAPSHOT",
     scalaVersion := scala2Version,
+    version := (ThisBuild / version).value,
 //    crossScalaVersions := Seq(scala2Version, scala3Version),
     Compile / mainClass := Some("com.example.Main"),
+    packageOptions += Package.ManifestAttributes("Implementation-Version" -> (ThisBuild / version).value),
     libraryDependencies ++= Seq(
       //base
       "com.github.pureconfig"       %% "pureconfig"                % "0.17.1",
       "com.typesafe.scala-logging"  %% "scala-logging"             % "3.9.4",
-      "ch.qos.logback"               % "logback-classic"           % "1.2.7",
+      "ch.qos.logback"               % "logback-classic"           % "1.2.8",
       "org.typelevel"               %% "cats-core"                 % "2.7.0",
       "org.typelevel"               %% "cats-effect"               % "3.3.0",
       //tapir

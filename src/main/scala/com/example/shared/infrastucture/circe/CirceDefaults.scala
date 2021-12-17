@@ -5,5 +5,4 @@ trait CirceDefaults {
   import io.circe.generic.extras.Configuration
   implicit val config: Configuration = Configuration.default
 
-
 }
