@@ -1,8 +1,7 @@
 package com.example.global.infrastructure.http
 
-import cats.data.NonEmptyList
 import cats.effect.{IO, Resource}
-import com.example.shared.infrastucture.http.ServerEndpoints
+import com.example.shared.infrastucture.http.{HasTapirDocs, ServerEndpoints}
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
 import org.http4s.metrics.MetricsOps
@@ -11,7 +10,7 @@ import sttp.tapir._
 
 import java.io.StringWriter
 
-class MetricsApi {
+class MetricsApi extends HasTapirDocs {
 
   private val registry: CollectorRegistry = CollectorRegistry.defaultRegistry
 
@@ -30,7 +29,7 @@ class MetricsApi {
       }
     }
 
-  val endpoints: ServerEndpoints = NonEmptyList.of(metrics)
+  val endpoints: ServerEndpoints = List(metrics)
 
   val prometheusOps: Resource[IO, MetricsOps[IO]] = Prometheus.metricsOps[IO](registry)
 }

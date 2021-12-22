@@ -1,25 +1,25 @@
 package com.example.books.infrastructure.http
 
-import cats.data.NonEmptyList
 import com.example.books.application.BookService
 import com.example.books.domain._
 import com.example.books.infrastructure.codecs.BookCodecs
-import com.example.shared.infrastucture.http.ServerEndpoints
-import sttp.tapir._
-import sttp.tapir.generic.auto._
-import sttp.tapir.json.circe.jsonBody
+import com.example.shared.infrastucture.http._
 
 import java.util.UUID
 
-class BookApi(bookService: BookService) extends BookCodecs {
+class BookApi(bookService: BookService) extends HasTapirResource with BookCodecs {
 
   private val service    = "Books"
   private val base       = endpoint.tag(service).in(service.toLowerCase)
   private val baseWithId = base.in(path[UUID]("id"))
 
-  private val post = base.post.in(jsonBody[Book]).out(jsonBody[BookId]).serverLogicSuccess { book =>
-    bookService.create(book)
-  }
+  private val post = base.post
+    .in(jsonBody[Book])
+    .out(jsonBody[BookId])
+    .out(statusCode(Created))
+    .serverLogicSuccess { book =>
+      bookService.create(book)
+    }
 
   private val list = base.get.out(jsonBody[List[Book]]).serverLogicSuccess { _ =>
     bookService.list
@@ -29,13 +29,16 @@ class BookApi(bookService: BookService) extends BookCodecs {
     bookService.find(BookId(id)).map(_.getOrElse(???))
   }
 
-  private val put = baseWithId.put.in(jsonBody[Book]).serverLogicSuccess { case (id, book) =>
-    bookService.update(BookId(id), book)
-  }
+  private val put = baseWithId.put
+    .in(jsonBody[Book])
+    .out(statusCode(NoContent))
+    .serverLogicSuccess { case (id, book) =>
+      bookService.update(BookId(id), book)
+    }
 
-  private val delete = baseWithId.delete.serverLogicSuccess { id =>
+  private val delete = baseWithId.delete.out(statusCode(NoContent)).serverLogicSuccess { id =>
     bookService.delete(BookId(id))
   }
 
-  val endpoints: ServerEndpoints = NonEmptyList.of(post, list, get, put, delete)
+  override val endpoints: ServerEndpoints = List(post, list, get, put, delete)
 }
