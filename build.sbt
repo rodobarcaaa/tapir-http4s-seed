@@ -53,7 +53,8 @@ lazy val root = project
       "com.softwaremill.macwire"    %% "macros"                    % macwireVersion % Provided,
       //munit
       "org.scalameta"               %% "munit"                     % "0.7.29"       % Test,
-      "org.typelevel"               %% "munit-cats-effect-3"       % "1.0.6"        % Test
+      "org.typelevel"               %% "munit-cats-effect-3"       % "1.0.6"        % Test,
+      "com.alejandrohdezma"         %% "http4s-munit"              % "0.9.2"        % Test
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )
