@@ -10,19 +10,15 @@ val macwireVersion    = "2.5.0"
 lazy val root = project
   .in(file("."))
   .settings(
-    name                         := "tapir-http4s-seed",
-    scalaVersion                 := scala2Version,
-    version                      := (ThisBuild / version).value,
+    name                     := "tapir-http4s-seed",
+    scalaVersion             := scala2Version,
+    version                  := (ThisBuild / version).value,
 //    crossScalaVersions := Seq(scala2Version, scala3Version),
-    Compile / mainClass          := Some("com.example.Main"),
+    Compile / mainClass      := Some("com.example.Main"),
     packageOptions += Package.ManifestAttributes("Implementation-Version" -> (ThisBuild / version).value),
-    releaseCommitMessage         := s"ci: bumps version to ${(ThisBuild / version).value}",
-    releaseNextCommitMessage     := s"ci: bumps version to ${(ThisBuild / version).value}",
-    ThisBuild / scapegoatVersion := "1.4.11",
-    scapegoatReports             := Seq("xml"),
-    Scapegoat / scalacOptions += "-P:scapegoat:overrideLevels:all=Warning",
-    scapegoatConsoleOutput       := false,
-    sonarUseExternalConfig       := true,
+    releaseCommitMessage     := s"ci: bumps version to ${(ThisBuild / version).value}",
+    releaseNextCommitMessage := s"ci: bumps version to ${(ThisBuild / version).value}",
+    sonarUseExternalConfig   := true,
     libraryDependencies ++= Seq(
       // base
       "com.github.pureconfig"       %% "pureconfig"                % "0.17.1",
@@ -64,4 +60,4 @@ lazy val root = project
     testFrameworks += new TestFramework("munit.Framework")
   )
 
-addCommandAlias("sonar", ";clean;coverage;test;coverageReport;scapegoat;sonarScan")
+addCommandAlias("sonar", ";clean;coverage;test;coverageReport;sonarScan")
