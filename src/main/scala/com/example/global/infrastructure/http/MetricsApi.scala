@@ -1,16 +1,15 @@
 package com.example.global.infrastructure.http
 
 import cats.effect.{IO, Resource}
-import com.example.shared.infrastucture.http.{HasTapirDocs, ServerEndpoints}
+import com.example.shared.infrastucture.http.{HasTapirResource, ServerEndpoints}
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
 import org.http4s.metrics.MetricsOps
 import org.http4s.metrics.prometheus.Prometheus
-import sttp.tapir._
 
 import java.io.StringWriter
 
-class MetricsApi extends HasTapirDocs {
+class MetricsApi extends HasTapirResource {
 
   private val registry: CollectorRegistry = CollectorRegistry.defaultRegistry
 
