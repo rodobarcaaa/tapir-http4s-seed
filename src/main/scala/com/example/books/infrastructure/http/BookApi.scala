@@ -3,6 +3,7 @@ package com.example.books.infrastructure.http
 import com.example.books.application.BookService
 import com.example.books.domain._
 import com.example.books.infrastructure.codecs.BookCodecs
+import com.example.global.infrastructure.http.Fail
 import com.example.shared.infrastucture.http._
 
 import java.util.UUID
@@ -25,9 +26,13 @@ class BookApi(bookService: BookService) extends HasTapirResource with BookCodecs
     bookService.list
   }
 
-  private val get = baseWithId.get.out(jsonBody[Book]).serverLogicSuccess { id =>
-    bookService.find(BookId(id)).map(_.getOrElse(???))
-  }
+  private val get = baseWithId.get
+    .out(jsonBody[Book])
+    .errorOut(statusCode(NotFound))
+    .errorOut(jsonBody[Fail.NotFound])
+    .serverLogic { id =>
+      bookService.find(BookId(id)).map(_.toRight(Fail.NotFound(s"Book for id: $id Not Found")))
+    }
 
   private val put = baseWithId.put
     .in(jsonBody[Book])
