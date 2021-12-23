@@ -1,9 +1,9 @@
 package com.example.books.infrastructure.http
 
 import cats.effect.IO
-import com.example.MainModule
 import com.example.books.domain.{Author, Book, BookId}
 import com.example.books.infrastructure.codecs.BookCodecs
+import com.example.shared.infrastructure.http.HasHttp4sRoutesSuite
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec._
 import org.http4s.client.dsl.io._
@@ -12,8 +12,7 @@ import org.http4s.implicits._
 
 import java.util.UUID
 
-class BookApiTest extends munit.Http4sHttpRoutesSuite with BookCodecs {
-  lazy val module: MainModule = MainModule.initialize
+class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs {
 
   override val routes: HttpRoutes[IO] = module.bookApi.routes
 
