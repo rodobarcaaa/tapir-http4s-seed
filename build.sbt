@@ -4,23 +4,23 @@ val scala3Version = "3.1.0"
 val circeVersion      = "0.14.1"
 val http4sVersion     = "0.23.6"
 val tapirVersion      = "0.19.1"
-val prometheusVersion = "0.12.0"
+val prometheusVersion = "0.14.1"
 val macwireVersion    = "2.5.0"
 
 lazy val root = project
   .in(file("."))
   .settings(
-    name                       := "tapir-http4s-seed",
-    scalaVersion               := scala2Version,
-    version                    := (ThisBuild / version).value,
+    name                     := "tapir-http4s-seed",
+    scalaVersion             := scala2Version,
+    version                  := (ThisBuild / version).value,
 //    crossScalaVersions := Seq(scala2Version, scala3Version),
-    coverageExcludedFiles   := ".*Main.scala",
-    coverageFailOnMinimum      := true,
-    coverageMinimum := 75,
+    coverageExcludedFiles    := ".*Main.scala",
+    coverageFailOnMinimum    := true,
+    coverageMinimum          := 75,
     packageOptions += Package.ManifestAttributes("Implementation-Version" -> (ThisBuild / version).value),
-    releaseCommitMessage       := s"ci: bumps version to ${(ThisBuild / version).value}",
-    releaseNextCommitMessage   := s"ci: bumps version to ${(ThisBuild / version).value}",
-    sonarUseExternalConfig     := true,
+    releaseCommitMessage     := s"ci: bumps version to ${(ThisBuild / version).value}",
+    releaseNextCommitMessage := s"ci: bumps version to ${(ThisBuild / version).value}",
+    sonarUseExternalConfig   := true,
     libraryDependencies ++= Seq(
       // base
       "com.github.pureconfig"       %% "pureconfig"                % "0.17.1",
