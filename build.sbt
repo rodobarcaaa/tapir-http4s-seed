@@ -10,17 +10,17 @@ val macwireVersion    = "2.5.0"
 lazy val root = project
   .in(file("."))
   .settings(
-    name                       := "tapir-http4s-seed",
-    scalaVersion               := scala2Version,
-    version                    := (ThisBuild / version).value,
+    name                     := "tapir-http4s-seed",
+    scalaVersion             := scala2Version,
+    version                  := (ThisBuild / version).value,
 //    crossScalaVersions := Seq(scala2Version, scala3Version),
-    coverageExcludedFiles   := ".*Main.scala",
-    coverageFailOnMinimum      := true,
-    coverageMinimum := 75,
+    coverageExcludedFiles    := ".*Main.scala",
+    coverageFailOnMinimum    := true,
+    coverageMinimum          := 75,
     packageOptions += Package.ManifestAttributes("Implementation-Version" -> (ThisBuild / version).value),
-    releaseCommitMessage       := s"ci: bumps version to ${(ThisBuild / version).value}",
-    releaseNextCommitMessage   := s"ci: bumps version to ${(ThisBuild / version).value}",
-    sonarUseExternalConfig     := true,
+    releaseCommitMessage     := s"ci: bumps version to ${(ThisBuild / version).value}",
+    releaseNextCommitMessage := s"ci: bumps version to ${(ThisBuild / version).value}",
+    sonarUseExternalConfig   := true,
     libraryDependencies ++= Seq(
       // base
       "com.github.pureconfig"       %% "pureconfig"                % "0.17.1",
@@ -56,7 +56,7 @@ lazy val root = project
       "com.softwaremill.macwire"    %% "macros"                    % macwireVersion % Provided,
       // munit
       "org.scalameta"               %% "munit"                     % "0.7.29"       % Test,
-      "org.typelevel"               %% "munit-cats-effect-3"       % "1.0.6"        % Test,
+      "org.typelevel"               %% "munit-cats-effect-3"       % "1.0.7"        % Test,
       "com.alejandrohdezma"         %% "http4s-munit"              % "0.9.2"        % Test
     ),
     testFrameworks += new TestFramework("munit.Framework")
