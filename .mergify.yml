@@ -5,7 +5,7 @@ pull_request_rules:
       delete_head_branch: {}
   - name: automatic merge for scala-steward pull requests affecting build.sbt
     conditions:
-      - author=scala-steward
+      - author=rodobarcaaa
       - check-success=build (ubuntu-latest, 8)
       - check-success=build (ubuntu-latest, 11)
       - check-success=build (ubuntu-latest, 17)      
@@ -14,10 +14,10 @@ pull_request_rules:
       - files=build.sbt
     actions:
       merge:
-        method: merge
+        method: rebase
   - name: automatic merge for scala-steward pull requests affecting project plugins.sbt
     conditions:
-      - author=scala-steward
+      - author=rodobarcaaa
       - check-success=build (ubuntu-latest, 8)
       - check-success=build (ubuntu-latest, 11)
       - check-success=build (ubuntu-latest, 17)      
@@ -26,10 +26,10 @@ pull_request_rules:
       - files=project/plugins.sbt
     actions:
       merge:
-        method: merge
+        method: rebase
   - name: semi-automatic merge for scala-steward pull requests
     conditions:
-      - author=scala-steward
+      - author=rodobarcaaa
       - check-success=build (ubuntu-latest, 8)
       - check-success=build (ubuntu-latest, 11)
       - check-success=build (ubuntu-latest, 17)      
@@ -37,10 +37,10 @@ pull_request_rules:
       - "#approved-reviews-by>=1"
     actions:
       merge:
-        method: merge
+        method: rebase
   - name: automatic merge for scala-steward pull requests affecting project build.properties
     conditions:
-      - author=scala-steward
+      - author=rodobarcaaa
       - check-success=build (ubuntu-latest, 8)
       - check-success=build (ubuntu-latest, 11)
       - check-success=build (ubuntu-latest, 17)      
@@ -49,10 +49,10 @@ pull_request_rules:
       - files=project/build.properties
     actions:
       merge:
-        method: merge
+        method: rebase
   - name: automatic merge for scala-steward pull requests affecting .scalafmt.conf
     conditions:
-      - author=scala-steward
+      - author=rodobarcaaa
       - check-success=build (ubuntu-latest, 8)
       - check-success=build (ubuntu-latest, 11)
       - check-success=build (ubuntu-latest, 17)      
@@ -61,4 +61,4 @@ pull_request_rules:
       - files=.scalafmt.conf
     actions:
       merge:
-        method: merge
+        method: rebase
