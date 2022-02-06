@@ -57,7 +57,7 @@ lazy val root = project
       // munit
       "org.scalameta"               %% "munit"                     % "0.7.29"       % Test,
       "org.typelevel"               %% "munit-cats-effect-3"       % "1.0.7"        % Test,
-      "com.alejandrohdezma"         %% "http4s-munit"              % "0.9.2"        % Test
+      "com.alejandrohdezma"         %% "http4s-munit"              % "0.9.3"        % Test
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )
