@@ -1,13 +1,14 @@
-name: build
+name: ci
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:   
 
 jobs:
-  build:
+  test:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
