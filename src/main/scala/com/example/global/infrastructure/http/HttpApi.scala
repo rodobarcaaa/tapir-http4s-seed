@@ -3,7 +3,7 @@ package com.example.global.infrastructure.http
 import cats.effect.{IO, Resource}
 import cats.implicits._
 import com.example.books.infrastructure.http.BookApi
-import com.example.shared.infrastucture.http.{HttpConfig, ServerRoutes}
+import com.example.shared.infrastructure.http.ServerRoutes
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.middleware.{Logger, Metrics}
 import org.http4s.server.{Router, Server}

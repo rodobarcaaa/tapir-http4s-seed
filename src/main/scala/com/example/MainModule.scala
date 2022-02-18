@@ -1,9 +1,8 @@
 package com.example
 
 import com.example.books.BookModule
-import com.example.global.infrastructure.config.Config
-import com.example.global.infrastructure.http.{HttpApi, MetricsApi}
-import com.example.shared.infrastucture.http.HttpConfig
+import com.example.global.infrastructure.http._
+import com.example.shared.infrastructure.config.Config
 
 trait MainModule extends BookModule {
   import com.softwaremill.macwire._

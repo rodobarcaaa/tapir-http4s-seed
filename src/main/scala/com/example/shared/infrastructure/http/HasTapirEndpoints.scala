@@ -1,4 +1,4 @@
-package com.example.shared.infrastucture.http
+package com.example.shared.infrastructure.http
 
 trait HasTapirEndpoints {
   def endpoints: ServerEndpoints

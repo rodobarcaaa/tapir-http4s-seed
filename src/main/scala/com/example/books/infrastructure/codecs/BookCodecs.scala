@@ -1,7 +1,7 @@
 package com.example.books.infrastructure.codecs
 
 import com.example.books.domain._
-import com.example.shared.infrastucture.circe.CirceDefaults
+import com.example.shared.infrastructure.circe.CirceDefaults
 
 trait BookCodecs extends CirceDefaults {
   import io.circe._

@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.global.infrastructure.config.ConfigModule
+import com.example.shared.infrastructure.config.ConfigModule
 import io.prometheus.client.hotspot
 
 /** Initialised resources needed by the application to start.
