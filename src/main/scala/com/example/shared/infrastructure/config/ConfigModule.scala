@@ -1,4 +1,4 @@
-package com.example.global.infrastructure.config
+package com.example.shared.infrastructure.config
 
 import com.typesafe.scalalogging.StrictLogging
 import pureconfig.ConfigSource

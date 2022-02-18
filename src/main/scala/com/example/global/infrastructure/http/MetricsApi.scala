@@ -1,7 +1,7 @@
 package com.example.global.infrastructure.http
 
 import cats.effect.{IO, Resource}
-import com.example.shared.infrastucture.http.{HasTapirResource, ServerEndpoints}
+import com.example.shared.infrastructure.http.{HasTapirResource, ServerEndpoints}
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
 import org.http4s.metrics.MetricsOps

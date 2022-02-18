@@ -1,4 +1,4 @@
-val scala2Version = "2.13.7"
+val scala2Version = "2.13.8"
 val scala3Version = "3.1.0"
 
 val circeVersion      = "0.14.1"
@@ -13,10 +13,10 @@ lazy val root = project
     name                     := "tapir-http4s-seed",
     scalaVersion             := scala2Version,
     version                  := (ThisBuild / version).value,
-//    crossScalaVersions := Seq(scala2Version, scala3Version),
+    crossScalaVersions       := Seq(scala2Version, scala3Version),
     coverageExcludedFiles    := ".*Main.scala",
     coverageFailOnMinimum    := true,
-    coverageMinimum          := 75,
+    coverageMinimumStmtTotal := 75,
     packageOptions += Package.ManifestAttributes("Implementation-Version" -> (ThisBuild / version).value),
     releaseCommitMessage     := s"ci: bumps version to ${(ThisBuild / version).value}",
     releaseNextCommitMessage := s"ci: bumps version to ${(ThisBuild / version).value}",
@@ -61,5 +61,14 @@ lazy val root = project
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )
+
+
+
+addCommandAlias("f", "scalafmt")
+addCommandAlias("fc", "scalafmtCheck")
+addCommandAlias("tf", "test:scalafmt")
+addCommandAlias("tfc", "test:scalafmtCheck")
+addCommandAlias("fmt", ";f;tf")
+addCommandAlias("fmtCheck", ";fc;tfc")
 
 addCommandAlias("sonar", ";clean;coverage;test;coverageReport;sonarScan")

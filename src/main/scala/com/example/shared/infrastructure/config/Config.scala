@@ -1,6 +1,6 @@
-package com.example.global.infrastructure.config
+package com.example.shared.infrastructure.config
 
-import com.example.shared.infrastucture.http.HttpConfig
+import com.example.global.infrastructure.http.HttpConfig
 
 /** Maps to the `application.conf` file. Configuration for all modules of the application.
   */

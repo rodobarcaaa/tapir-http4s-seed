@@ -1,5 +1,6 @@
 package com.example.global.infrastructure.config
 
+import com.example.shared.infrastructure.config.Sensitive
 import munit.FunSuite
 
 class SensitiveTest extends FunSuite {

@@ -1,5 +1,6 @@
-package com.example.shared.infrastucture.http
+package com.example.shared.infrastructure.http
 
+import com.example.global.infrastructure.http.HttpConfig
 import munit.FunSuite
 
 class HttpConfigTest extends FunSuite {

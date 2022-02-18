@@ -1,4 +1,4 @@
-package com.example.shared.infrastucture.circe
+package com.example.shared.infrastructure.circe
 
 trait CirceDefaults {
 
