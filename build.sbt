@@ -3,7 +3,7 @@ val scala3Version = "3.1.0"
 
 val circeVersion      = "0.14.1"
 val http4sVersion     = "0.23.10"
-val tapirVersion      = "0.19.3"
+val tapirVersion      = "0.19.4"
 val prometheusVersion = "0.15.0"
 val macwireVersion    = "2.5.4"
 
@@ -61,8 +61,6 @@ lazy val root = project
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )
-
-
 
 addCommandAlias("f", "scalafmt")
 addCommandAlias("fc", "scalafmtCheck")
