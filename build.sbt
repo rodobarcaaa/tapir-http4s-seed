@@ -1,5 +1,5 @@
 val scala2Version = "2.13.8"
-val scala3Version = "3.1.0"
+val scala3Version = "3.1.1"
 
 val circeVersion      = "0.14.1"
 val http4sVersion     = "0.23.10"
@@ -61,8 +61,6 @@ lazy val root = project
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )
-
-
 
 addCommandAlias("f", "scalafmt")
 addCommandAlias("fc", "scalafmtCheck")
