@@ -3,7 +3,7 @@ val scala3Version = "3.1.1"
 
 val circeVersion      = "0.14.1"
 val http4sVersion     = "0.23.10"
-val tapirVersion      = "0.19.4"
+val tapirVersion      = "0.20.1"
 val prometheusVersion = "0.15.0"
 val macwireVersion    = "2.5.6"
 
