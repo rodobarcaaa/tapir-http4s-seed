@@ -13,7 +13,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.USER_GITHUB_TOKEN }}
     steps:
       - name: Checkout / Setup JDK 11 / SBT-Cache
-        uses: rodobarcaaa/action-jdk-sbt-cache@v1
+        uses: rodobarcaaa/action-jdk-sbt-cache@v1.0.0
         with:
           token: ${{ env.GITHUB_TOKEN }}
 
@@ -28,7 +28,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.USER_GITHUB_TOKEN }}
     steps:
       - name: Checkout / Setup JDK 11 / SBT-Cache
-        uses: rodobarcaaa/action-jdk-sbt-cache@v1
+        uses: rodobarcaaa/action-jdk-sbt-cache@v1.0.0
         with:
           token: ${{ env.GITHUB_TOKEN }}
           
