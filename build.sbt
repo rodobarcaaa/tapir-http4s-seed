@@ -3,7 +3,7 @@ val scala3Version = "3.1.2"
 
 val circeVersion      = "0.14.2"
 val http4sVersion     = "0.23.11"
-val tapirVersion      = "0.20.1"
+val tapirVersion      = "0.20.2"
 val prometheusVersion = "0.15.0"
 val macwireVersion    = "2.5.7"
 
@@ -24,10 +24,10 @@ lazy val root = project
     libraryDependencies ++= Seq(
       // base
       "com.github.pureconfig"       %% "pureconfig"                % "0.17.1",
-      "com.typesafe.scala-logging"  %% "scala-logging"             % "3.9.4",
+      "com.typesafe.scala-logging"  %% "scala-logging"             % "3.9.5",
       "ch.qos.logback"               % "logback-classic"           % "1.2.11",
       "org.typelevel"               %% "cats-core"                 % "2.7.0",
-      "org.typelevel"               %% "cats-effect"               % "3.3.11",
+      "org.typelevel"               %% "cats-effect"               % "3.3.12",
       // tapir
       "com.softwaremill.sttp.tapir" %% "tapir-core"                % tapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-cats"                % tapirVersion,
