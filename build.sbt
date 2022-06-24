@@ -4,7 +4,7 @@ val scala3Version = "3.1.2"
 val circeVersion      = "0.14.2"
 val http4sVersion     = "0.23.12"
 val tapirVersion      = "1.0.0"
-val prometheusVersion = "0.15.0"
+val prometheusVersion = "0.16.0"
 val macwireVersion    = "2.5.7"
 
 lazy val root = project
@@ -26,7 +26,7 @@ lazy val root = project
       "com.github.pureconfig"       %% "pureconfig"                % "0.17.1",
       "com.typesafe.scala-logging"  %% "scala-logging"             % "3.9.5",
       "ch.qos.logback"               % "logback-classic"           % "1.2.11",
-      "org.typelevel"               %% "cats-core"                 % "2.7.0",
+      "org.typelevel"               %% "cats-core"                 % "2.8.0",
       "org.typelevel"               %% "cats-effect"               % "3.3.12",
       // tapir
       "com.softwaremill.sttp.tapir" %% "tapir-core"                % tapirVersion,
@@ -34,7 +34,8 @@ lazy val root = project
       "com.softwaremill.sttp.tapir" %% "tapir-json-circe"          % tapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-http4s-server"       % tapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"        % tapirVersion,
-      "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml"  % tapirVersion,
+      //"com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml"  % tapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % "1.0.0-M9",
       "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle"   % tapirVersion,
       // circe
       "io.circe"                    %% "circe-core"                % circeVersion,
