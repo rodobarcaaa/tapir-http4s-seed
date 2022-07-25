@@ -2,7 +2,7 @@ package com.example.shared.infrastructure.http
 
 import io.circe.generic.AutoDerivation
 import sttp.model.StatusCodes
-import sttp.tapir.generic.SchemaDerivation
+import sttp.tapir.generic.auto.SchemaDerivation
 import sttp.tapir.json.circe.TapirJsonCirce
 import sttp.tapir.{Tapir, TapirAliases}
 
