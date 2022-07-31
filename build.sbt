@@ -3,8 +3,6 @@ val scala3Version = "3.1.3"
 
 val circeVersion            = "0.14.2"
 val tapirVersion            = "1.0.3"
-val http4sVersion           = "0.23.14"
-val http4sPrometheusVersion = "0.24.1"
 val prometheusVersion       = "0.16.0"
 val macwireVersion          = "2.5.7"
 
@@ -43,12 +41,12 @@ lazy val root = project
       "io.circe"                      %% "circe-generic-extras"      % circeVersion,
       "io.circe"                      %% "circe-parser"              % circeVersion,
       // http4s
-      "org.http4s"                    %% "http4s-core"               % http4sVersion,
-      "org.http4s"                    %% "http4s-dsl"                % http4sVersion,
-      "org.http4s"                    %% "http4s-blaze-server"       % http4sVersion,
-      "org.http4s"                    %% "http4s-blaze-client"       % http4sVersion,
-      "org.http4s"                    %% "http4s-circe"              % http4sVersion,
-      "org.http4s"                    %% "http4s-prometheus-metrics" % http4sPrometheusVersion,
+      "org.http4s"                    %% "http4s-core"               % "0.23.14",
+      "org.http4s"                    %% "http4s-dsl"                % "0.23.14",
+      "org.http4s"                    %% "http4s-circe"              % "0.23.14",
+      "org.http4s"                    %% "http4s-blaze-server"       % "0.23.12",
+      "org.http4s"                    %% "http4s-blaze-client"       % "0.23.12",
+      "org.http4s"                    %% "http4s-prometheus-metrics" % "0.24.1",
       // prometheus
       "io.prometheus"                  % "simpleclient"              % prometheusVersion,
       "io.prometheus"                  % "simpleclient_hotspot"      % prometheusVersion,
