@@ -1,11 +1,12 @@
 val scala2Version = "2.13.8"
 val scala3Version = "3.1.3"
 
-val circeVersion      = "0.14.2"
-val http4sVersion     = "0.23.14"
-val tapirVersion      = "1.0.3"
-val prometheusVersion = "0.16.0"
-val macwireVersion    = "2.5.7"
+val circeVersion            = "0.14.2"
+val tapirVersion            = "1.0.3"
+val http4sVersion           = "0.23.14"
+val http4sPrometheusVersion = "0.24.1"
+val prometheusVersion       = "0.16.0"
+val macwireVersion          = "2.5.7"
 
 lazy val root = project
   .in(file("."))
@@ -47,7 +48,7 @@ lazy val root = project
       "org.http4s"                    %% "http4s-blaze-server"       % http4sVersion,
       "org.http4s"                    %% "http4s-blaze-client"       % http4sVersion,
       "org.http4s"                    %% "http4s-circe"              % http4sVersion,
-      "org.http4s"                    %% "http4s-prometheus-metrics" % http4sVersion,
+      "org.http4s"                    %% "http4s-prometheus-metrics" % http4sPrometheusVersion,
       // prometheus
       "io.prometheus"                  % "simpleclient"              % prometheusVersion,
       "io.prometheus"                  % "simpleclient_hotspot"      % prometheusVersion,
