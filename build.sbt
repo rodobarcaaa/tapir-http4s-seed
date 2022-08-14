@@ -1,10 +1,10 @@
 val scala2Version = "2.13.8"
 val scala3Version = "3.1.3"
 
-val circeVersion            = "0.14.2"
-val tapirVersion            = "1.0.3"
-val prometheusVersion       = "0.16.0"
-val macwireVersion          = "2.5.7"
+val circeVersion      = "0.14.2"
+val tapirVersion      = "1.0.4"
+val prometheusVersion = "0.16.0"
+val macwireVersion    = "2.5.7"
 
 lazy val root = project
   .in(file("."))
