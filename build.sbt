@@ -24,7 +24,7 @@ lazy val root = project
       // base
       "com.github.pureconfig"         %% "pureconfig"                % "0.17.1",
       "com.typesafe.scala-logging"    %% "scala-logging"             % "3.9.5",
-      "ch.qos.logback"                 % "logback-classic"           % "1.4.0",
+      "ch.qos.logback"                 % "logback-classic"           % "1.4.1",
       "org.typelevel"                 %% "cats-core"                 % "2.8.0",
       "org.typelevel"                 %% "cats-effect"               % "3.3.14",
       // tapir
