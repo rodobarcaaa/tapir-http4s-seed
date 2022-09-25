@@ -24,7 +24,7 @@ lazy val root = project
       // base
       "com.github.pureconfig"         %% "pureconfig"                % "0.17.1",
       "com.typesafe.scala-logging"    %% "scala-logging"             % "3.9.5",
-      "ch.qos.logback"                 % "logback-classic"           % "1.4.0",
+      "ch.qos.logback"                 % "logback-classic"           % "1.4.1",
       "org.typelevel"                 %% "cats-core"                 % "2.8.0",
       "org.typelevel"                 %% "cats-effect"               % "3.3.14",
       // tapir
@@ -41,9 +41,9 @@ lazy val root = project
       "io.circe"                      %% "circe-generic-extras"      % circeVersion,
       "io.circe"                      %% "circe-parser"              % circeVersion,
       // http4s
-      "org.http4s"                    %% "http4s-core"               % "0.23.15",
-      "org.http4s"                    %% "http4s-dsl"                % "0.23.15",
-      "org.http4s"                    %% "http4s-circe"              % "0.23.15",
+      "org.http4s"                    %% "http4s-core"               % "0.23.16",
+      "org.http4s"                    %% "http4s-dsl"                % "0.23.16",
+      "org.http4s"                    %% "http4s-circe"              % "0.23.16",
       "org.http4s"                    %% "http4s-blaze-server"       % "0.23.12",
       "org.http4s"                    %% "http4s-blaze-client"       % "0.23.12",
       "org.http4s"                    %% "http4s-prometheus-metrics" % "0.24.1",
