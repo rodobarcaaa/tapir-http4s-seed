@@ -34,7 +34,7 @@ lazy val root = project
       "com.softwaremill.sttp.tapir"   %% "tapir-http4s-server"       % tapirVersion,
       "com.softwaremill.sttp.tapir"   %% "tapir-openapi-docs"        % tapirVersion,
       "com.softwaremill.sttp.tapir"   %% "tapir-swagger-ui-bundle"   % tapirVersion,
-      "com.softwaremill.sttp.apispec" %% "openapi-circe-yaml"        % "0.2.1",
+      "com.softwaremill.sttp.apispec" %% "openapi-circe-yaml"        % "0.3.0",
       // circe
       "io.circe"                      %% "circe-core"                % circeVersion,
       "io.circe"                      %% "circe-generic"             % circeVersion,
