@@ -1,5 +1,5 @@
 val scala2Version = "2.13.10"
-val scala3Version = "3.2.0"
+val scala3Version = "3.2.1"
 
 val circeVersion      = "0.14.3"
 val tapirVersion      = "1.1.2"
