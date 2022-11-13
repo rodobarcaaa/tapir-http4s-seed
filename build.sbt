@@ -2,7 +2,7 @@ val scala2Version = "2.13.10"
 val scala3Version = "3.2.0"
 
 val circeVersion      = "0.14.3"
-val tapirVersion      = "1.1.4"
+val tapirVersion      = "1.1.2"
 val prometheusVersion = "0.16.0"
 val macwireVersion    = "2.5.8"
 
