@@ -1,5 +1,5 @@
 val scala2Version = "2.13.10"
-val scala3Version = "3.2.0"
+val scala3Version = "3.2.1"
 
 val circeVersion      = "0.14.3"
 val tapirVersion      = "1.1.2"
@@ -25,7 +25,7 @@ lazy val root = project
       "com.github.pureconfig"         %% "pureconfig"                % "0.17.1",
       "com.typesafe.scala-logging"    %% "scala-logging"             % "3.9.5",
       "ch.qos.logback"                 % "logback-classic"           % "1.4.4",
-      "org.typelevel"                 %% "cats-core"                 % "2.8.0",
+      "org.typelevel"                 %% "cats-core"                 % "2.9.0",
       "org.typelevel"                 %% "cats-effect"               % "3.3.14",
       // tapir
       "com.softwaremill.sttp.tapir"   %% "tapir-core"                % tapirVersion,
