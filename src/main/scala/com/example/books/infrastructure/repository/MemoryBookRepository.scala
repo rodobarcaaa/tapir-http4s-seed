@@ -10,12 +10,12 @@ final class MemoryBookRepository extends BookRepository {
 
   val books = new AtomicReference(
     List(
-      Book(BookId(UUID.randomUUID), "The Sorrows of Young Werther", 1774, Author("Johann Wolfgang von Goethe")),
-      Book(BookId(UUID.randomUUID), "Iliad", -8000, Author("Homer")),
-      Book(BookId(UUID.randomUUID), "Nad Niemnem", 1888, Author("Eliza Orzeszkowa")),
-      Book(BookId(UUID.randomUUID), "The Colour of Magic", 1983, Author("Terry Pratchett")),
-      Book(BookId(UUID.randomUUID), "The Art of Computer Programming", 1968, Author("Donald Knuth")),
-      Book(BookId(UUID.randomUUID), "Pharaoh", 1897, Author("Boleslaw Prus"))
+      Book(BookId(UUID.randomUUID), BookTitle("The Sorrows of Young Werther"), Year(1774), Author("Johann Wolfgang")),
+      Book(BookId(UUID.randomUUID), BookTitle("Iliad"), Year(-8000), Author("Homer")),
+      Book(BookId(UUID.randomUUID), BookTitle("Nad Niemnem"), Year(1888), Author("Eliza Orzeszkowa")),
+      Book(BookId(UUID.randomUUID), BookTitle("The Colour of Magic"), Year(1983), Author("Terry Pratchett")),
+      Book(BookId(UUID.randomUUID), BookTitle("The Art of Computer Programming"), Year(1968), Author("Donald Knuth")),
+      Book(BookId(UUID.randomUUID), BookTitle("Pharaoh"), Year(1897), Author("Boleslaw Prus"))
     )
   )
 

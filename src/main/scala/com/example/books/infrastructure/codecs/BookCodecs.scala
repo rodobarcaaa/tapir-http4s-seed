@@ -7,8 +7,10 @@ trait BookCodecs extends CirceDefaults {
   import io.circe._
   import io.circe.generic.extras.semiauto._
 
-  implicit val BookIdCodec: Codec[BookId] = deriveUnwrappedCodec
-  implicit val AuthorCodec: Codec[Author] = deriveUnwrappedCodec
+  implicit val BookIdCodec: Codec[BookId]       = deriveUnwrappedCodec
+  implicit val BookTitleCodec: Codec[BookTitle] = deriveUnwrappedCodec
+  implicit val YearCodec: Codec[Year]           = deriveUnwrappedCodec
+  implicit val AuthorCodec: Codec[Author]       = deriveUnwrappedCodec
 
   implicit val BookCodec: Codec[Book] = deriveConfiguredCodec
 }
