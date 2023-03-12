@@ -1,3 +1,5 @@
+import sbtrelease.ReleaseStateTransformations._
+
 val scala2Version = "2.13.10"
 val scala3Version = "3.2.2"
 
@@ -9,17 +11,28 @@ val macwireVersion    = "2.5.8"
 lazy val root = project
   .in(file("."))
   .settings(
-    name                     := "tapir-http4s-seed",
-    scalaVersion             := scala2Version,
-    version                  := (ThisBuild / version).value,
-    crossScalaVersions       := Seq(scala2Version, scala3Version),
-    coverageExcludedFiles    := ".*Main.scala",
-    coverageFailOnMinimum    := true,
-    coverageMinimumStmtTotal := 75,
+    name                        := "tapir-http4s-seed",
+    scalaVersion                := scala2Version,
+    version                     := (ThisBuild / version).value,
+    crossScalaVersions          := Seq(scala2Version, scala3Version),
+    coverageExcludedFiles       := ".*Main.scala",
+    coverageFailOnMinimum       := true,
+    coverageMinimumStmtTotal    := 75,
     packageOptions += Package.ManifestAttributes("Implementation-Version" -> (ThisBuild / version).value),
-    releaseCommitMessage     := s"ci: bumps version to ${(ThisBuild / version).value}",
-    releaseNextCommitMessage := s"ci: bumps version to ${(ThisBuild / version).value}",
-    sonarUseExternalConfig   := true,
+    releaseCommitMessage        := s"ci: bumps version to ${(ThisBuild / version).value}",
+    releaseNextCommitMessage    := s"ci: bumps version to ${(ThisBuild / version).value}",
+    releaseIgnoreUntrackedFiles := true,
+    releaseProcess              := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    ),
+    sonarUseExternalConfig      := true,
     libraryDependencies ++= Seq(
       // base
       "com.github.pureconfig"         %% "pureconfig"                % "0.17.1",
