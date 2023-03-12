@@ -49,4 +49,4 @@ jobs:
           tag: "${{ env.VERSION }}"
           version: "${{ env.VERSION }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.USER_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
