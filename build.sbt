@@ -57,8 +57,8 @@ lazy val root = project
       "org.http4s"                    %% "http4s-core"               % "0.23.19",
       "org.http4s"                    %% "http4s-dsl"                % "0.23.19",
       "org.http4s"                    %% "http4s-circe"              % "0.23.19",
-      "org.http4s"                    %% "http4s-blaze-server"       % "0.23.14",
-      "org.http4s"                    %% "http4s-blaze-client"       % "0.23.14",
+      "org.http4s"                    %% "http4s-blaze-server"       % "0.23.15",
+      "org.http4s"                    %% "http4s-blaze-client"       % "0.23.15",
       "org.http4s"                    %% "http4s-prometheus-metrics" % "0.24.1",
       // prometheus
       "io.prometheus"                  % "simpleclient"              % prometheusVersion,
