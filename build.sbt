@@ -1,6 +1,6 @@
 import sbtrelease.ReleaseStateTransformations._
 
-val scala2Version = "2.13.10"
+val scala2Version = "2.13.11"
 val scala3Version = "3.3.0"
 
 val circeVersion      = "0.14.3"
