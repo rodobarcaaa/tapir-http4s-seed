@@ -39,7 +39,7 @@ lazy val root = project
       "com.typesafe.scala-logging"    %% "scala-logging"             % "3.9.5",
       "ch.qos.logback"                 % "logback-classic"           % "1.4.8",
       "org.typelevel"                 %% "cats-core"                 % "2.9.0",
-      "org.typelevel"                 %% "cats-effect"               % "3.5.0",
+      "org.typelevel"                 %% "cats-effect"               % "3.5.1",
       // tapir
       "com.softwaremill.sttp.tapir"   %% "tapir-core"                % tapirVersion,
       "com.softwaremill.sttp.tapir"   %% "tapir-cats"                % tapirVersion,
