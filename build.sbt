@@ -6,7 +6,7 @@ val scala3Version = "3.3.0"
 val circeVersion      = "0.14.3"
 val tapirVersion      = "1.1.2"
 val prometheusVersion = "0.16.0"
-val macwireVersion    = "2.5.8"
+val macwireVersion    = "2.5.9"
 
 lazy val root = project
   .in(file("."))
