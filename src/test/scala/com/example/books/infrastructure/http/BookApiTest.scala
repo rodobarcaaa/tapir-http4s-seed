@@ -1,7 +1,7 @@
 package com.example.books.infrastructure.http
 
 import cats.effect.IO
-import com.example.books.domain._
+import com.example.books.domain.book.{Book, BookTitle, BookYear}
 import com.example.books.infrastructure.codecs.BookCodecs
 import com.example.shared.infrastructure.http.{Fail, HasHttp4sRoutesSuite}
 import io.circe.generic.auto._
@@ -22,7 +22,7 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs {
   private val book: Book = Book(
     BookId(UUID.randomUUID),
     BookTitle("The Pragmatic Programmer, 20th Anniversary Edition"),
-    Year(2019),
+    BookYear(2019),
     Author("David Thomas, Andrew Hunt")
   )
 

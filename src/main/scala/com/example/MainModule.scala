@@ -9,6 +9,7 @@ trait MainModule extends BookModule {
 
   def config: Config
 
+  lazy val dbConfig: DBConfig     = DBConfig(config.db.url, config.db.user, config.db.password, config.db.driver)
   lazy val httpConfig: HttpConfig = HttpConfig(config.api.host, config.api.port)
   lazy val metricsApi: MetricsApi = wire[MetricsApi]
   lazy val httpApi: HttpApi       = wire[HttpApi]

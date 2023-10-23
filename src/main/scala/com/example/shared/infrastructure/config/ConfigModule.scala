@@ -15,6 +15,7 @@ trait ConfigModule extends StrictLogging {
                    |Configuration:
                    |-----------------------
                    |API: ${config.api}
+                   |DB: ${config.db}
                    |...
                    |-----------------
                    |""".stripMargin

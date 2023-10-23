@@ -1,16 +1,15 @@
 package com.example.books.infrastructure.codecs
 
-import com.example.books.domain._
-import com.example.shared.infrastructure.circe.CirceDefaults
+import com.example.books.domain.book._
 
-trait BookCodecs extends CirceDefaults {
+trait BookCodecs extends CommonCodecs {
   import io.circe._
   import io.circe.generic.extras.semiauto._
 
-  implicit val BookIdCodec: Codec[BookId]       = deriveUnwrappedCodec
-  implicit val BookTitleCodec: Codec[BookTitle] = deriveUnwrappedCodec
-  implicit val YearCodec: Codec[Year]           = deriveUnwrappedCodec
-  implicit val AuthorCodec: Codec[Author]       = deriveUnwrappedCodec
+  implicit val BookTitleCodec: Codec[BookTitle]             = deriveUnwrappedCodec
+  implicit val BookIsbnCodec: Codec[BookIsbn]               = deriveUnwrappedCodec
+  implicit val BookYearCodec: Codec[BookYear]               = deriveUnwrappedCodec
+  implicit val BookDescriptionCodec: Codec[BookDescription] = deriveUnwrappedCodec
 
   implicit val BookCodec: Codec[Book] = deriveConfiguredCodec
 }
