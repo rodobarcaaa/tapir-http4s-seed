@@ -32,10 +32,10 @@ trait HasTapirResource
   val sortPageDefault: EndpointInput[PageRequest] = sortPage()
 
   def sortPage(
-                sortingFields: Seq[String] = Seq("fields of entity"),
-                defaultPage: Int = 1,
-                defaultSize: Int = 15
-              ): EndpointInput[PageRequest] = {
+      sortingFields: Seq[String] = Seq("fields of entity"),
+      defaultPage: Int = 1,
+      defaultSize: Int = 15
+  ): EndpointInput[PageRequest] = {
     val page = query[Int]("page").default(defaultPage)
     val size = query[Int]("size").default(defaultSize)
     val sort = query[Option[String]]("sort")

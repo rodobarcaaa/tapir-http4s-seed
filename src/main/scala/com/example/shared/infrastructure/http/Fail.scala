@@ -14,7 +14,6 @@ object Fail {
   case object NotImplemented             extends Fail
 }
 
-
 //import com.alejandrohdezma.tapir._
 //import sttp.tapir.generic.auto._
 //import sttp.tapir.Schema
