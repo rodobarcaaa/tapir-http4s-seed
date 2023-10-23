@@ -18,7 +18,7 @@ class HttpApi(
     config: HttpConfig
 ) {
 
-  private lazy val apiDocs = metricsApi.docs <+> publisherApi.docs <+> authorApi.docs <+> bookApi.docs
+  private lazy val apiDocs = publisherApi.docs <+> authorApi.docs <+> bookApi.docs
 
   private lazy val apiRoutes = metricsApi.routes <+> publisherApi.routes <+> authorApi.routes <+> bookApi.routes
 

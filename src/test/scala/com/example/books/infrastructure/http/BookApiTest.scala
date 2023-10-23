@@ -19,12 +19,8 @@
 //
 //  private val books = module.bookRepository.books.get()
 //
-//  private val book: Book = Book(
-//    BookId(UUID.randomUUID),
-//    BookTitle("The Pragmatic Programmer, 20th Anniversary Edition"),
-//    BookYear(2019),
-//    Author("David Thomas, Andrew Hunt")
-//  )
+//
+//// TODO  private val book: Book = BookMother.random or try Generators
 //
 //  test(GET(uri"books" / s"${books.head.id.value}")).alias("FOUND") { response =>
 //    assertEquals(response.status, Status.Ok)
