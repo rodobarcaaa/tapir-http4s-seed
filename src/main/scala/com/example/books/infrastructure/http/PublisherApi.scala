@@ -16,26 +16,20 @@ class PublisherApi(service: PublisherService) extends HasTapirResource with Publ
   private val post = base.post
     .in(jsonBody[Publisher])
     .out(statusCode(Created))
-    .serverLogicSuccess { publisher =>
-      service.create(publisher)
-    }
+    .serverLogic { publisher => service.create(publisher).orError }
 
   //  Update a existing publisher
   private val put = base.put
     .in(pathId)
     .in(jsonBody[Publisher])
     .out(statusCode(NoContent))
-    .serverLogicSuccess { case (id, publisher) =>
-      service.update(Id(id), publisher)
-    }
+    .serverLogic { case (id, publisher) => service.update(Id(id), publisher).orError }
 
   //  Get a publisher by id
   private val get = base.get
     .in(pathId)
     .out(jsonBody[Publisher])
-    .serverLogic { id =>
-      service.find(Id(id)).map(_.toRight(Fail.NotFound(s"Publisher for id: $id Not Found"): Fail))
-    }
+    .serverLogic { id => service.find(Id(id)).orError(s"Publisher for id: $id Not Found") }
 
   //  List publishers
   private val sortPageFields: EndpointInput[PageRequest] = sortPage(Seq("name", "url"))
@@ -43,13 +37,13 @@ class PublisherApi(service: PublisherService) extends HasTapirResource with Publ
   private val list = base.get
     .in(sortPageFields / filter)
     .out(jsonBody[PageResponse[Publisher]])
-    .serverLogicSuccess { case (pr, filter) => service.list(pr, filter) }
+    .serverLogic { case (pr, filter) => service.list(pr, filter).orError }
 
   //  Delete a publisher by id
   private val delete = base.delete
     .in(pathId)
     .out(statusCode(NoContent))
-    .serverLogicSuccess { id => service.delete(Id(id)) }
+    .serverLogic { id => service.delete(Id(id)).orError }
 
   // Endpoints to Expose
   override val endpoints: ServerEndpoints = List(post, put, get, list, delete)

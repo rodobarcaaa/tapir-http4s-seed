@@ -1,5 +1,6 @@
 package com.example.shared.infrastructure.http
 
+import cats.effect.IO
 import com.example.shared.domain.page.PageRequest
 import io.circe.generic.AutoDerivation
 import sttp.model.StatusCodes
@@ -7,6 +8,7 @@ import sttp.tapir.generic.auto.SchemaDerivation
 import sttp.tapir.json.circe.TapirJsonCirce
 import sttp.tapir.{Tapir, TapirAliases}
 
+import java.sql.SQLException
 import java.util.UUID
 
 trait HasTapirResource
@@ -48,13 +50,39 @@ trait HasTapirResource
     oneOf[Fail](
       oneOfVariant(NotFound, jsonBody[Fail.NotFound]),
       oneOfVariant(Conflict, jsonBody[Fail.Conflict]),
-      oneOfVariant(BadRequest, jsonBody[Fail.BadRequest.type]),
+      oneOfVariant(BadRequest, jsonBody[Fail.BadRequest]),
       oneOfVariant(BadRequest, jsonBody[Fail.IncorrectInput]),
       oneOfVariant(Unauthorized, jsonBody[Fail.Unauthorized]),
+      oneOfVariant(InternalServerError, jsonBody[Fail.InternalServerError]),
       oneOfVariant(Forbidden, jsonBody[Fail.Forbidden.type]),
       oneOfVariant(UnprocessableEntity, jsonBody[Fail.UnprocessableEntity.type]),
-      oneOfVariant(InternalServerError, jsonBody[Fail.InternalServerError.type]),
       oneOfVariant(NotImplemented, jsonBody[Fail.NotImplemented.type])
     )
   )
+
+  private def ioOrError[T](io: IO[T]): IO[Either[Fail, T]] = io.map(Right(_)).handleError {
+    case th: Fail                      => Left(th)
+    case _: NotImplementedError        => Left(Fail.NotImplemented)
+    case iae: IllegalArgumentException => Left(Fail.BadRequest(iae.getMessage))
+    case sqlEx: SQLException           =>
+      val message = sqlEx.getMessage.split("Detail:").lastOption.getOrElse("SQL Conflict")
+      Left(Fail.Conflict(message))
+    case th: Throwable                 =>
+      if (th.getMessage != null && th.getMessage.contains("requirement failed")) {
+        Left(Fail.BadRequest(th.getMessage))
+      } else {
+        val msg = s"Error[${UUID.randomUUID().toString.take(10)}]: contact support"
+        Left(Fail.InternalServerError(msg))
+      }
+
+  }
+
+  implicit class ServerEndpointsLogicOps[T](io: IO[T]) {
+    def orError: IO[Either[Fail, T]] = ioOrError(io)
+  }
+
+  implicit class OptionEndpointsLogicOps[T](io: IO[Option[T]]) {
+    def orError(msg: String): IO[Either[Fail, T]] = io.map(_.toRight(Fail.NotFound(msg): Fail))
+  }
+
 }
