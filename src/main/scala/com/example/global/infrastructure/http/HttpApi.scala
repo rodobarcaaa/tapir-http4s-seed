@@ -2,7 +2,7 @@ package com.example.global.infrastructure.http
 
 import cats.effect.{IO, Resource}
 import cats.implicits._
-import com.example.books.infrastructure.http.BookApi
+import com.example.books.infrastructure.http._
 import com.example.shared.infrastructure.http.ServerRoutes
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.middleware.{Logger, Metrics}
@@ -12,13 +12,15 @@ import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
 class HttpApi(
     metricsApi: MetricsApi,
+    authorApi: AuthorApi,
+    publisherApi: PublisherApi,
     bookApi: BookApi,
     config: HttpConfig
 ) {
 
-  private lazy val apiDocs = metricsApi.docs <+> bookApi.docs
+  private lazy val apiDocs = publisherApi.docs <+> authorApi.docs <+> bookApi.docs
 
-  private lazy val apiRoutes = metricsApi.routes <+> bookApi.routes
+  private lazy val apiRoutes = metricsApi.routes <+> publisherApi.routes <+> authorApi.routes <+> bookApi.routes
 
   lazy val swaggerRoutes: ServerRoutes = Http4sServerInterpreter[IO]().toRoutes {
     SwaggerInterpreter().fromEndpoints[IO](apiDocs, "Books Store", HttpApi.version)

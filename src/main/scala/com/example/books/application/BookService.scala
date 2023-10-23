@@ -1,14 +1,20 @@
 package com.example.books.application
 
 import cats.effect.IO
-import com.example.books.domain._
+import com.example.books.domain.book.{Book, BookFilters, BookRepository}
+import com.example.books.domain.common.Id
+import com.example.shared.domain.page.{PageRequest, PageResponse}
 
-final class BookService(bookRepository: BookRepository) {
+final class BookService(repo: BookRepository) {
 
-  def create(book: Book): IO[BookId]           = bookRepository.create(book)
-  def find(id: BookId): IO[Option[Book]]       = bookRepository.find(id)
-  def list: IO[List[Book]]                     = bookRepository.list
-  def update(id: BookId, book: Book): IO[Unit] = bookRepository.update(id, book)
-  def delete(id: BookId): IO[Unit]             = bookRepository.delete(id)
+  def create(book: Book): IO[Unit] = repo.upsert(book)
+
+  def update(id: Id, book: Book): IO[Unit] = repo.upsert(book.copy(id = id))
+
+  def find(id: Id): IO[Option[Book]] = repo.find(id)
+
+  def list(pr: PageRequest, filters: BookFilters): IO[PageResponse[Book]] = repo.list(pr, filters)
+
+  def delete(id: Id): IO[Unit] = repo.delete(id)
 
 }
