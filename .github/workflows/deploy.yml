@@ -47,6 +47,8 @@ jobs:
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: true
 
       - name: Docker Deploy
         run: sbt -Drepository=${{ vars.AWS_ECR }} -Denvironment=${{github.event.client_payload.environment}} docker:publish
