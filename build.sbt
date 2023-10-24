@@ -185,4 +185,5 @@ addCommandAlias("tfc", "test:scalafmtCheck")
 addCommandAlias("fmt", ";f;tf")
 addCommandAlias("fmtCheck", ";fc;tfc")
 
+addCommandAlias("tcoverage", ";coverage;test;coverageReport")
 addCommandAlias("sonar", ";clean;coverage;test;coverageReport;sonarScan")

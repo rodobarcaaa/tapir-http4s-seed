@@ -9,14 +9,14 @@ services:
     env_file:
       - .env
 
-  redis:
-    container_name: bookstore-cache
-    image: redis:6-alpine
-    restart: always
-    ports:
-      - '6380:6379'
-    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+#  redis:
+#    container_name: bookstore-cache
+#    image: redis:6-alpine
+#    restart: always
+#    ports:
+#      - '6380:6379'
+#    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+#
 
-# TODO: S3 localstack
 
 
