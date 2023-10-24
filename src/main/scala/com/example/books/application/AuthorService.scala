@@ -5,11 +5,16 @@ import com.example.books.domain.author.{Author, AuthorRepository}
 import com.example.books.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 
-final class AuthorService(repo: AuthorRepository) {
+final class AuthorService(repo: AuthorRepository) extends CommonService {
 
-  def create(author: Author): IO[Unit] = repo.upsert(author)
+  private def upsert(author: Author) = for {
+    _ <- validateRequest(author)
+    _ <- repo.upsert(author)
+  } yield ()
 
-  def update(id: Id, author: Author): IO[Unit] = repo.upsert(author.copy(id = id))
+  def create(author: Author): IO[Unit] = upsert(author)
+
+  def update(id: Id, author: Author): IO[Unit] = upsert(author.copy(id = id))
 
   def find(id: Id): IO[Option[Author]] = repo.find(id)
 

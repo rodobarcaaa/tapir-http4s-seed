@@ -55,7 +55,7 @@ trait HasTapirResource
       oneOfVariant(Unauthorized, jsonBody[Fail.Unauthorized]),
       oneOfVariant(InternalServerError, jsonBody[Fail.InternalServerError]),
       oneOfVariant(Forbidden, jsonBody[Fail.Forbidden.type]),
-      oneOfVariant(UnprocessableEntity, jsonBody[Fail.UnprocessableEntity.type]),
+      oneOfVariant(UnprocessableEntity, jsonBody[Fail.UnprocessableEntity]),
       oneOfVariant(NotImplemented, jsonBody[Fail.NotImplemented.type])
     )
   )
