@@ -2,15 +2,13 @@ package com.example.books.application
 
 import cats.effect.IO
 import com.example.books.domain.author.{Author, AuthorRepository}
-import com.example.books.domain.common.Id
+import com.example.shared.application.CommonService
+import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 
 final class AuthorService(repo: AuthorRepository) extends CommonService {
 
-  private def upsert(author: Author) = for {
-    _ <- validateRequest(author)
-    _ <- repo.upsert(author)
-  } yield ()
+  private def upsert(author: Author) = validateRequest(author) *> repo.upsert(author)
 
   def create(author: Author): IO[Unit] = upsert(author)
 

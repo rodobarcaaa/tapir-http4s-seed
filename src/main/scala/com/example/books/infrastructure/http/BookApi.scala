@@ -2,8 +2,8 @@ package com.example.books.infrastructure.http
 
 import com.example.books.application.BookService
 import com.example.books.domain.book.{Book, BookFilters}
-import com.example.books.domain.common.Id
 import com.example.books.infrastructure.codecs.BookCodecs
+import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 import com.example.shared.infrastructure.http._
 

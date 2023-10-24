@@ -1,7 +1,7 @@
 package com.example.books.domain.author
 
 import cats.effect.IO
-import com.example.books.domain.common.Id
+import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 
 trait AuthorRepository {

@@ -1,6 +1,7 @@
 package com.example.books.infrastructure.codecs
 
 import com.example.books.domain.book._
+import com.example.shared.infrastructure.circe.CommonCodecs
 
 trait BookCodecs extends CommonCodecs {
   import io.circe._

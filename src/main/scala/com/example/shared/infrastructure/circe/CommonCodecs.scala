@@ -1,8 +1,7 @@
-package com.example.books.infrastructure.codecs
+package com.example.shared.infrastructure.circe
 
-import com.example.books.domain.common.{Id, Name, URL}
+import com.example.shared.domain.common.{Id, Name, URL}
 import com.example.shared.domain.page.PageResponse
-import com.example.shared.infrastructure.circe.CirceDefaults
 
 trait CommonCodecs extends CirceDefaults {
   import io.circe._

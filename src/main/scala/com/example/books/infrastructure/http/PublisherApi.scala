@@ -1,9 +1,9 @@
 package com.example.books.infrastructure.http
 
 import com.example.books.application.PublisherService
-import com.example.books.domain.common.Id
 import com.example.books.domain.publisher.Publisher
 import com.example.books.infrastructure.codecs.PublisherCodecs
+import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 import com.example.shared.infrastructure.http._
 
