@@ -39,7 +39,7 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
-      - run: docker-compose -f docker-compose-test.yml up -d
+      - run: docker-compose up -d
 
       - run: sbt -Dsonar.login=${{ secrets.SONAR_TOKEN }} sonar
 
