@@ -5,7 +5,7 @@ on:
     types: [ deploy ]
 
 jobs:
-  cd:
+  deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
@@ -57,9 +57,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dispatch Deploy
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.USER_GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           repository: rodobarcaaa/personal-ops
           event-type: deploy
           client-payload: '{"server": "${{github.event.client_payload.environment}}"}'
