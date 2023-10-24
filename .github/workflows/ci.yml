@@ -31,7 +31,7 @@ jobs:
 
   sonar:
     runs-on: ubuntu-latest
-    needs: [ linter ]
+    needs: [ lint ]
     timeout-minutes: 25
     steps:
       - name: Checkout / Setup JDK 11 / SBT-Cache
