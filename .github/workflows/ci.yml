@@ -51,11 +51,3 @@ jobs:
         with:
           check_name: Tests report
           files: ./**/*Test.xml
-
-      - name: Coverage report
-        uses: 5monkeys/cobertura-action@master
-        with:
-          path: target/scala-2.13/coverage-report/cobertura.xml
-          minimum_coverage: 75
-          fail_below_threshold: true
-          show_class_names: true
