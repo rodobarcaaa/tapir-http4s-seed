@@ -13,7 +13,7 @@ jobs:
       - name: Dispatch Auto Deploy
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.USER_GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           repository: rodobarcaaa/tapir-http4s-seed
           event-type: deploy
           client-payload: '{"tag": "main", "environment": "staging"}'
