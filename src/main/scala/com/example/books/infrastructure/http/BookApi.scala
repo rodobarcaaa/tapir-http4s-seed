@@ -18,26 +18,20 @@ class BookApi(service: BookService) extends HasTapirResource with BookCodecs wit
   private val post = base.post
     .in(jsonBody[Book])
     .out(statusCode(Created))
-    .serverLogicSuccess { book =>
-      service.create(book)
-    }
+    .serverLogic { book => service.create(book).orError }
 
   //  Update a existing book
   private val put = base.put
     .in(pathId)
     .in(jsonBody[Book])
     .out(statusCode(NoContent))
-    .serverLogicSuccess { case (id, book) =>
-      service.update(Id(id), book)
-    }
+    .serverLogic { case (id, book) => service.update(Id(id), book).orError }
 
   //  Get a book by id
   private val get = base.get
     .in(pathId)
     .out(jsonBody[Book])
-    .serverLogic { id =>
-      service.find(Id(id)).map(_.toRight(Fail.NotFound(s"Book for id: $id Not Found"): Fail))
-    }
+    .serverLogic { id => service.find(Id(id)).orError(s"Book for id: $id Not Found") }
 
   //  List books
   private val sortPageFields: EndpointInput[PageRequest] = sortPage(
@@ -56,13 +50,13 @@ class BookApi(service: BookService) extends HasTapirResource with BookCodecs wit
   private val list = base.get
     .in(sortPageFields / filterFields)
     .out(jsonBody[PageResponse[Book]])
-    .serverLogicSuccess { case (pr, filters) => service.list(pr, filters) }
+    .serverLogic { case (pr, filters) => service.list(pr, filters).orError }
 
   //  Delete a book by id
   private val delete = base.delete
     .in(pathId)
     .out(statusCode(NoContent))
-    .serverLogicSuccess { id => service.delete(Id(id)) }
+    .serverLogic { id => service.delete(Id(id)).orError }
 
   // Endpoints to Expose
   override val endpoints: ServerEndpoints = List(post, put, get, list, delete)

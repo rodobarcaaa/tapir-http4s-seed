@@ -16,26 +16,20 @@ class AuthorApi(service: AuthorService) extends HasTapirResource with AuthorCode
   private val post = base.post
     .in(jsonBody[Author])
     .out(statusCode(Created))
-    .serverLogicSuccess { author =>
-      service.create(author)
-    }
+    .serverLogic { author => service.create(author).orError }
 
   //  Update a existing author
   private val put = base.put
     .in(pathId)
     .in(jsonBody[Author])
     .out(statusCode(NoContent))
-    .serverLogicSuccess { case (id, author) =>
-      service.update(Id(id), author)
-    }
+    .serverLogic { case (id, author) => service.update(Id(id), author).orError }
 
   //  Get a author by id
   private val get = base.get
     .in(pathId)
     .out(jsonBody[Author])
-    .serverLogic { id =>
-      service.find(Id(id)).map(_.toRight(Fail.NotFound(s"Author for id: $id Not Found"): Fail))
-    }
+    .serverLogic { id => service.find(Id(id)).orError(s"Author for id: $id Not Found") }
 
   //  List authors
   private val sortPageFields: EndpointInput[PageRequest] = sortPage(
@@ -45,13 +39,13 @@ class AuthorApi(service: AuthorService) extends HasTapirResource with AuthorCode
   private val list = base.get
     .in(sortPageFields / filter)
     .out(jsonBody[PageResponse[Author]])
-    .serverLogicSuccess { case (pr, filter) => service.list(pr, filter) }
+    .serverLogic { case (pr, filter) => service.list(pr, filter).orError }
 
   //  Delete a author by id
   private val delete = base.delete
     .in(pathId)
     .out(statusCode(NoContent))
-    .serverLogicSuccess { id => service.delete(Id(id)) }
+    .serverLogic { id => service.delete(Id(id)).orError }
 
   // Endpoints to Expose
   override val endpoints: ServerEndpoints = List(post, put, get, list, delete)

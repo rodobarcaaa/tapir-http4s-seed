@@ -1,0 +1,65 @@
+name: deploy
+
+on:
+  repository_dispatch:
+    types: [ deploy ]
+
+jobs:
+  cd:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+    steps:
+      - name: Checkout / Setup JDK 11 / SBT-Cache
+        uses: rodobarcaaa/action-jdk-sbt-cache@main
+        with:
+          token: ${{ secrets.GH_PAT }}
+          fetch-depth: 0
+
+      - name: Set latest version
+        if: github.event.client_payload.tag == 'latest'
+        run: echo "VERSION=`echo $(git describe --tags $(git rev-list --tags --max-count=1))`" >> $GITHUB_ENV
+
+      - name: Set previous version
+        if: github.event.client_payload.tag == 'previous'
+        run: echo "VERSION=`echo $(git describe --always --abbrev=0 --tags $(git describe --tags $(git rev-list --tags --max-count=1))^)`" >> $GITHUB_ENV
+
+      - name: Set custom version
+        if: github.event.client_payload.tag != 'latest' && github.event.client_payload.tag != 'previous' && github.event.client_payload.tag != ''
+        run: echo "VERSION=`echo ${{ github.event.client_payload.tag }}`" >> $GITHUB_ENV
+
+      - name: Checkout / Setup JDK 11 / SBT-Cache
+        if: github.event.client_payload.tag != ''
+        uses: rodobarcaaa/action-jdk-sbt-cache@main
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          jdk-version: '11'
+          ref: ${{ env.VERSION }}
+
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'us-east-1'
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Docker Deploy
+        run: sbt -Drepository=${{ vars.AWS_ECR }} -Denvironment=${{github.event.client_payload.environment}} docker:publish
+
+
+  dispatch-deploy:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch Deploy
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.USER_GITHUB_TOKEN }}
+          repository: rodobarcaaa/personal-ops
+          event-type: deploy
+          client-payload: '{"server": "${{github.event.client_payload.environment}}"}'

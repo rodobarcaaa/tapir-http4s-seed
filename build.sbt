@@ -1,3 +1,4 @@
+import com.typesafe.sbt.packager.docker.*
 import sbt.Test
 import sbtrelease.ReleaseStateTransformations.*
 
@@ -16,7 +17,7 @@ val dependencies = {
 
   Seq(
     // base
-    "com.github.pureconfig"         %% "pureconfig"                % "0.17.1",
+    "com.github.pureconfig"         %% "pureconfig"                % "0.17.4",
     "com.typesafe.scala-logging"    %% "scala-logging"             % "3.9.5",
     "ch.qos.logback"                 % "logback-classic"           % "1.4.11",
     "org.typelevel"                 %% "cats-core"                 % "2.10.0",
@@ -56,12 +57,12 @@ val dependencies = {
     // munit
     "org.scalameta"                 %% "munit"                     % "0.7.29"       % Test,
     "org.typelevel"                 %% "munit-cats-effect-3"       % "1.0.7"        % Test,
-    "com.alejandrohdezma"           %% "http4s-munit"              % "0.9.3"        % Test
+    "com.alejandrohdezma"           %% "http4s-munit"              % "0.15.0"       % Test
   )
 }
 
-lazy val root = project
-  .in(file("."))
+lazy val root = (project in file("."))
+  .enablePlugins(JavaServerAppPackaging, DockerPlugin)
   .settings(
     name                        := "tapir-http4s-seed",
     scalaVersion                := scala2Version,
@@ -149,42 +150,32 @@ lazy val root = project
   )
 
 //********* DOCKER IMAGE *********
-//Universal / javaOptions ++= Seq(
-//  // JVM memory tuning - https://www.scala-sbt.org/sbt-native-packager/recipes/play.html#build-configuration
-//  "-J-server",
-//  "-J-XX:+UseG1GC",
-//  "-J-XX:MaxPermSize",
-//  "-J-XX:+TieredCompilation",
-//  "-J-XX:+ExitOnOutOfMemoryError",
-//  "-J-XX:+CrashOnOutOfMemoryError",
-//  "-Dpidfile.path=/dev/null",
-//  "-Dfile.encoding=UTF-8"
-//)
-//
-//lazy val repository = sys.props.getOrElse("repository", "406773808860.dkr.ecr.us-east-1.amazonaws.com")
-//
-//Docker / packageName   := repository + "/" + packageName.value
-//Docker / maintainer    := "rodo@echemendía.com"
-//Docker / daemonUserUid := None
-//Docker / daemonUser    := "daemon"
-//
-//dockerBaseImage      := "openjdk:11-jre"
-//dockerExposedVolumes := Seq("/opt/docker/logs")
-//dockerExposedPorts   := Seq(8080)
-//dockerChmodType      := DockerChmodType.UserGroupWriteExecute
-//dockerAliases ++= Seq(dockerAlias.value.withTag(sys.props.get("environment")))
-//dockerUpdateLatest   := true
-//
-//dockerCommands ++= Seq(
-//  ExecCmd(
-//    "ENTRYPOINT",
-//    "sh",
-//    "-c",
-//    "bin/" + s"${executableScriptName.value}" +
-//      " -Dconfig.file=/opt/docker/src/main/resources/application.conf" +
-//      " -Dlogger.file=/opt/docker/src/main/resources/logback.xml"
-//  )
-//)
+Universal / javaOptions ++= Seq(
+  // JVM memory tuning - https://www.scala-sbt.org/sbt-native-packager/recipes/play.html#build-configuration
+  "-J-server",
+  "-J-XX:+UseG1GC",
+  "-J-XX:MaxPermSize",
+  "-J-XX:+TieredCompilation",
+  "-J-XX:+ExitOnOutOfMemoryError",
+  "-J-XX:+CrashOnOutOfMemoryError",
+  "-Dpidfile.path=/dev/null",
+  "-Dfile.encoding=UTF-8"
+)
+
+lazy val repository = sys.props.getOrElse("repository", "734120256922.dkr.ecr.us-east-1.amazonaws.com")
+
+Docker / packageName   := repository + "/bookstore"
+Docker / maintainer    := "rodo@echemendía.com"
+Docker / daemonUserUid := None
+Docker / daemonUser    := "daemon"
+
+dockerBaseImage    := "openjdk:11-jre"
+dockerExposedPorts := Seq(8080)
+dockerExposedVolumes := Seq("/opt/docker/logs")
+dockerChmodType    := DockerChmodType.UserGroupWriteExecute
+dockerAliases ++= Seq(dockerAlias.value.withTag(sys.props.get("environment")))
+dockerUpdateLatest := true
+
 
 //********* COMMANDS ALIASES *********
 addCommandAlias("f", "scalafmt")
