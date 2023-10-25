@@ -164,18 +164,18 @@ Universal / javaOptions ++= Seq(
 
 lazy val repository = sys.props.getOrElse("repository", "734120256922.dkr.ecr.us-east-1.amazonaws.com")
 
+Compile / mainClass    := Some("com.example.Main")
 Docker / packageName   := repository + "/bookstore"
 Docker / maintainer    := "rodo@echemendía.com"
 Docker / daemonUserUid := None
 Docker / daemonUser    := "daemon"
 
-dockerBaseImage    := "openjdk:11-jre"
-dockerExposedPorts := Seq(8080)
+dockerBaseImage      := "openjdk:11-jre"
+dockerExposedPorts   := Seq(8080)
 dockerExposedVolumes := Seq("/opt/docker/logs")
-dockerChmodType    := DockerChmodType.UserGroupWriteExecute
+dockerChmodType      := DockerChmodType.UserGroupWriteExecute
 dockerAliases ++= Seq(dockerAlias.value.withTag(sys.props.get("environment")))
-dockerUpdateLatest := true
-
+dockerUpdateLatest   := true
 
 //********* COMMANDS ALIASES *********
 addCommandAlias("f", "scalafmt")
