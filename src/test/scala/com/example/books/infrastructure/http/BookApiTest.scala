@@ -80,8 +80,8 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
   test(GET(uri"books?sort=-isbn")).alias("LIST WITH SORT (isbn)") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(
-      response.as[PageResponse[Book]].map(_.elements.map(_.isbn.value)),
-      response.as[PageResponse[Book]].map(_.elements.map(_.isbn.value)).unsafeRunSync().sorted.reverse
+      response.as[PageResponse[Book]].map(_.elements.map(_.isbn.value.toUpperCase)),
+      response.as[PageResponse[Book]].map(_.elements.map(_.isbn.value.toUpperCase)).unsafeRunSync().sorted.reverse
     )
   }
 

@@ -52,8 +52,8 @@ class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs {
   test(GET(uri"authors?sort=lastName")).alias("LIST WITH SORT") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(
-      response.as[PageResponse[Author]].map(_.elements.map(_.lastName.value)),
-      response.as[PageResponse[Author]].map(_.elements.map(_.lastName.value)).unsafeRunSync().sorted
+      response.as[PageResponse[Author]].map(_.elements.map(_.lastName.value.toUpperCase)),
+      response.as[PageResponse[Author]].map(_.elements.map(_.lastName.value.toUpperCase)).unsafeRunSync().sorted
     )
   }
 

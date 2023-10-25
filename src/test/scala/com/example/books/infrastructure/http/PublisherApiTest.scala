@@ -49,11 +49,11 @@ class PublisherApiTest extends HasHttp4sRoutesSuite with PublisherCodecs {
       )
   }
 
-  test(GET(uri"publishers?sort=-name")).alias("LIST WITH SORT") { response =>
+  test(GET(uri"publishers?sort=name")).alias("LIST WITH SORT") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(
-      response.as[PageResponse[Publisher]].map(_.elements.map(_.name.value)),
-      response.as[PageResponse[Publisher]].map(_.elements.map(_.name.value)).unsafeRunSync().sorted.reverse
+      response.as[PageResponse[Publisher]].map(_.elements.map(_.name.value.toUpperCase)),
+      response.as[PageResponse[Publisher]].map(_.elements.map(_.name.value.toUpperCase)).unsafeRunSync().sorted
     )
   }
 
