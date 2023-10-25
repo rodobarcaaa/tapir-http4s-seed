@@ -6,7 +6,33 @@ on:
   workflow_dispatch:
 
 jobs:
+  release_draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        with:
+          config-name: release-drafter.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+  sonar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout / Setup JDK 11 / SBT-Cache
+        uses: rodobarcaaa/action-jdk-sbt-cache@main
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - run: docker-compose up -d
+
+      - run: sbt -Dsonar.login=${{ secrets.SONAR_TOKEN }} sonar
+
+      - run: docker rm -f -v bookstore-db
+
   staging:
+    needs: [ sonar ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
