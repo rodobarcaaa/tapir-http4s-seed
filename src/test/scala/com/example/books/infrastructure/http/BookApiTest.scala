@@ -47,9 +47,42 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
     assertIO(response.as[Fail.NotFound], Fail.NotFound(s"Book for id: $notfoundId Not Found"))
   }
 
-  test(GET(uri"books")).alias("LIST") { response =>
+  test(GET(uri"books")).alias("LIST COMMON") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[PageResponse[Book]].map(_.elements.contains(book)), true)
+  }
+
+  test(GET(uri"books".withQueryParams(Map("filter" -> book.title.value)))).alias("LIST WITH FILTERS") { response =>
+    assertEquals(response.status, Status.Ok)
+    assertIO(
+      response.as[PageResponse[Book]].map(_.elements.filter(_.title == book.title).contains(book)),
+      true
+    )
+  }
+
+  test(GET(uri"books".withQueryParams(Map("isbn" -> book.isbn.value)))).alias("LIST WITH FILTERS (isbn)") { response =>
+    assertEquals(response.status, Status.Ok)
+    assertIO(
+      response.as[PageResponse[Book]].map(_.elements.filter(_.isbn == book.isbn).contains(book)),
+      true
+    )
+  }
+
+  test(GET(uri"books".withQueryParams(Map("year" -> book.year.value.toString)))).alias("LIST WITH FILTERS (year)") {
+    response =>
+      assertEquals(response.status, Status.Ok)
+      assertIO(
+        response.as[PageResponse[Book]].map(_.elements.filter(_.year == book.year).contains(book)),
+        true
+      )
+  }
+
+  test(GET(uri"books?sort=-isbn")).alias("LIST WITH SORT") { response =>
+    assertEquals(response.status, Status.Ok)
+    assertIO(
+      response.as[PageResponse[Book]].map(_.elements.map(_.isbn.value)),
+      response.as[PageResponse[Book]].map(_.elements.map(_.isbn.value)).unsafeRunSync().sorted.reverse
+    )
   }
 
   lazy val updatedBook: Book = BookMother.random(authorId, publisherId)

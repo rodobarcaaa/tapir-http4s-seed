@@ -35,9 +35,26 @@ class PublisherApiTest extends HasHttp4sRoutesSuite with PublisherCodecs {
     assertIO(response.as[Fail.NotFound], Fail.NotFound(s"Publisher for id: $notfoundId Not Found"))
   }
 
-  test(GET(uri"publishers")).alias("LIST") { response =>
+  test(GET(uri"publishers")).alias("LIST COMMON") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[PageResponse[Publisher]].map(_.elements.contains(publisher)), true)
+  }
+
+  test(GET(uri"publishers".withQueryParams(Map("filter" -> publisher.name.value)))).alias("LIST WITH FILTERS") {
+    response =>
+      assertEquals(response.status, Status.Ok)
+      assertIO(
+        response.as[PageResponse[Publisher]].map(_.elements.filter(_.name == publisher.name).contains(publisher)),
+        true
+      )
+  }
+
+  test(GET(uri"publishers?sort=-url")).alias("LIST WITH SORT") { response =>
+    assertEquals(response.status, Status.Ok)
+    assertIO(
+      response.as[PageResponse[Publisher]].map(_.elements.map(_.url.value)),
+      response.as[PageResponse[Publisher]].map(_.elements.map(_.url.value)).unsafeRunSync().sorted.reverse
+    )
   }
 
   lazy val updatedPublisher: Publisher = PublisherMother.random

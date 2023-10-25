@@ -32,9 +32,7 @@ class AuthorApi(service: AuthorService) extends HasTapirResource with AuthorCode
     .serverLogic { id => service.find(Id(id)).orError(s"Author for id: $id Not Found") }
 
   //  List authors
-  private val sortPageFields: EndpointInput[PageRequest] = sortPage(
-    Seq("isbn", "title", "year", "publisherName", "authorName")
-  )
+  private val sortPageFields: EndpointInput[PageRequest] = sortPage(Seq("firstName", "lastName"))
 
   private val list = base.get
     .in(sortPageFields / filter)

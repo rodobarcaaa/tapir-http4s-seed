@@ -35,9 +35,26 @@ class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs {
     assertIO(response.as[Fail.NotFound], Fail.NotFound(s"Author for id: $notfoundId Not Found"))
   }
 
-  test(GET(uri"authors")).alias("LIST") { response =>
+  test(GET(uri"authors")).alias("LIST COMMON") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[PageResponse[Author]].map(_.elements.contains(author)), true)
+  }
+
+  test(GET(uri"authors".withQueryParams(Map("filter" -> author.firstName.value)))).alias("LIST WITH FILTERS") {
+    response =>
+      assertEquals(response.status, Status.Ok)
+      assertIO(
+        response.as[PageResponse[Author]].map(_.elements.filter(_.firstName == author.firstName).contains(author)),
+        true
+      )
+  }
+
+  test(GET(uri"authors?sort=lastName")).alias("LIST WITH SORT") { response =>
+    assertEquals(response.status, Status.Ok)
+    assertIO(
+      response.as[PageResponse[Author]].map(_.elements.map(_.lastName.value)),
+      response.as[PageResponse[Author]].map(_.elements.map(_.lastName.value)).unsafeRunSync().sorted
+    )
   }
 
   lazy val updatedAuthor: Author = AuthorMother.random
