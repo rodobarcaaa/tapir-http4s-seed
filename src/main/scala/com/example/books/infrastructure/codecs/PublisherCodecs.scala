@@ -1,6 +1,7 @@
 package com.example.books.infrastructure.codecs
 
 import com.example.books.domain.publisher.Publisher
+import com.example.shared.infrastructure.circe.CommonCodecs
 
 trait PublisherCodecs extends CommonCodecs {
 

@@ -5,3 +5,51 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=tapir-http4s-seed&metric=coverage)](https://sonarcloud.io/summary/new_code?id=tapir-http4s-seed)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=tapir-http4s-seed&metric=bugs)](https://sonarcloud.io/summary/new_code?id=tapir-http4s-seed)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=tapir-http4s-seed&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=tapir-http4s-seed)
+
+## Try it! JDK 11
+
+```
+docker-compose -f up -d
+sbt run
+```
+
+Swagger: http://0.0.0.0:8080/docs/
+
+Metrics: http://0.0.0.0:8080/metrics
+
+## Tests run
+
+```
+docker-compose -f docker-compose.yml up -d
+```
+
+or
+
+```
+sh recreate-db
+```
+
+- Run all tests: `sbt test`
+- Run all tests with coverage check: `sbt tcoverage`
+- Run all tests with coverage check and formatting: `sbt +scalafmtAll tcoverage`
+
+Also, you can run only one suite like this
+
+```
+sbt "to *SOMETest"
+```
+
+## Ref Documentation
+
+- Http4s: https://http4s.org/v0.23/docs/quickstart.html
+- Tapir: https://tapir.softwaremill.com/en/latest/quickstart.html
+- Macwire: https://github.com/softwaremill/macwire
+- Circe: https://circe.github.io/circe/
+- Cats Core: https://typelevel.org/cats/
+- Cats Effect: https://typelevel.org/cats-effect/
+- Slick: http://books.underscore.io/essential-slick/essential-slick-3.html
+- Slick-Pg: https://github.com/tminglei/slick-pg
+- Fly4s: https://geirolz.github.io/fly4s/
+- MUnit: https://scalameta.org/munit/docs/getting-started.html
+- Sonar Scala: https://sonar-scala.com/
+

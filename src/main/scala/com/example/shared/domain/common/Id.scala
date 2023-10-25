@@ -1,4 +1,4 @@
-package com.example.books.domain.common
+package com.example.shared.domain.common
 
 import java.util.UUID
 

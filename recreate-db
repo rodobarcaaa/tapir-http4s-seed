@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+docker rm -f -v bookstore-db
+docker-compose up -d

@@ -2,8 +2,8 @@ package com.example.books.infrastructure.repository
 
 import cats.effect.IO
 import com.example.books.domain.book.{Book, BookFilters, BookRepository}
-import com.example.books.domain.common.Id
 import com.example.books.infrastructure.slick.BookMapping
+import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 import com.example.shared.infrastructure.slick.HasSlickPgProvider
 

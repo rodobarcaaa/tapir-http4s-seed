@@ -2,8 +2,8 @@ package com.example.books.infrastructure.http
 
 import com.example.books.application.AuthorService
 import com.example.books.domain.author.Author
-import com.example.books.domain.common.Id
 import com.example.books.infrastructure.codecs.AuthorCodecs
+import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 import com.example.shared.infrastructure.http._
 
@@ -32,9 +32,7 @@ class AuthorApi(service: AuthorService) extends HasTapirResource with AuthorCode
     .serverLogic { id => service.find(Id(id)).orError(s"Author for id: $id Not Found") }
 
   //  List authors
-  private val sortPageFields: EndpointInput[PageRequest] = sortPage(
-    Seq("isbn", "title", "year", "publisherName", "authorName")
-  )
+  private val sortPageFields: EndpointInput[PageRequest] = sortPage(Seq("firstName", "lastName"))
 
   private val list = base.get
     .in(sortPageFields / filter)

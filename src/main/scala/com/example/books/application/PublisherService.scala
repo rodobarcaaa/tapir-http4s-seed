@@ -2,14 +2,17 @@ package com.example.books.application
 
 import cats.effect.IO
 import com.example.books.domain.publisher.{Publisher, PublisherRepository}
-import com.example.books.domain.common.Id
+import com.example.shared.application.CommonService
+import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 
-final class PublisherService(repo: PublisherRepository) {
+final class PublisherService(repo: PublisherRepository) extends CommonService {
 
-  def create(publisher: Publisher): IO[Unit] = repo.upsert(publisher)
+  private def upsert(publisher: Publisher) = validateRequest(publisher) *> repo.upsert(publisher)
 
-  def update(id: Id, publisher: Publisher): IO[Unit] = repo.upsert(publisher.copy(id = id))
+  def create(publisher: Publisher): IO[Unit] = upsert(publisher)
+
+  def update(id: Id, publisher: Publisher): IO[Unit] = upsert(publisher.copy(id = id))
 
   def find(id: Id): IO[Option[Publisher]] = repo.find(id)
 

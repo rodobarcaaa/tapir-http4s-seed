@@ -3,6 +3,7 @@ package com.example.shared.infrastructure.slick
 import cats.effect.IO
 import com.example.MainModule
 import com.example.shared.domain.page.{PageRequest, PageResponse}
+import com.example.shared.infrastructure.slick.HasSlickPgProvider._
 import slick.jdbc.{ResultSetConcurrency, ResultSetType}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,23 +36,23 @@ trait HasSlickPgProvider {
 
     def runWithCheckRowsAffectedEW[R](
         dbio: DBIOAction[Int, NoStream, EW],
-        exception: Throwable = new IllegalStateException("Not Rows Affected")
+        exception: Throwable = new IllegalStateException(NotRowsAffectedMSG)
     ): IO[Unit] = runIO(dbio).flatMap(rowsAffected => IO.raiseUnless(rowsAffected > 0)(exception))
 
     def runWithCheckRowsAffectedEWR[R](
         dbio: DBIOAction[Int, NoStream, EWR],
-        exception: Throwable = new IllegalStateException("Not Rows Affected")
+        exception: Throwable = new IllegalStateException(NotRowsAffectedMSG)
     ): IO[Unit] = runIO(dbio).flatMap(rowsAffected => IO.raiseUnless(rowsAffected > 0)(exception))
 
     def runWithCheckRowsAffectedT[R](
         dbio: DBIOAction[Int, NoStream, EW with Effect.Transactional],
-        exception: Throwable = new IllegalStateException("Not Rows Affected")
+        exception: Throwable = new IllegalStateException(NotRowsAffectedMSG)
     ): IO[Unit] = runIO(dbio).flatMap(rowsAffected => IO.raiseUnless(rowsAffected > 0)(exception))
 
     def runWithCheckNumRowsAffected[R](
         dbio: DBIOAction[Int, NoStream, EW],
         num: Int,
-        exception: Throwable = new IllegalStateException("Incorrect Rows Affected")
+        exception: Throwable = new IllegalStateException(IncorrectRowsAffectedMSG)
     ): IO[Unit] = runIO(dbio).flatMap(rowsAffected => IO.raiseUnless(rowsAffected == num)(exception))
 
   }
@@ -80,4 +81,9 @@ trait HasSlickPgProvider {
         .asInstanceOf[DBIOAction[Any, Streaming[T], Nothing]]
   }
 
+}
+
+object HasSlickPgProvider {
+  val NotRowsAffectedMSG       = "Not Rows Affected"
+  val IncorrectRowsAffectedMSG = "Incorrect Rows Affected"
 }

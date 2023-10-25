@@ -1,10 +1,15 @@
 package com.example.books.domain.publisher
 
-import com.example.books.domain.common.{Id, Name, URL}
+import cats.data.ValidatedNel
+import cats.implicits._
+import com.example.shared.domain.common.{HasValidated, Id, Name, URL}
 
 import java.util.UUID
 
-final case class Publisher(id: Id, name: Name, url: URL)
+final case class Publisher(id: Id, name: Name, url: URL) extends HasValidated {
+
+  override def validated: ValidatedNel[String, Unit] = (name.validate(), url.validate()).mapN((_, _) => ())
+}
 
 object Publisher {
 
