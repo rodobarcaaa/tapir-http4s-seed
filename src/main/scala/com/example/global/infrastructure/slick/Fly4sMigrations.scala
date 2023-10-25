@@ -10,12 +10,13 @@ import fly4s.core.data._
 
 import java.io.{File, PrintWriter}
 import java.nio.file.{Files, Paths}
+import scala.util.Try
 
 object Fly4sMigrations extends HasSlickPgProvider with BookMapping {
 
   private val migrationsFolder = "src/main/resources/db/migration"
 
-  def initialize(): Unit = {
+  def initialize(): Unit = Try {
     val folder = new File(migrationsFolder)
     if (!folder.exists) folder.mkdirs()
 
@@ -29,7 +30,7 @@ object Fly4sMigrations extends HasSlickPgProvider with BookMapping {
       schemas.createStatements.foreach(s => writer.write(s + ";\n"))
       writer.close()
     }
-  }
+  }.toOption.foreach(_ => ())
 
   def migrateDb(dbConfig: DBConfig): Resource[IO, MigrateResult] = {
     initialize()
