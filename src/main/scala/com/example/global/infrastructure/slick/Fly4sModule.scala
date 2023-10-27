@@ -19,8 +19,9 @@ object Fly4sModule extends HasSlickPgProvider with BookMapping {
 
   private val migrationFile = migrationsFolder + "/V003__create_books_table.sql" // change name on demand
 
-  private val witterAssistant = Resource.make {
-    for {
+  // This is a helper to create the migration file if it doesn't exist only on development
+  private val writerAssistant = Resource.make {
+    (for {
       folder <- IO(new File(migrationsFolder))
       _      <- IO.unlessA(folder.exists())(IO(folder.mkdirs()).void)
 
@@ -31,7 +32,7 @@ object Fly4sModule extends HasSlickPgProvider with BookMapping {
                w.close()
              }
            }
-    } yield ()
+    } yield ()).handleErrorWith(_ => IO.unit)
   }(_ => IO.unit)
 
   private lazy val fly4sConfig = Fly4s.make[IO](
@@ -41,6 +42,6 @@ object Fly4sModule extends HasSlickPgProvider with BookMapping {
     config = Fly4sConfig(baselineOnMigrate = true)
   )
 
-  def migrateDbResource: Resource[IO, MigrateResult] = witterAssistant *> fly4sConfig.evalMap(_.migrate)
+  def migrateDbResource: Resource[IO, MigrateResult] = writerAssistant *> fly4sConfig.evalMap(_.migrate)
 
 }
