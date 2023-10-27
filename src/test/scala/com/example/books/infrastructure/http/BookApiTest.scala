@@ -85,6 +85,10 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
     )
   }
 
+  test(GET(uri"books?sort=isbn,year")).alias("LIST WITH SORT (isbn and year)") { response =>
+    assertEquals(response.status, Status.Ok)
+  }
+
   test(GET(uri"books?sort=year")).alias("LIST WITH SORT (year)") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(

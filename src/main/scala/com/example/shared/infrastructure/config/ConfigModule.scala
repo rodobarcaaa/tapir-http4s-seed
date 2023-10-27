@@ -12,7 +12,7 @@ trait ConfigModule extends StrictLogging {
 
   def loadConfig(): Unit = {
     val info = s"""
-                   |Configuration:
+                   |Load Configuration:
                    |-----------------------
                    |API: ${config.api}
                    |DB: ${config.db}

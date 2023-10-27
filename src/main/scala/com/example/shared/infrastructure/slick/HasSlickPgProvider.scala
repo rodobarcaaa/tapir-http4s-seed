@@ -8,9 +8,7 @@ import slick.jdbc.{ResultSetConcurrency, ResultSetType}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait HasSlickPgProvider {
-
-  private val dbConfig = MainModule.initialize.dbConfig
+trait HasSlickPgProvider extends MainModule {
 
   val profile: PgProfile = PgProfile
 
@@ -19,7 +17,7 @@ trait HasSlickPgProvider {
   val db: Database = Database.forURL(
     url = dbConfig.url,
     user = dbConfig.user,
-    password = dbConfig.password,
+    password = dbConfig.password.value,
     driver = dbConfig.driver
   )
 
