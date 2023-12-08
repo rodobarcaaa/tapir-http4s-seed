@@ -69,7 +69,6 @@ lazy val root = (project in file("."))
     crossScalaVersions          := Seq(scala2Version, scala3Version),
     version                     := (ThisBuild / version).value,
     scalacOptions ++= Seq(
-      "-release:11",                   // Set java 11
       "-encoding",
       "utf-8",                         // Specify character encoding used by source files.
       "-explaintypes",                 // Explain type errors in more detail.
