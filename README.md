@@ -6,10 +6,10 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=tapir-http4s-seed&metric=bugs)](https://sonarcloud.io/summary/new_code?id=tapir-http4s-seed)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=tapir-http4s-seed&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=tapir-http4s-seed)
 
-## Try it! JDK 11
+## Try it! JDK 21
 
 ```
-docker-compose -f up -d
+docker-compose up -d
 sbt run
 ```
 
@@ -18,12 +18,6 @@ Swagger: http://0.0.0.0:8080/docs/
 Metrics: http://0.0.0.0:8080/metrics
 
 ## Tests run
-
-```
-docker-compose -f docker-compose.yml up -d
-```
-
-or
 
 ```
 sh recreate-db

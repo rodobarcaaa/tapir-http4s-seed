@@ -10,11 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout / Setup JDK 11 / SBT-Cache
+      - name: Checkout / Setup JDK 21 / SBT-Cache
         uses: rodobarcaaa/action-jdk-sbt-cache@main
         with:
           token: ${{ secrets.GH_PAT }}
           fetch-depth: 0
+          jdk-version: '21'
 
       - name: Tests
         run: sbt test
