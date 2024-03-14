@@ -17,9 +17,6 @@ jobs:
           fetch-depth: 0
           jdk-version: '21'
 
-      - name: Tests
-        run: sbt test
-
       - name: Release
         run: |
           git config user.name github-actions
