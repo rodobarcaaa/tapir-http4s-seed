@@ -19,7 +19,7 @@ val dependencies = {
     // base
     "com.github.pureconfig"         %% "pureconfig"                % "0.17.4",
     "com.typesafe.scala-logging"    %% "scala-logging"             % "3.9.5",
-    "ch.qos.logback"                 % "logback-classic"           % "1.4.14",
+    "ch.qos.logback"                 % "logback-classic"           % "1.5.3",
     "org.typelevel"                 %% "cats-core"                 % "2.10.0",
     "org.typelevel"                 %% "cats-effect"               % "3.5.2",
     // tapir
