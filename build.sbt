@@ -47,7 +47,7 @@ val dependencies = {
     "com.github.tminglei"           %% "slick-pg"                  % slickPgVersion,
     "com.github.tminglei"           %% "slick-pg_circe-json"       % slickPgVersion,
     // flyway 4 scala
-    "com.github.geirolz"            %% "fly4s-core"                % "0.0.19",
+    "com.github.geirolz"            %% "fly4s-core"                % "0.0.20",
     // prometheus
     "io.prometheus"                  % "simpleclient"              % prometheusVersion,
     "io.prometheus"                  % "simpleclient_hotspot"      % prometheusVersion,
