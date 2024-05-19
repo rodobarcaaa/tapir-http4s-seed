@@ -13,7 +13,7 @@ val dependencies = {
   val http4sVersion     = "0.23.26"
   val prometheusVersion = "0.16.0"
   val macwireVersion    = "2.5.9"
-  val slickPgVersion    = "0.21.1"
+  val slickPgVersion    = "0.22.2"
 
   Seq(
     // base
