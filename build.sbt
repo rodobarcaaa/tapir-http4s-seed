@@ -57,7 +57,7 @@ val dependencies = {
     // munit
     "org.scalameta"                 %% "munit"                     % "0.7.29"       % Test,
     "org.typelevel"                 %% "munit-cats-effect"         % "2.0.0"        % Test,
-    "com.alejandrohdezma"           %% "http4s-munit"              % "0.15.1"       % Test
+    "com.alejandrohdezma"           %% "http4s-munit"              % "1.0.0"        % Test
   )
 }
 
