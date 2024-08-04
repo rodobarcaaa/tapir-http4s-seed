@@ -41,7 +41,7 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           jdk-version: '21'
 
-      - run: docker-compose up -d
+      - run: docker compose up -d
 
       - run: sbt -Dsonar.login=${{ secrets.SONAR_TOKEN }} sonar
 
