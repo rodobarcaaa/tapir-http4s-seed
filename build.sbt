@@ -55,7 +55,7 @@ val dependencies = {
     "com.softwaremill.macwire"      %% "util"                      % macwireVersion,
     "com.softwaremill.macwire"      %% "macros"                    % macwireVersion % Provided,
     // munit
-    "org.scalameta"                 %% "munit"                     % "0.7.29"       % Test,
+    "org.scalameta"                 %% "munit"                     % "1.0.2"        % Test,
     "org.typelevel"                 %% "munit-cats-effect"         % "2.0.0"        % Test,
     "com.alejandrohdezma"           %% "http4s-munit"              % "0.15.1"       % Test
   )
