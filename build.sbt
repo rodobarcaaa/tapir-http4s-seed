@@ -40,8 +40,8 @@ val dependencies = {
     "org.http4s"                    %% "http4s-core"               % http4sVersion,
     "org.http4s"                    %% "http4s-dsl"                % http4sVersion,
     "org.http4s"                    %% "http4s-circe"              % http4sVersion,
-    "org.http4s"                    %% "http4s-blaze-server"       % "0.23.16",
-    "org.http4s"                    %% "http4s-blaze-client"       % "0.23.16",
+    "org.http4s"                    %% "http4s-blaze-server"       % "0.23.17",
+    "org.http4s"                    %% "http4s-blaze-client"       % "0.23.17",
     "org.http4s"                    %% "http4s-prometheus-metrics" % "0.24.7",
     // slick-pg
     "com.github.tminglei"           %% "slick-pg"                  % slickPgVersion,
