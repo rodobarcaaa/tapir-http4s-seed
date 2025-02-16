@@ -12,7 +12,7 @@ val dependencies = {
   val tapirVersion      = "1.1.2"
   val http4sVersion     = "0.23.30"
   val prometheusVersion = "0.16.0"
-  val macwireVersion    = "2.6.4"
+  val macwireVersion    = "2.6.6"
   val slickPgVersion    = "0.21.1"
 
   Seq(
