@@ -22,10 +22,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout / Setup JDK / SBT-Cache
-        uses: rodobarcaaa/action-jdk-sbt-cache@main
+        uses: actions/setup-java@v4
         with:
-          token: ${{ secrets.GH_PAT }}
-          jdk-version: '21'
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'sbt'
 
       - name: Scalafmt Check All
         run: sbt +scalafmtCheckAll
