@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout / Setup JDK 21 / SBT-Cache
+      - name: Checkout / Setup JDK / SBT-Cache
         uses: rodobarcaaa/action-jdk-sbt-cache@main
         with:
           token: ${{ secrets.GH_PAT }}
@@ -35,7 +35,7 @@ jobs:
     needs: [ lint ]
     timeout-minutes: 25
     steps:
-      - name: Checkout / Setup JDK 21 / SBT-Cache
+      - name: Checkout / Setup JDK / SBT-Cache
         uses: rodobarcaaa/action-jdk-sbt-cache@main
         with:
           token: ${{ secrets.GH_PAT }}
