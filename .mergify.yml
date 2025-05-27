@@ -1,4 +1,25 @@
 pull_request_rules:
+  - name: Request review from team
+    description: Request review from a specific team when checks are green.
+    conditions:
+      - -closed
+      - "#approved-reviews-by = 0"
+      - "#changes-requested-reviews-by = 0"
+      - review-requested != @TEAM_NAME_HERE
+    actions:
+      request_reviews:
+        teams:
+          - TEAM_NAME_HERE
+  - name: Assign t-shirt size to PR
+    description: Assign a t-shirt size label to a pull request based on the number
+      of lines changed.
+    conditions:
+      - "#modified-lines >= 100"
+      - "#modified-lines < 500"
+    actions:
+      label:
+        toggle:
+          - size/L
   - name: delete head branch after merge
     conditions: []
     actions:
@@ -13,7 +34,8 @@ pull_request_rules:
     actions:
       merge:
         method: rebase
-  - name: automatic merge for scala-steward pull requests affecting project plugins.sbt
+  - name: automatic merge for scala-steward pull requests affecting project
+      plugins.sbt
     conditions:
       - check-success=linter
       - check-success=sonar
@@ -31,7 +53,8 @@ pull_request_rules:
     actions:
       merge:
         method: rebase
-  - name: automatic merge for scala-steward pull requests affecting project build.properties
+  - name: automatic merge for scala-steward pull requests affecting project
+      build.properties
     conditions:
       - author=rodobarcaaa
       - check-success=linter
