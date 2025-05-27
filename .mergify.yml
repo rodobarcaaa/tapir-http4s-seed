@@ -1,15 +1,30 @@
 pull_request_rules:
-  - name: Request review from team
-    description: Request review from a specific team when checks are green.
+  - name: Add a queue label when PR is queued
+    description: Toggle the queue label when a pull request is (un)queued.
     conditions:
-      - -closed
-      - "#approved-reviews-by = 0"
-      - "#changes-requested-reviews-by = 0"
-      - review-requested != @TEAM_NAME_HERE
+      - queue-position > 0
     actions:
-      request_reviews:
-        teams:
-          - TEAM_NAME_HERE
+      label:
+        toggle:
+          - merge-queued
+  - name: Label Mergify Stacks PRs
+    description: Pull requests that are part of a Mergify stack should be labeled as such
+    conditions:
+      - "commits[0].commit_message ~= (?m)Change-Id:"
+    actions:
+      label:
+        toggle:
+          - stack
+  - name: Ping PR author when conflicting
+    description: Warn the pull request author when their PR are conflicting
+    conditions:
+      - conflict
+      - -closed
+    actions:
+      comment:
+        message: >
+          👋 {{author}} your PR is conflicting and needs to be updated to be
+          merged
   - name: Assign t-shirt size to PR
     description: Assign a t-shirt size label to a pull request based on the number
       of lines changed.
