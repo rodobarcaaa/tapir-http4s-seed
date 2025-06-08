@@ -5,7 +5,7 @@ import sbtrelease.ReleaseStateTransformations.*
 import scala.language.postfixOps
 
 val scala2Version = "2.13.16"
-val scala3Version = "3.7.0"
+val scala3Version = "3.7.1"
 
 val dependencies = {
   val circeVersion      = "0.14.3"
