@@ -21,7 +21,7 @@ val dependencies = {
     "com.typesafe.scala-logging"    %% "scala-logging"             % "3.9.5",
     "ch.qos.logback"                 % "logback-classic"           % "1.5.15",
     "org.typelevel"                 %% "cats-core"                 % "2.12.0",
-    "org.typelevel"                 %% "cats-effect"               % "3.5.7",
+    "org.typelevel"                 %% "cats-effect"               % "3.6.2",
     // tapir
     "com.softwaremill.sttp.tapir"   %% "tapir-core"                % tapirVersion,
     "com.softwaremill.sttp.tapir"   %% "tapir-cats"                % tapirVersion,
