@@ -5,10 +5,10 @@ import com.example.auth.application.AuthService
 import com.example.auth.domain._
 import com.example.auth.infrastructure.codecs.AuthCodecs
 import com.example.shared.infrastructure.http.Fail
-import io.circe.generic.auto._
 import munit.Http4sHttpRoutesSuite
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec._
+import io.circe.generic.auto._
 
 class SecuredExampleApiTest extends Http4sHttpRoutesSuite with AuthCodecs {
 
@@ -28,12 +28,12 @@ class SecuredExampleApiTest extends Http4sHttpRoutesSuite with AuthCodecs {
 
   private val validToken = loginResponse.token
 
-  test(GET(uri"secured" / "example").putHeaders(Header.Raw(CIString("x-token"), validToken))).alias("SECURED ENDPOINT WITH VALID TOKEN") { response =>
+  test(GET(uri"secured" / "example").putHeaders("x-token" -> validToken)).alias("SECURED ENDPOINT WITH VALID TOKEN") { response =>
     assertEquals(response.status, Status.Ok)
     assertIOBoolean(response.as[Map[String, String]].map(_.contains("message")))
   }
 
-  test(GET(uri"secured" / "example").putHeaders(Header.Raw(CIString("x-token"), "invalid-token"))).alias("SECURED ENDPOINT WITH INVALID TOKEN") { response =>
+  test(GET(uri"secured" / "example").putHeaders("x-token" -> "invalid-token")).alias("SECURED ENDPOINT WITH INVALID TOKEN") { response =>
     assertEquals(response.status, Status.Unauthorized)
     assertIO(response.as[Fail.Unauthorized], Fail.Unauthorized("Invalid token"))
   }

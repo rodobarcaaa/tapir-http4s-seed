@@ -5,19 +5,23 @@ import com.example.auth.infrastructure.codecs.AuthCodecs
 import com.example.shared.infrastructure.http._
 import cats.effect.IO
 
-class SecuredExampleApi(service: AuthService) extends HasTapirResource with AuthCodecs with HasTokenAuth {
+class SecuredExampleApi(service: AuthService) extends HasTapirResource with AuthCodecs {
 
-  // Use the authService from HasTokenAuth trait
-  override def authService: AuthService = service
+  // Define the x-token header input
+  val xTokenHeader: EndpointInput[String] = header[String]("x-token")
 
-  // Example secured endpoint that requires x-token
-  private val securedExample = securedEndpoint
+  // Example secured endpoint that requires x-token manually
+  private val securedExample = baseEndpoint
     .get
     .in("secured")
     .in("example")
+    .in(xTokenHeader)
     .out(jsonBody[Map[String, String]])
-    .serverLogic { _ => 
-      IO.pure(Map("message" -> "This is a secured endpoint", "status" -> "success")).orError
+    .serverLogic { token => 
+      service.validateToken(token).flatMap { _ =>
+        val response = Map("message" -> "This is a secured endpoint", "status" -> "success")
+        IO.pure(response)
+      }.orError
     }
 
   // Endpoints to Expose
