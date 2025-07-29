@@ -14,6 +14,7 @@ val dependencies = {
   val prometheusVersion = "0.16.0"
   val macwireVersion    = "2.6.4"
   val slickPgVersion    = "0.21.1"
+  val jwtVersion        = "10.0.1"
 
   Seq(
     // base
@@ -54,6 +55,10 @@ val dependencies = {
     // macwire
     "com.softwaremill.macwire"      %% "util"                      % macwireVersion,
     "com.softwaremill.macwire"      %% "macros"                    % macwireVersion % Provided,
+    // jwt authentication
+    "com.github.jwt-scala"          %% "jwt-core"                  % jwtVersion,
+    "com.github.jwt-scala"          %% "jwt-circe"                 % jwtVersion,
+    "org.mindrot"                    % "jbcrypt"                   % "0.4",
     // munit
     "org.scalameta"                 %% "munit"                     % "1.0.3"        % Test,
     "org.typelevel"                 %% "munit-cats-effect"         % "2.0.0"        % Test,
