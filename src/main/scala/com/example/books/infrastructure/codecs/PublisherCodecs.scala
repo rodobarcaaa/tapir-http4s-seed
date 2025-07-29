@@ -6,7 +6,7 @@ import com.example.shared.infrastructure.circe.CommonCodecs
 trait PublisherCodecs extends CommonCodecs {
 
   import io.circe._
-  import io.circe.generic.extras.semiauto._
+  import io.circe.generic.semiauto._
 
-  implicit val PublisherCodec: Codec[Publisher] = deriveConfiguredCodec
+  implicit val PublisherCodec: Codec[Publisher] = deriveCodec
 }
