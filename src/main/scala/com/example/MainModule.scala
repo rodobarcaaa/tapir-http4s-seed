@@ -1,6 +1,7 @@
 package com.example
 
 import cats.effect.{IO, Resource}
+import com.example.auth.AuthModule
 import com.example.books.BookModule
 import com.example.global.infrastructure.http._
 import com.example.shared.infrastructure.config.ConfigModule
@@ -9,7 +10,7 @@ import io.prometheus.client.hotspot
 
 /** To Initialised resources needed by the application to start.
   */
-trait MainModule extends ConfigModule with BookModule {
+trait MainModule extends ConfigModule with BookModule with AuthModule {
   def initialize(): MainModule = {
     loadConfig()
     hotspot.DefaultExports.initialize()

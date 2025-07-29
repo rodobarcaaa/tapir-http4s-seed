@@ -15,12 +15,14 @@ class HttpApi(
     authorApi: AuthorApi,
     publisherApi: PublisherApi,
     bookApi: BookApi,
+    authApi: com.example.auth.infrastructure.http.AuthApi,
+    securedExampleApi: com.example.auth.infrastructure.http.SecuredExampleApi,
     config: HttpConfig
 ) {
 
-  private lazy val apiDocs = publisherApi.docs <+> authorApi.docs <+> bookApi.docs
+  private lazy val apiDocs = publisherApi.docs <+> authorApi.docs <+> bookApi.docs <+> authApi.docs <+> securedExampleApi.docs
 
-  private lazy val apiRoutes = metricsApi.routes <+> publisherApi.routes <+> authorApi.routes <+> bookApi.routes
+  private lazy val apiRoutes = metricsApi.routes <+> publisherApi.routes <+> authorApi.routes <+> bookApi.routes <+> authApi.routes <+> securedExampleApi.routes
 
   lazy val swaggerRoutes: ServerRoutes = Http4sServerInterpreter[IO]().toRoutes {
     SwaggerInterpreter().fromEndpoints[IO](apiDocs, "Books Store", HttpApi.version)
