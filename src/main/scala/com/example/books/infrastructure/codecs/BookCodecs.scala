@@ -6,6 +6,7 @@ import com.example.shared.infrastructure.circe.CommonCodecs
 trait BookCodecs extends CommonCodecs {
   import io.circe._
   import io.circe.generic.semiauto._
+  import sttp.tapir.Schema
 
   // Manual codecs for value classes
   implicit val BookTitleCodec: Codec[BookTitle] = Codec.from(
@@ -27,6 +28,12 @@ trait BookCodecs extends CommonCodecs {
     Decoder[String].map(BookDescription.apply),
     Encoder[String].contramap(_.value)
   )
+
+  // Tapir schemas for value classes
+  implicit val BookTitleSchema: Schema[BookTitle] = Schema.string.map((str: String) => Some(BookTitle(str)))(_.value)
+  implicit val BookIsbnSchema: Schema[BookIsbn] = Schema.string.map((str: String) => Some(BookIsbn(str)))(_.value)
+  implicit val BookYearSchema: Schema[BookYear] = Schema.schemaForInt.map((int: Int) => Some(BookYear(int)))(_.value)
+  implicit val BookDescriptionSchema: Schema[BookDescription] = Schema.string.map((str: String) => Some(BookDescription(str)))(_.value)
 
   implicit val BookCodec: Codec[Book] = deriveCodec
 }

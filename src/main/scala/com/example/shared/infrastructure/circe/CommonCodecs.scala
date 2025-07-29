@@ -6,6 +6,7 @@ import com.example.shared.domain.page.PageResponse
 trait CommonCodecs extends CirceDefaults {
   import io.circe._
   import io.circe.generic.semiauto._
+  import sttp.tapir.Schema
 
   // Manual codecs for value classes
   implicit val IdCodec: Codec[Id] = Codec.from(
@@ -22,6 +23,11 @@ trait CommonCodecs extends CirceDefaults {
     Decoder[String].map(URL.apply),
     Encoder[String].contramap(_.value)
   )
+
+  // Tapir schemas for value classes
+  implicit val IdSchema: Schema[Id] = Schema.string.map((uuid: String) => Some(Id(java.util.UUID.fromString(uuid))))(_.value.toString)
+  implicit val NameSchema: Schema[Name] = Schema.string.map((str: String) => Some(Name(str)))(_.value)
+  implicit val UrlSchema: Schema[URL] = Schema.string.map((str: String) => Some(URL(str)))(_.value)
 
   implicit def prCodec[T](implicit c: Codec[T]): Codec[PageResponse[T]] = {
     implicitly[Codec[T]]
