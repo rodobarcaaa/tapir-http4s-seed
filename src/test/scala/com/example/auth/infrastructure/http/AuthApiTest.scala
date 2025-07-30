@@ -1,10 +1,10 @@
 package com.example.auth.infrastructure.http
 
 import cats.effect.IO
+import com.example.auth.application.AuthService
 import com.example.auth.domain.{UserCreateRequest, UserLoginRequest, UserLoginResponse}
 import com.example.auth.infrastructure.codecs.AuthCodecs
-import com.example.auth.infrastructure.repository.InMemoryUserRepository
-import com.example.auth.infrastructure.service.{AuthServiceImpl, JwtServiceImpl, PasswordServiceImpl}
+import com.example.auth.infrastructure.repository.{InMemoryUserRepository, SlickJwtRepository, SlickPasswordRepository}
 import munit.CatsEffectSuite
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec._
@@ -18,9 +18,9 @@ class AuthApiTest extends CatsEffectSuite with AuthCodecs {
   def createAuthApi(): IO[AuthApi] = {
     for {
       userRepository <- InMemoryUserRepository.create()
-      passwordService = PasswordServiceImpl()
-      jwtService = JwtServiceImpl(jwtSecret)
-      authService = new AuthServiceImpl(userRepository, passwordService, jwtService)
+      passwordRepository = SlickPasswordRepository()
+      jwtRepository = SlickJwtRepository(jwtSecret)
+      authService = new AuthService(userRepository, passwordRepository, jwtRepository)
     } yield new AuthApi(authService)
   }
 
@@ -59,7 +59,7 @@ class AuthApiTest extends CatsEffectSuite with AuthCodecs {
       registerRequest = UserCreateRequest("loginuser", "login@example.com", "password123")
       regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
       _ <- authApi.routes.orNotFound(regReq)
-      
+
       loginRequest = UserLoginRequest("loginuser", "password123")
       loginReq = Request[IO](Method.POST, uri"/auth/login").withEntity(loginRequest)
       response <- authApi.routes.orNotFound(loginReq)
@@ -77,7 +77,7 @@ class AuthApiTest extends CatsEffectSuite with AuthCodecs {
       registerRequest = UserCreateRequest("wronguser", "wrong@example.com", "password123")
       regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
       _ <- authApi.routes.orNotFound(regReq)
-      
+
       wrongLoginRequest = UserLoginRequest("wronguser", "wrongpassword")
       wrongReq = Request[IO](Method.POST, uri"/auth/login").withEntity(wrongLoginRequest)
       response <- authApi.routes.orNotFound(wrongReq)
@@ -93,7 +93,7 @@ class AuthApiTest extends CatsEffectSuite with AuthCodecs {
       regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
       regResponse <- authApi.routes.orNotFound(regReq)
       regBody <- regResponse.as[UserLoginResponse]
-      
+
       validateReq = Request[IO](Method.GET, uri"/auth/validate")
         .withHeaders(Authorization(Credentials.Token(AuthScheme.Bearer, regBody.token)))
       response <- authApi.routes.orNotFound(validateReq)

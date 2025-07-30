@@ -22,7 +22,8 @@ class HttpApi(
 
   private lazy val apiDocs = publisherApi.docs <+> authorApi.docs <+> bookApi.docs <+> authApi.docs
 
-  private lazy val apiRoutes = metricsApi.routes <+> publisherApi.routes <+> authorApi.routes <+> bookApi.routes <+> authApi.routes
+  private lazy val apiRoutes =
+    metricsApi.routes <+> publisherApi.routes <+> authorApi.routes <+> bookApi.routes <+> authApi.routes
 
   lazy val swaggerRoutes: ServerRoutes = Http4sServerInterpreter[IO]().toRoutes {
     SwaggerInterpreter().fromEndpoints[IO](apiDocs, "Books Store", HttpApi.version)

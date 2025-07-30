@@ -35,7 +35,7 @@ class AuthApi(service: AuthService) extends HasTapirResource with AuthCodecs {
     .serverLogic { token =>
       service.validateToken(token).map {
         case Some(authUser) => Right(s"Token is valid for user: ${authUser.user.username}")
-        case None => Left(Fail.Unauthorized("Invalid or expired token"): Fail)
+        case None           => Left(Fail.Unauthorized("Invalid or expired token"): Fail)
       }
     }
 
