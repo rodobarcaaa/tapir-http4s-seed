@@ -26,7 +26,7 @@ class AuthApi(service: AuthService) extends HasTapirResource with AuthCodecs {
     .out(jsonBody[UserLoginResponse])
     .serverLogic { request => service.login(request).orError }
 
-  // Validate token endpoint (for testing/debugging)
+  // Validate token endpoint
   private val validate = base.get
     .in("validate")
     .in(auth.bearer[String]())

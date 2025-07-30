@@ -1,10 +1,10 @@
 package com.example.auth.infrastructure.http
 
 import cats.effect.IO
-import com.example.auth.application.{AuthServiceImpl, JwtService, PasswordService}
 import com.example.auth.domain.{UserCreateRequest, UserLoginRequest, UserLoginResponse}
 import com.example.auth.infrastructure.codecs.AuthCodecs
 import com.example.auth.infrastructure.repository.InMemoryUserRepository
+import com.example.auth.infrastructure.service.{AuthServiceImpl, JwtServiceImpl, PasswordServiceImpl}
 import munit.CatsEffectSuite
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec._
@@ -18,8 +18,8 @@ class AuthApiTest extends CatsEffectSuite with AuthCodecs {
   def createAuthApi(): IO[AuthApi] = {
     for {
       userRepository <- InMemoryUserRepository.create()
-      passwordService = PasswordService()
-      jwtService = JwtService(jwtSecret)
+      passwordService = PasswordServiceImpl()
+      jwtService = JwtServiceImpl(jwtSecret)
       authService = new AuthServiceImpl(userRepository, passwordService, jwtService)
     } yield new AuthApi(authService)
   }

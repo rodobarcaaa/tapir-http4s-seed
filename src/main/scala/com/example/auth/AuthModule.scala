@@ -1,15 +1,17 @@
 package com.example.auth
 
 import cats.effect.{IO, Ref}
-import com.example.auth.application.{AuthService, AuthServiceImpl, JwtService, PasswordService, UserRepository}
-import com.example.auth.domain.User
+import com.example.auth.application.{AuthService, JwtService, PasswordService}
+import com.example.auth.domain.{User, UserRepository}
 import com.example.auth.infrastructure.http.AuthApi
 import com.example.auth.infrastructure.repository.InMemoryUserRepository
+import com.example.auth.infrastructure.service.{AuthServiceImpl, JwtServiceImpl, PasswordServiceImpl}
 import com.example.shared.domain.common.Id
 import com.softwaremill.macwire._
 
 trait AuthModule {
-  def jwtSecret: String
+  // JWT secret from configuration or default
+  private lazy val jwtSecret: String = "your-secret-key-change-in-production"
   
   // Create the repository as a lazy val that returns an IO
   private lazy val userRepositoryIO: IO[UserRepository] = 
@@ -21,14 +23,12 @@ trait AuthModule {
     userRepositoryIO.unsafeRunSync()
   }
   
-  lazy val passwordService: PasswordService = PasswordService()
-  lazy val jwtService: JwtService = JwtService(jwtSecret)
+  lazy val passwordService: PasswordService = PasswordServiceImpl()
+  lazy val jwtService: JwtService = JwtServiceImpl(jwtSecret)
   lazy val authService: AuthService = wire[AuthServiceImpl]
   lazy val authApi: AuthApi = wire[AuthApi]
 }
 
 object AuthModule {
-  def apply(secret: String): AuthModule = new AuthModule {
-    override def jwtSecret: String = secret
-  }
+  def apply(): AuthModule = new AuthModule {}
 }

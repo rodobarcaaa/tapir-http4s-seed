@@ -2,14 +2,15 @@ package com.example.auth.application
 
 import com.example.auth.domain.{UserCreateRequest, UserLoginRequest}
 import com.example.auth.infrastructure.repository.InMemoryUserRepository
+import com.example.auth.infrastructure.service.{AuthServiceImpl, JwtServiceImpl, PasswordServiceImpl}
 import com.example.shared.infrastructure.http.Fail
 import munit.CatsEffectSuite
 
 class AuthServiceTest extends CatsEffectSuite {
 
   val jwtSecret = "test-secret-key"
-  val passwordService = PasswordService()
-  val jwtService = JwtService(jwtSecret)
+  val passwordService = PasswordServiceImpl()
+  val jwtService = JwtServiceImpl(jwtSecret)
 
   test("register should create a new user successfully") {
     for {

@@ -1,8 +1,7 @@
 package com.example.auth.infrastructure.repository
 
 import cats.effect.{IO, Ref}
-import com.example.auth.application.UserRepository
-import com.example.auth.domain.User
+import com.example.auth.domain.{User, UserRepository}
 import com.example.shared.domain.common.Id
 
 class InMemoryUserRepository(storage: Ref[IO, Map[Id, User]]) extends UserRepository {

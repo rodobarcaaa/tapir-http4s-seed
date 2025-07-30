@@ -19,9 +19,6 @@ trait MainModule extends ConfigModule with BookModule with AuthModule {
 
   lazy val dbConfig: DBConfig    = config.db
   lazy val apiConfig: HttpConfig = config.api
-  
-  // JWT secret from configuration or default
-  override lazy val jwtSecret: String = "your-secret-key-change-in-production"
 
   lazy val metricsApi: MetricsApi = wire[MetricsApi]
   lazy val httpApi: HttpApi       = wire[HttpApi]
