@@ -136,3 +136,6 @@ project/plugins/project/
 
 /.scannerwork/
 cs
+
+# Local SBT installation
+sbt/
