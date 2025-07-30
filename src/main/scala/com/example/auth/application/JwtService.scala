@@ -2,7 +2,7 @@ package com.example.auth.application
 
 import cats.effect.{Clock, IO}
 import com.example.auth.domain.{AuthenticatedUser, User, UserInfo}
-import io.circe.generic.auto._
+import com.example.auth.infrastructure.codecs.AuthCodecs
 import io.circe.parser.decode
 import io.circe.syntax._
 import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
@@ -18,7 +18,7 @@ trait JwtService {
   def getUserFromToken(token: String): IO[Option[UserInfo]]
 }
 
-class JwtServiceImpl(secret: String, tokenExpiration: FiniteDuration = 24.hours) extends JwtService {
+class JwtServiceImpl(secret: String, tokenExpiration: FiniteDuration = 24.hours) extends JwtService with AuthCodecs {
 
   private val algorithm = JwtAlgorithm.HS256
 
