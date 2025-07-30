@@ -27,7 +27,7 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           jdk-version: '21'
       - name: Scalafmt Check All
-        run: sbt +scalafmtCheckAll
+        run: sbt scalafmtCheckAll
 
   sonar:
     runs-on: ubuntu-latest
