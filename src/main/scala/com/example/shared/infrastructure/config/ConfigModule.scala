@@ -11,19 +11,19 @@ trait ConfigModule extends StrictLogging {
 
   lazy val config: Config = {
     val typesafeConfig = ConfigFactory.load()
-    
+
     val dbConfig = DBConfig(
       url = typesafeConfig.getString("db.url"),
       user = typesafeConfig.getString("db.user"),
       password = Sensitive(typesafeConfig.getString("db.password")),
       driver = typesafeConfig.getString("db.driver")
     )
-    
+
     val httpConfig = HttpConfig(
       host = typesafeConfig.getString("api.host"),
       port = typesafeConfig.getInt("api.port")
     )
-    
+
     Config(db = dbConfig, api = httpConfig)
   }
 

@@ -40,7 +40,7 @@ val dependencies = {
     "org.http4s"                    %% "http4s-blaze-server"       % "0.23.16",
     "org.http4s"                    %% "http4s-blaze-client"       % "0.23.16",
     "org.http4s"                    %% "http4s-prometheus-metrics" % "0.25.0",
-    // slick-pg - alternative approach without slick-pg for now
+    // slick
     "com.typesafe.slick"            %% "slick"                     % "3.5.2",
     "com.typesafe.slick"            %% "slick-hikaricp"            % "3.5.2",
     "org.postgresql"                 % "postgresql"                % "42.7.4",
