@@ -26,6 +26,34 @@ object User {
       updatedAt = now
     )
   }
+
+  // apply, unapply and tupled methods to use by slick table mapping
+  def apply: (UUID, String, String, String, Instant, Instant) => User = {
+    case (id, username, email, passwordHash, createdAt, updatedAt) =>
+      User(
+        Id(id),
+        username,
+        email,
+        passwordHash,
+        createdAt,
+        updatedAt
+      )
+  }
+
+  def unapply: User => Option[(UUID, String, String, String, Instant, Instant)] = { user =>
+    Some(
+      (
+        user.id.value,
+        user.username,
+        user.email,
+        user.passwordHash,
+        user.createdAt,
+        user.updatedAt
+      )
+    )
+  }
+
+  def tupled: ((UUID, String, String, String, Instant, Instant)) => User = apply.tupled
 }
 
 final case class UserCreateRequest(
