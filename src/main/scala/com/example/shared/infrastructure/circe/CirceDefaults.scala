@@ -1,8 +1,6 @@
 package com.example.shared.infrastructure.circe
 
 trait CirceDefaults {
-
-  import io.circe.generic.extras.Configuration
-  implicit val config: Configuration = Configuration.default
-
+  // Configuration is no longer needed with standard circe-generic
+  // The functionality from circe-generic-extras has been integrated into circe-generic
 }

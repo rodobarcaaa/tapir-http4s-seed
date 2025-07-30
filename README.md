@@ -25,7 +25,7 @@ sh recreate-db
 
 - Run all tests: `sbt test`
 - Run all tests with coverage check: `sbt tcoverage`
-- Run all tests with coverage check and formatting: `sbt +scalafmtAll tcoverage`
+- Run all tests with coverage check and formatting: `sbt scalafmtAll tcoverage`
 
 Also, you can run only one suite like this
 
