@@ -6,7 +6,7 @@ import com.example.books.domain.book.BookMother
 import com.example.books.infrastructure.codecs.BookCodecs
 import com.example.books.infrastructure.helpers._
 import com.example.shared.infrastructure.http.HasHttp4sRoutesSuite
-import io.circe.generic.auto._
+
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec._
 
@@ -57,6 +57,16 @@ class RoleBasedAuthorizationTest extends HasHttp4sRoutesSuite with BookCodecs wi
       assertEquals(response.status, Status.Forbidden)
   }
 
+  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin READ") {
+    response =>
+      assertEquals(response.status, Status.Ok)
+  }
+
+  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer READ") {
+    response =>
+      assertEquals(response.status, Status.Ok)
+  }
+
   test(PUT(book, uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken())))
     .alias("Admin UPDATE") { response =>
       assertEquals(response.status, Status.NoContent)
@@ -76,16 +86,6 @@ class RoleBasedAuthorizationTest extends HasHttp4sRoutesSuite with BookCodecs wi
     .alias("Customer DELETE - FORBIDDEN") { response =>
       assertEquals(response.status, Status.Forbidden)
     }
-
-  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin READ") {
-    response =>
-      assertEquals(response.status, Status.Ok)
-  }
-
-  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer READ") {
-    response =>
-      assertEquals(response.status, Status.Ok)
-  }
 
   test(GET(uri"books").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin LIST") { response =>
     assertEquals(response.status, Status.Ok)

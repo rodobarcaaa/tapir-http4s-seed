@@ -20,37 +20,37 @@ class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs with AuthHelp
   val author: Author = AuthorMother.random
   val authorId: UUID = author.id.value
 
-  test(POST(author, uri"authors").withHeaders(defaultAuthHeader)).alias("CREATE") { response =>
+  test(POST(author, uri"authors").withHeaders(adminAuthHeader)).alias("CREATE") { response =>
     assertEquals(response.status, Status.Created)
   }
 
-  test(GET(uri"authors" / s"$authorId")).alias("FOUND") { response =>
+  test(GET(uri"authors" / s"$authorId").withHeaders(defaultAuthHeader)).alias("FOUND") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[Author], author)
   }
 
   lazy val notfoundId: UUID = IdMother.random.value
 
-  test(GET(uri"authors" / s"$notfoundId")).alias("NOT_FOUND") { response =>
+  test(GET(uri"authors" / s"$notfoundId").withHeaders(defaultAuthHeader)).alias("NOT_FOUND") { response =>
     assertEquals(response.status, Status.NotFound)
     assertIO(response.as[Fail.NotFound], Fail.NotFound(s"Author for id: $notfoundId Not Found"))
   }
 
-  test(GET(uri"authors")).alias("LIST COMMON") { response =>
+  test(GET(uri"authors").withHeaders(defaultAuthHeader)).alias("LIST COMMON") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[PageResponse[Author]].map(_.elements.contains(author)), true)
   }
 
-  test(GET(uri"authors".withQueryParams(Map("filter" -> author.firstName.value)))).alias("LIST WITH FILTERS") {
-    response =>
+  test(GET(uri"authors".withQueryParams(Map("filter" -> author.firstName.value))).withHeaders(defaultAuthHeader))
+    .alias("LIST WITH FILTERS") { response =>
       assertEquals(response.status, Status.Ok)
       assertIO(
         response.as[PageResponse[Author]].map(_.elements.filter(_.firstName == author.firstName).contains(author)),
         true
       )
-  }
+    }
 
-  test(GET(uri"authors?sort=lastName")).alias("LIST WITH SORT") { response =>
+  test(GET(uri"authors?sort=lastName").withHeaders(defaultAuthHeader)).alias("LIST WITH SORT") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(
       response.as[PageResponse[Author]].map(_.elements.map(_.lastName.value.toUpperCase)),
@@ -60,20 +60,20 @@ class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs with AuthHelp
 
   lazy val updatedAuthor: Author = AuthorMother.random
 
-  test(PUT(updatedAuthor, uri"authors" / s"$authorId").withHeaders(defaultAuthHeader)).alias("UPDATE") { response =>
+  test(PUT(updatedAuthor, uri"authors" / s"$authorId").withHeaders(adminAuthHeader)).alias("UPDATE") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test(GET(uri"authors" / s"$authorId")).alias("UPDATED") { response =>
+  test(GET(uri"authors" / s"$authorId").withHeaders(defaultAuthHeader)).alias("UPDATED") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[Author], updatedAuthor.copy(id = author.id))
   }
 
-  test(DELETE(uri"authors" / s"$authorId").withHeaders(defaultAuthHeader)).alias("EXISTS") { response =>
+  test(DELETE(uri"authors" / s"$authorId").withHeaders(adminAuthHeader)).alias("EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test(DELETE(uri"authors" / s"$notfoundId").withHeaders(defaultAuthHeader)).alias("NOT EXISTS") { response =>
+  test(DELETE(uri"authors" / s"$notfoundId").withHeaders(adminAuthHeader)).alias("NOT EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 

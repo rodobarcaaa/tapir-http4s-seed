@@ -23,7 +23,7 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
   val book: Book      = BookMother.random(authorId, publisherId)
   val bookId: UUID    = book.id.value
 
-  test(POST(book, uri"books").withHeaders(defaultAuthHeader)).alias("CREATE") { response =>
+  test(POST(book, uri"books").withHeaders(adminAuthHeader)).alias("CREATE") { response =>
     assertEquals(response.status, Status.Created)
   }
 
@@ -31,59 +31,61 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
     assertEquals(response.status, Status.Unauthorized)
   }
 
-  test(POST(BookMother.random(IdMother.random, publisherId), uri"books").withHeaders(defaultAuthHeader))
+  test(POST(BookMother.random(IdMother.random, publisherId), uri"books").withHeaders(adminAuthHeader))
     .alias("CONFLICT Author") { response =>
       assertEquals(response.status, Status.Conflict)
     }
 
-  test(POST(BookMother.random(authorId, IdMother.random), uri"books").withHeaders(defaultAuthHeader))
+  test(POST(BookMother.random(authorId, IdMother.random), uri"books").withHeaders(adminAuthHeader))
     .alias("CONFLICT Publisher") { response =>
       assertEquals(response.status, Status.Conflict)
     }
 
-  test(GET(uri"books" / s"$bookId")).alias("FOUND") { response =>
+  test(GET(uri"books" / s"$bookId").withHeaders(defaultAuthHeader)).alias("FOUND") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[Book], book)
   }
 
   lazy val notfoundId: UUID = IdMother.random.value
 
-  test(GET(uri"books" / s"$notfoundId")).alias("NOT_FOUND") { response =>
+  test(GET(uri"books" / s"$notfoundId").withHeaders(defaultAuthHeader)).alias("NOT_FOUND") { response =>
     assertEquals(response.status, Status.NotFound)
     assertIO(response.as[Fail.NotFound], Fail.NotFound(s"Book for id: $notfoundId Not Found"))
   }
 
-  test(GET(uri"books")).alias("LIST COMMON") { response =>
+  test(GET(uri"books").withHeaders(defaultAuthHeader)).alias("LIST COMMON") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[PageResponse[Book]].map(_.elements.contains(book)), true)
   }
 
-  test(GET(uri"books".withQueryParams(Map("filter" -> book.title.value)))).alias("LIST WITH FILTERS") { response =>
-    assertEquals(response.status, Status.Ok)
-    assertIO(
-      response.as[PageResponse[Book]].map(_.elements.filter(_.title == book.title).contains(book)),
-      true
-    )
-  }
+  test(GET(uri"books".withQueryParams(Map("filter" -> book.title.value))).withHeaders(defaultAuthHeader))
+    .alias("LIST WITH FILTERS") { response =>
+      assertEquals(response.status, Status.Ok)
+      assertIO(
+        response.as[PageResponse[Book]].map(_.elements.filter(_.title == book.title).contains(book)),
+        true
+      )
+    }
 
-  test(GET(uri"books".withQueryParams(Map("isbn" -> book.isbn.value)))).alias("LIST WITH FILTERS (isbn)") { response =>
-    assertEquals(response.status, Status.Ok)
-    assertIO(
-      response.as[PageResponse[Book]].map(_.elements.filter(_.isbn == book.isbn).contains(book)),
-      true
-    )
-  }
+  test(GET(uri"books".withQueryParams(Map("isbn" -> book.isbn.value))).withHeaders(defaultAuthHeader))
+    .alias("LIST WITH FILTERS (isbn)") { response =>
+      assertEquals(response.status, Status.Ok)
+      assertIO(
+        response.as[PageResponse[Book]].map(_.elements.filter(_.isbn == book.isbn).contains(book)),
+        true
+      )
+    }
 
-  test(GET(uri"books".withQueryParams(Map("year" -> book.year.value.toString)))).alias("LIST WITH FILTERS (year)") {
-    response =>
+  test(GET(uri"books".withQueryParams(Map("year" -> book.year.value.toString))).withHeaders(defaultAuthHeader))
+    .alias("LIST WITH FILTERS (year)") { response =>
       assertEquals(response.status, Status.Ok)
       assertIO(
         response.as[PageResponse[Book]].map(_.elements.filter(_.year == book.year).contains(book)),
         true
       )
-  }
+    }
 
-  test(GET(uri"books?sort=-isbn")).alias("LIST WITH SORT (isbn)") { response =>
+  test(GET(uri"books?sort=-isbn").withHeaders(defaultAuthHeader)).alias("LIST WITH SORT (isbn)") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(
       response.as[PageResponse[Book]].map(_.elements.map(_.isbn.value.toUpperCase)),
@@ -91,11 +93,12 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
     )
   }
 
-  test(GET(uri"books?sort=isbn,year")).alias("LIST WITH SORT (isbn and year)") { response =>
-    assertEquals(response.status, Status.Ok)
+  test(GET(uri"books?sort=isbn,year").withHeaders(defaultAuthHeader)).alias("LIST WITH SORT (isbn and year)") {
+    response =>
+      assertEquals(response.status, Status.Ok)
   }
 
-  test(GET(uri"books?sort=year")).alias("LIST WITH SORT (year)") { response =>
+  test(GET(uri"books?sort=year").withHeaders(defaultAuthHeader)).alias("LIST WITH SORT (year)") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(
       response.as[PageResponse[Book]].map(_.elements.map(_.year.value)),
@@ -105,20 +108,20 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
 
   lazy val updatedBook: Book = BookMother.random(authorId, publisherId)
 
-  test(PUT(updatedBook, uri"books" / s"$bookId").withHeaders(defaultAuthHeader)).alias("UPDATE") { response =>
+  test(PUT(updatedBook, uri"books" / s"$bookId").withHeaders(adminAuthHeader)).alias("UPDATE") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test(GET(uri"books" / s"$bookId")).alias("UPDATED") { response =>
+  test(GET(uri"books" / s"$bookId").withHeaders(defaultAuthHeader)).alias("UPDATED") { response =>
     assertEquals(response.status, Status.Ok)
     assertIO(response.as[Book], updatedBook.copy(id = book.id))
   }
 
-  test(DELETE(uri"books" / s"$bookId").withHeaders(defaultAuthHeader)).alias("EXISTS") { response =>
+  test(DELETE(uri"books" / s"$bookId").withHeaders(adminAuthHeader)).alias("EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test(DELETE(uri"books" / s"$notfoundId").withHeaders(defaultAuthHeader)).alias("NOT EXISTS") { response =>
+  test(DELETE(uri"books" / s"$notfoundId").withHeaders(adminAuthHeader)).alias("NOT EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
