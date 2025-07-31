@@ -10,8 +10,5 @@ object Role {
     case _          => None
   }
 
-  def toString(role: Role): String = role match {
-    case Admin    => "admin"
-    case Customer => "customer"
-  }
+  def toString(role: Role): String = role.toString.toLowerCase
 }
