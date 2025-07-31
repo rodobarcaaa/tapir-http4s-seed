@@ -2,6 +2,7 @@ package com.example.books.infrastructure.http
 
 import cats.effect.IO
 import com.example.auth.application.AuthService
+import com.example.auth.domain.RoleAuthorization
 import com.example.books.application.BookService
 import com.example.books.domain.book.{Book, BookFilters}
 import com.example.books.infrastructure.codecs.BookCodecs
@@ -27,8 +28,12 @@ class BookApi(service: BookService, val authService: AuthService)
     .out(statusCode(Created))
     .serverLogic { case (token: String, book: Book) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => service.create(book).orError
-        case Left(error)     => IO.pure(Left(error))
+        case Right(authUser) => 
+          RoleAuthorization.requireAdmin(authUser.user) match {
+            case Right(_) => service.create(book).orError
+            case Left(error) => IO.pure(Left(error))
+          }
+        case Left(error) => IO.pure(Left(error))
       }
     }
 
@@ -40,16 +45,26 @@ class BookApi(service: BookService, val authService: AuthService)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String, book: Book) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => service.update(Id(id), book).orError
-        case Left(error)     => IO.pure(Left(error))
+        case Right(authUser) => 
+          RoleAuthorization.requireAdmin(authUser.user) match {
+            case Right(_) => service.update(Id(id), book).orError
+            case Left(error) => IO.pure(Left(error))
+          }
+        case Left(error) => IO.pure(Left(error))
       }
     }
 
   //  Get a book by id
   private val get = base.get
     .in(pathId)
+    .in(jwtAuth)
     .out(jsonBody[Book])
-    .serverLogic { id => service.find(Id(id)).orError(s"Book for id: $id Not Found") }
+    .serverLogic { case (id: UUID, token: String) =>
+      validateJwtToken(token).flatMap {
+        case Right(authUser) => service.find(Id(id)).orError(s"Book for id: $id Not Found")
+        case Left(error) => IO.pure(Left(error))
+      }
+    }
 
   //  List books
   private val sortPageFields: EndpointInput[PageRequest] = sortPage(
@@ -67,8 +82,14 @@ class BookApi(service: BookService, val authService: AuthService)
 
   private val list = base.get
     .in(sortPageFields / filterFields)
+    .in(jwtAuth)
     .out(jsonBody[PageResponse[Book]])
-    .serverLogic { case (pr, filters) => service.list(pr, filters).orError }
+    .serverLogic { case (pr: PageRequest, filters: BookFilters, token: String) =>
+      validateJwtToken(token).flatMap {
+        case Right(authUser) => service.list(pr, filters).orError
+        case Left(error) => IO.pure(Left(error))
+      }
+    }
 
   //  Delete a book by id
   private val delete = base.delete
@@ -77,8 +98,12 @@ class BookApi(service: BookService, val authService: AuthService)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => service.delete(Id(id)).orError
-        case Left(error)     => IO.pure(Left(error))
+        case Right(authUser) => 
+          RoleAuthorization.requireAdmin(authUser.user) match {
+            case Right(_) => service.delete(Id(id)).orError
+            case Left(error) => IO.pure(Left(error))
+          }
+        case Left(error) => IO.pure(Left(error))
       }
     }
 
