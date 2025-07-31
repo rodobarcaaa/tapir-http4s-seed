@@ -13,26 +13,28 @@ import java.util.UUID
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
-class SlickJwtRepository(secret: String, tokenExpiration: FiniteDuration = 24.hours) extends JwtRepository with AuthCodecs {
+class SlickJwtRepository(secret: String, tokenExpiration: FiniteDuration = 24.hours)
+    extends JwtRepository
+    with AuthCodecs {
 
   private val algorithm = JwtAlgorithm.HS256
 
   override def generateToken(user: User): IO[String] = {
     for {
-      now <- Clock[IO].realTimeInstant
-      exp = now.plusSeconds(tokenExpiration.toSeconds)
+      now     <- Clock[IO].realTimeInstant
+      exp      = now.plusSeconds(tokenExpiration.toSeconds)
       userInfo = UserInfo.fromUser(user)
-      claim = JwtClaim(
-        content = userInfo.asJson.noSpaces,
-        issuer = Some("tapir-http4s-seed"),
-        subject = Some(user.id.value.toString),
-        audience = None,
-        expiration = Some(exp.getEpochSecond),
-        notBefore = Some(now.getEpochSecond),
-        issuedAt = Some(now.getEpochSecond),
-        jwtId = Some(UUID.randomUUID().toString)
-      )
-      token = JwtCirce.encode(claim, secret, algorithm)
+      claim    = JwtClaim(
+                   content = userInfo.asJson.noSpaces,
+                   issuer = Some("tapir-http4s-seed"),
+                   subject = Some(user.id.value.toString),
+                   audience = None,
+                   expiration = Some(exp.getEpochSecond),
+                   notBefore = Some(now.getEpochSecond),
+                   issuedAt = Some(now.getEpochSecond),
+                   jwtId = Some(UUID.randomUUID().toString)
+                 )
+      token    = JwtCirce.encode(claim, secret, algorithm)
     } yield token
   }
 
@@ -44,12 +46,12 @@ class SlickJwtRepository(secret: String, tokenExpiration: FiniteDuration = 24.ho
           if (claim.expiration.exists(_ > now)) {
             decode[UserInfo](claim.content) match {
               case Right(userInfo) => Some(AuthenticatedUser(userInfo, token))
-              case Left(_) => None
+              case Left(_)         => None
             }
           } else {
             None
           }
-        case Failure(_) => None
+        case Failure(_)     => None
       }
     }
   }
