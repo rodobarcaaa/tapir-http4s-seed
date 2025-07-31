@@ -28,12 +28,12 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .out(statusCode(Created))
     .serverLogic { case (token: String, author: Author) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => 
+        case Right(authUser) =>
           RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_) => service.create(author).orError
+            case Right(_)    => service.create(author).orError
             case Left(error) => IO.pure(Left(error))
           }
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 
@@ -45,12 +45,12 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String, author: Author) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => 
+        case Right(authUser) =>
           RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_) => service.update(Id(id), author).orError
+            case Right(_)    => service.update(Id(id), author).orError
             case Left(error) => IO.pure(Left(error))
           }
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 
@@ -62,7 +62,7 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .serverLogic { case (id: UUID, token: String) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.find(Id(id)).orError(s"Author for id: $id Not Found")
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 
@@ -76,7 +76,7 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .serverLogic { case (pr: PageRequest, filter: Option[String], token: String) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.list(pr, filter).orError
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 
@@ -87,12 +87,12 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => 
+        case Right(authUser) =>
           RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_) => service.delete(Id(id)).orError
+            case Right(_)    => service.delete(Id(id)).orError
             case Left(error) => IO.pure(Left(error))
           }
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 

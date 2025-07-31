@@ -33,7 +33,7 @@ final class AuthService(
                           case None    => IO.unit
                         }
       hashedPassword <- passwordRepository.hashPassword(request.password)
-      role           = request.role.getOrElse(Role.Customer)
+      role            = request.role.getOrElse(Role.Customer)
       user           <- IO.pure(User.create(request.username, request.email, hashedPassword, role))
       savedUser      <- userRepository.save(user)
       token          <- jwtRepository.generateToken(savedUser)

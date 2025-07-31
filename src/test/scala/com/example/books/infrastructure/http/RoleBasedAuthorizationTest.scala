@@ -28,7 +28,7 @@ class RoleBasedAuthorizationTest extends HasHttp4sRoutesSuite with BookCodecs wi
   private def createCustomerToken(): String = {
     val createRequest = UserCreateRequest(
       username = s"customer-${System.currentTimeMillis()}",
-      email = s"customer-${System.currentTimeMillis()}@example.com", 
+      email = s"customer-${System.currentTimeMillis()}@example.com",
       password = "password123",
       role = Some(Role.Customer)
     )
@@ -41,9 +41,9 @@ class RoleBasedAuthorizationTest extends HasHttp4sRoutesSuite with BookCodecs wi
   }
 
   // Test data setup
-  val authorId = createRandomAuthor
+  val authorId    = createRandomAuthor
   val publisherId = createRandomPublisher
-  val book = BookMother.random(authorId, publisherId)
+  val book        = BookMother.random(authorId, publisherId)
 
   // Test Book API endpoints
   override val routes: HttpRoutes[IO] = module.bookApi.routes
@@ -52,32 +52,39 @@ class RoleBasedAuthorizationTest extends HasHttp4sRoutesSuite with BookCodecs wi
     assertEquals(response.status, Status.Created)
   }
 
-  test(POST(book, uri"books").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer CREATE - FORBIDDEN") { response =>
-    assertEquals(response.status, Status.Forbidden)
+  test(POST(book, uri"books").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer CREATE - FORBIDDEN") {
+    response =>
+      assertEquals(response.status, Status.Forbidden)
   }
 
-  test(PUT(book, uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin UPDATE") { response =>
-    assertEquals(response.status, Status.NoContent)
+  test(PUT(book, uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken())))
+    .alias("Admin UPDATE") { response =>
+      assertEquals(response.status, Status.NoContent)
+    }
+
+  test(PUT(book, uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken())))
+    .alias("Customer UPDATE - FORBIDDEN") { response =>
+      assertEquals(response.status, Status.Forbidden)
+    }
+
+  test(DELETE(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin DELETE") {
+    response =>
+      assertEquals(response.status, Status.NoContent)
   }
 
-  test(PUT(book, uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer UPDATE - FORBIDDEN") { response =>
-    assertEquals(response.status, Status.Forbidden)
+  test(DELETE(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken())))
+    .alias("Customer DELETE - FORBIDDEN") { response =>
+      assertEquals(response.status, Status.Forbidden)
+    }
+
+  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin READ") {
+    response =>
+      assertEquals(response.status, Status.Ok)
   }
 
-  test(DELETE(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin DELETE") { response =>
-    assertEquals(response.status, Status.NoContent)
-  }
-
-  test(DELETE(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer DELETE - FORBIDDEN") { response =>
-    assertEquals(response.status, Status.Forbidden)
-  }
-
-  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin READ") { response =>
-    assertEquals(response.status, Status.Ok)
-  }
-
-  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer READ") { response =>
-    assertEquals(response.status, Status.Ok)
+  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer READ") {
+    response =>
+      assertEquals(response.status, Status.Ok)
   }
 
   test(GET(uri"books").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin LIST") { response =>

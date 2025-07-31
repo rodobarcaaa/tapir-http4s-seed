@@ -28,12 +28,12 @@ class BookApi(service: BookService, val authService: AuthService)
     .out(statusCode(Created))
     .serverLogic { case (token: String, book: Book) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => 
+        case Right(authUser) =>
           RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_) => service.create(book).orError
+            case Right(_)    => service.create(book).orError
             case Left(error) => IO.pure(Left(error))
           }
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 
@@ -45,12 +45,12 @@ class BookApi(service: BookService, val authService: AuthService)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String, book: Book) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => 
+        case Right(authUser) =>
           RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_) => service.update(Id(id), book).orError
+            case Right(_)    => service.update(Id(id), book).orError
             case Left(error) => IO.pure(Left(error))
           }
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 
@@ -62,7 +62,7 @@ class BookApi(service: BookService, val authService: AuthService)
     .serverLogic { case (id: UUID, token: String) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.find(Id(id)).orError(s"Book for id: $id Not Found")
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 
@@ -87,7 +87,7 @@ class BookApi(service: BookService, val authService: AuthService)
     .serverLogic { case (pr: PageRequest, filters: BookFilters, token: String) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.list(pr, filters).orError
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 
@@ -98,12 +98,12 @@ class BookApi(service: BookService, val authService: AuthService)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String) =>
       validateJwtToken(token).flatMap {
-        case Right(authUser) => 
+        case Right(authUser) =>
           RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_) => service.delete(Id(id)).orError
+            case Right(_)    => service.delete(Id(id)).orError
             case Left(error) => IO.pure(Left(error))
           }
-        case Left(error) => IO.pure(Left(error))
+        case Left(error)     => IO.pure(Left(error))
       }
     }
 

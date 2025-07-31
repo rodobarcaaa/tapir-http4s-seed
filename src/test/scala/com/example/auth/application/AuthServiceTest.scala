@@ -118,7 +118,12 @@ class AuthServiceTest extends CatsEffectSuite {
   test("login should include role in response") {
     val uniqueUsername  = s"testuser-${AlphaNumericMother.random(8)}"
     val registerRequest =
-      UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123", Some(Role.Admin))
+      UserCreateRequest(
+        uniqueUsername,
+        s"test-${AlphaNumericMother.random(8)}@example.com",
+        "password123",
+        Some(Role.Admin)
+      )
     val loginRequest    = UserLoginRequest(uniqueUsername, "password123")
     for {
       _        <- authService.register(registerRequest)
@@ -133,7 +138,12 @@ class AuthServiceTest extends CatsEffectSuite {
   test("validateToken should include role in authenticated user") {
     val uniqueUsername  = s"testuser-${AlphaNumericMother.random(8)}"
     val registerRequest =
-      UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123", Some(Role.Admin))
+      UserCreateRequest(
+        uniqueUsername,
+        s"test-${AlphaNumericMother.random(8)}@example.com",
+        "password123",
+        Some(Role.Admin)
+      )
     for {
       loginResponse    <- authService.register(registerRequest)
       validationResult <- authService.validateToken(loginResponse.token)

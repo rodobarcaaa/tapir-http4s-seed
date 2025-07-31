@@ -7,7 +7,7 @@ class RoleTest extends FunSuite {
   test("Role.fromString should parse valid roles") {
     assertEquals(Role.fromString("admin"), Some(Role.Admin))
     assertEquals(Role.fromString("customer"), Some(Role.Customer))
-    assertEquals(Role.fromString("ADMIN"), Some(Role.Admin)) // case insensitive
+    assertEquals(Role.fromString("ADMIN"), Some(Role.Admin))       // case insensitive
     assertEquals(Role.fromString("CUSTOMER"), Some(Role.Customer)) // case insensitive
     assertEquals(Role.fromString("invalid"), None)
   }
@@ -28,7 +28,7 @@ class RoleTest extends FunSuite {
   }
 
   test("UserInfo.fromUser should include role") {
-    val user = User.create("testuser", "test@example.com", "hashedpass", Role.Admin)
+    val user     = User.create("testuser", "test@example.com", "hashedpass", Role.Admin)
     val userInfo = UserInfo.fromUser(user)
     assertEquals(userInfo.role, Role.Admin)
   }
