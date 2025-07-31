@@ -1,6 +1,5 @@
 package com.example.books.infrastructure.http
 
-import cats.effect.IO
 import com.example.auth.application.AuthService
 import com.example.books.application.AuthorService
 import com.example.books.domain.author.Author
@@ -26,9 +25,8 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .in(jsonBody[Author])
     .out(statusCode(Created))
     .serverLogic { case (token: String, author: Author) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.create(author).orError
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.create(author).orError
       }
     }
 
@@ -39,25 +37,34 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .in(jsonBody[Author])
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String, author: Author) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.update(Id(id), author).orError
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.update(Id(id), author).orError
       }
     }
 
   //  Get a author by id
   private val get = base.get
     .in(pathId)
+    .in(jwtAuth)
     .out(jsonBody[Author])
-    .serverLogic { id => service.find(Id(id)).orError(s"Author for id: $id Not Found") }
+    .serverLogic { case (id: UUID, token: String) =>
+      withAuth(token) {
+        service.find(Id(id)).orError(s"Author for id: $id Not Found")
+      }
+    }
 
   //  List authors
   private val sortPageFields: EndpointInput[PageRequest] = sortPage(Seq("firstName", "lastName"))
 
   private val list = base.get
     .in(sortPageFields / filter)
+    .in(jwtAuth)
     .out(jsonBody[PageResponse[Author]])
-    .serverLogic { case (pr, filter) => service.list(pr, filter).orError }
+    .serverLogic { case (pr: PageRequest, filter: Option[String], token: String) =>
+      withAuth(token) {
+        service.list(pr, filter).orError
+      }
+    }
 
   //  Delete a author by id
   private val delete = base.delete
@@ -65,9 +72,8 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .in(jwtAuth)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.delete(Id(id)).orError
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.delete(Id(id)).orError
       }
     }
 

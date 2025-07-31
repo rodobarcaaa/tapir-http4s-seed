@@ -7,6 +7,11 @@ trait AuthCodecs extends CommonCodecs {
   import io.circe._
   import io.circe.generic.semiauto._
 
+  implicit val RoleCodec: Codec[Role] = Codec.from(
+    Decoder[String].emap(s => Role.fromString(s).toRight(s"Invalid role: $s")),
+    Encoder[String].contramap(Role.toString)
+  )
+
   implicit val UserCodec: Codec[User]                           = deriveCodec
   implicit val AuthTokenCodec: Codec[AuthToken]                 = deriveCodec
   implicit val UserCreateRequestCodec: Codec[UserCreateRequest] = deriveCodec

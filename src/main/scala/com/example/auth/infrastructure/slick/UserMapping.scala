@@ -17,10 +17,11 @@ trait UserMapping {
     def username     = column[String]("username", O.Length(255), O.Unique)
     def email        = column[String]("email", O.Length(255), O.Unique)
     def passwordHash = column[String]("password_hash")
+    def role         = column[String]("role", O.Length(50))
     def createdAt    = column[Instant]("created_at")
     def updatedAt    = column[Instant]("updated_at")
 
-    def * = (id, username, email, passwordHash, createdAt, updatedAt) <> (User.tupled, User.unapply)
+    def * = (id, username, email, passwordHash, role, createdAt, updatedAt) <> (User.tupled, User.unapply)
   }
 
   val Users = TableQuery[UserTable]
