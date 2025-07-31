@@ -4,6 +4,7 @@ import cats.effect.IO
 import com.example.MainModule
 import com.example.auth.domain.{UserCreateRequest, UserLoginRequest}
 import com.example.global.infrastructure.slick.Fly4sModule
+import com.example.shared.domain.shared.AlphaNumericMother
 import com.example.shared.infrastructure.http.Fail
 import munit.CatsEffectSuite
 
@@ -18,19 +19,22 @@ class AuthServiceTest extends CatsEffectSuite {
   private lazy val authService = module.authService
 
   test("register should create a new user successfully") {
-    val request = UserCreateRequest("testuser1", "test1@example.com", "password123")
+    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
+    val uniqueEmail = s"test-${AlphaNumericMother.random(8)}@example.com"
+    val request = UserCreateRequest(uniqueUsername, uniqueEmail, "password123")
     for {
       response <- authService.register(request)
     } yield {
-      assertEquals(response.user.username, "testuser1")
-      assertEquals(response.user.email, "test1@example.com")
+      assertEquals(response.user.username, uniqueUsername)
+      assertEquals(response.user.email, uniqueEmail)
       assert(response.token.nonEmpty)
     }
   }
 
   test("register should fail with existing username") {
-    val request          = UserCreateRequest("testuser2", "test2@example.com", "password123")
-    val duplicateRequest = UserCreateRequest("testuser2", "different2@example.com", "password123")
+    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
+    val request          = UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val duplicateRequest = UserCreateRequest(uniqueUsername, s"different-${AlphaNumericMother.random(8)}@example.com", "password123")
     for {
       _      <- authService.register(request)
       result <- authService.register(duplicateRequest).attempt
@@ -43,20 +47,22 @@ class AuthServiceTest extends CatsEffectSuite {
   }
 
   test("login should succeed with correct credentials") {
-    val registerRequest = UserCreateRequest("testuser3", "test3@example.com", "password123")
-    val loginRequest    = UserLoginRequest("testuser3", "password123")
+    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
+    val registerRequest = UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val loginRequest    = UserLoginRequest(uniqueUsername, "password123")
     for {
       _        <- authService.register(registerRequest)
       response <- authService.login(loginRequest)
     } yield {
-      assertEquals(response.user.username, "testuser3")
+      assertEquals(response.user.username, uniqueUsername)
       assert(response.token.nonEmpty)
     }
   }
 
   test("login should fail with incorrect password") {
-    val registerRequest = UserCreateRequest("testuser4", "test4@example.com", "password123")
-    val loginRequest    = UserLoginRequest("testuser4", "wrongpassword")
+    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
+    val registerRequest = UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val loginRequest    = UserLoginRequest(uniqueUsername, "wrongpassword")
     for {
       _      <- authService.register(registerRequest)
       result <- authService.login(loginRequest).attempt
@@ -69,14 +75,15 @@ class AuthServiceTest extends CatsEffectSuite {
   }
 
   test("validateToken should validate a valid token") {
-    val registerRequest = UserCreateRequest("testuser5", "test5@example.com", "password123")
+    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
+    val registerRequest = UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
     for {
       loginResponse    <- authService.register(registerRequest)
       validationResult <- authService.validateToken(loginResponse.token)
     } yield {
       assert(validationResult.isDefined)
       validationResult.foreach { authUser =>
-        assertEquals(authUser.user.username, "testuser5")
+        assertEquals(authUser.user.username, uniqueUsername)
       }
     }
   }

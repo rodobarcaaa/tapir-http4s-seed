@@ -1,6 +1,7 @@
 package com.example.books.infrastructure.helpers
 
 import com.example.auth.domain.{UserCreateRequest, UserLoginResponse}
+import com.example.shared.domain.shared.AlphaNumericMother
 import com.example.shared.infrastructure.http.HasHttp4sRoutesSuite
 import org.http4s.headers.Authorization
 import org.http4s.{AuthScheme, Credentials, Header}
@@ -12,8 +13,8 @@ trait AuthHelper {
 
   // Create a test user and return JWT token
   def createTestUserAndGetToken(
-      username: String = "testuser",
-      email: String = "test@example.com",
+      username: String = s"testuser-${AlphaNumericMother.random(8)}",
+      email: String = s"test-${AlphaNumericMother.random(8)}@example.com",
       password: String = "password123"
   ): String = {
     val createRequest = UserCreateRequest(username, email, password)
