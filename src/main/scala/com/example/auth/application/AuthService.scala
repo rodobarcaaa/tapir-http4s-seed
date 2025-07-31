@@ -3,6 +3,7 @@ package com.example.auth.application
 import cats.effect.IO
 import com.example.auth.domain.{
   AuthenticatedUser,
+  Role,
   User,
   UserCreateRequest,
   UserInfo,
@@ -32,7 +33,8 @@ final class AuthService(
                           case None    => IO.unit
                         }
       hashedPassword <- passwordRepository.hashPassword(request.password)
-      user           <- IO.pure(User.create(request.username, request.email, hashedPassword))
+      role           = request.role.getOrElse(Role.Customer)
+      user           <- IO.pure(User.create(request.username, request.email, hashedPassword, role))
       savedUser      <- userRepository.save(user)
       token          <- jwtRepository.generateToken(savedUser)
       userInfo        = UserInfo.fromUser(savedUser)

@@ -90,6 +90,7 @@ lazy val root = (project in file("."))
       "-feature",                      // Emit warning and location for usages of features that should be imported explicitly.
       "-unchecked",                    // Enable additional warnings where generated code depends on assumptions.
       "-deprecation",                  // Emit warning and location for usages of deprecated APIs.
+      "-Xmax-inlines:64",              // Increase max inlines for complex derivation
       // ********** -language: Enable or disable language features *****************
       "-language:dynamics",            // Allow direct or indirect subclasses of scala.Dynamic
       "-language:postfixOps",          // Allow postfix operator notation, such as 1 to 10 toList (not recommended)
