@@ -1,19 +1,23 @@
 package com.example.books.infrastructure.helpers
 
-import com.example.auth.domain.{UserCreateRequest, UserLoginRequest, UserLoginResponse}
+import com.example.auth.domain.{UserCreateRequest, UserLoginRequest}
 import com.example.shared.domain.shared.AlphaNumericMother
 import com.example.shared.infrastructure.http.HasHttp4sRoutesSuite
 import org.http4s.headers.Authorization
 import org.http4s.{AuthScheme, Credentials, Header}
 
-object AuthHelper {
+trait AuthHelper {
+  self: HasHttp4sRoutesSuite =>
+
+  private lazy val authService = module.authService
+
   // Global singleton test user - created once for all tests
   private lazy val globalTestUsername = s"global-testuser-${AlphaNumericMother.random(12)}"
   private lazy val globalTestEmail    = s"global-test-${AlphaNumericMother.random(12)}@example.com"
   private val globalTestPassword      = "password123"
 
   // Synchronized method to ensure only one thread creates the test user
-  def getOrCreateGlobalTestToken(authService: com.example.auth.application.AuthService): String = synchronized {
+  private def getOrCreateGlobalTestToken(): String = synchronized {
     try {
       val createRequest = UserCreateRequest(globalTestUsername, globalTestEmail, globalTestPassword)
       val response      = authService.register(createRequest).unsafeRunSync()
@@ -26,12 +30,6 @@ object AuthHelper {
         response.token
     }
   }
-}
-
-trait AuthHelper {
-  self: HasHttp4sRoutesSuite =>
-
-  private lazy val authService = module.authService
 
   // Create a test user and return JWT token (for specific test cases)
   def createTestUserAndGetToken(
@@ -49,6 +47,6 @@ trait AuthHelper {
     Authorization(Credentials.Token(AuthScheme.Bearer, token)).toRaw1
 
   // Use the global singleton test token to avoid conflicts
-  lazy val defaultTestToken: String      = AuthHelper.getOrCreateGlobalTestToken(authService)
+  lazy val defaultTestToken: String      = getOrCreateGlobalTestToken()
   lazy val defaultAuthHeader: Header.Raw = jwtAuthHeader(defaultTestToken)
 }

@@ -4,7 +4,7 @@ import cats.effect.IO
 import com.example.auth.domain.{UserCreateRequest, UserLoginRequest, UserLoginResponse}
 import com.example.auth.infrastructure.codecs.AuthCodecs
 import com.example.shared.domain.shared.AlphaNumericMother
-import com.example.shared.infrastructure.http.{Fail, HasHttp4sRoutesSuite}
+import com.example.shared.infrastructure.http.HasHttp4sRoutesSuite
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec._
 import org.http4s.headers.Authorization
@@ -15,8 +15,8 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
 
   test("POST /auth/register should create a new user") {
     val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
-    val uniqueEmail = s"test-${AlphaNumericMother.random(8)}@example.com"
-    val request = Request[IO](Method.POST, uri"/auth/register")
+    val uniqueEmail    = s"test-${AlphaNumericMother.random(8)}@example.com"
+    val request        = Request[IO](Method.POST, uri"/auth/register")
       .withEntity(UserCreateRequest(uniqueUsername, uniqueEmail, "password123"))
 
     for {
@@ -31,8 +31,9 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
   }
 
   test("POST /auth/register should fail with duplicate username") {
-    val uniqueUsername = s"duplicateuser-${AlphaNumericMother.random(8)}"
-    val registerRequest = UserCreateRequest(uniqueUsername, s"duplicate-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val uniqueUsername  = s"duplicateuser-${AlphaNumericMother.random(8)}"
+    val registerRequest =
+      UserCreateRequest(uniqueUsername, s"duplicate-${AlphaNumericMother.random(8)}@example.com", "password123")
     val request1        = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
     val request2        = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
 
@@ -45,8 +46,9 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
   }
 
   test("POST /auth/login should authenticate user") {
-    val uniqueUsername = s"loginuser-${AlphaNumericMother.random(8)}"
-    val registerRequest = UserCreateRequest(uniqueUsername, s"login-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val uniqueUsername  = s"loginuser-${AlphaNumericMother.random(8)}"
+    val registerRequest =
+      UserCreateRequest(uniqueUsername, s"login-${AlphaNumericMother.random(8)}@example.com", "password123")
     val regReq          = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
     val loginRequest    = UserLoginRequest(uniqueUsername, "password123")
     val loginReq        = Request[IO](Method.POST, uri"/auth/login").withEntity(loginRequest)
@@ -63,8 +65,9 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
   }
 
   test("POST /auth/login should fail with wrong credentials") {
-    val uniqueUsername = s"wronguser-${AlphaNumericMother.random(8)}"
-    val registerRequest   = UserCreateRequest(uniqueUsername, s"wrong-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val uniqueUsername    = s"wronguser-${AlphaNumericMother.random(8)}"
+    val registerRequest   =
+      UserCreateRequest(uniqueUsername, s"wrong-${AlphaNumericMother.random(8)}@example.com", "password123")
     val regReq            = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
     val wrongLoginRequest = UserLoginRequest(uniqueUsername, "wrongpassword")
     val wrongReq          = Request[IO](Method.POST, uri"/auth/login").withEntity(wrongLoginRequest)
@@ -78,8 +81,9 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
   }
 
   test("GET /auth/validate should validate token") {
-    val uniqueUsername = s"validateuser-${AlphaNumericMother.random(8)}"
-    val registerRequest = UserCreateRequest(uniqueUsername, s"validate-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val uniqueUsername  = s"validateuser-${AlphaNumericMother.random(8)}"
+    val registerRequest =
+      UserCreateRequest(uniqueUsername, s"validate-${AlphaNumericMother.random(8)}@example.com", "password123")
     val regReq          = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
 
     for {

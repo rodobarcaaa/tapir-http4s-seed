@@ -20,8 +20,8 @@ class AuthServiceTest extends CatsEffectSuite {
 
   test("register should create a new user successfully") {
     val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
-    val uniqueEmail = s"test-${AlphaNumericMother.random(8)}@example.com"
-    val request = UserCreateRequest(uniqueUsername, uniqueEmail, "password123")
+    val uniqueEmail    = s"test-${AlphaNumericMother.random(8)}@example.com"
+    val request        = UserCreateRequest(uniqueUsername, uniqueEmail, "password123")
     for {
       response <- authService.register(request)
     } yield {
@@ -32,9 +32,10 @@ class AuthServiceTest extends CatsEffectSuite {
   }
 
   test("register should fail with existing username") {
-    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
+    val uniqueUsername   = s"testuser-${AlphaNumericMother.random(8)}"
     val request          = UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
-    val duplicateRequest = UserCreateRequest(uniqueUsername, s"different-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val duplicateRequest =
+      UserCreateRequest(uniqueUsername, s"different-${AlphaNumericMother.random(8)}@example.com", "password123")
     for {
       _      <- authService.register(request)
       result <- authService.register(duplicateRequest).attempt
@@ -47,8 +48,9 @@ class AuthServiceTest extends CatsEffectSuite {
   }
 
   test("login should succeed with correct credentials") {
-    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
-    val registerRequest = UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val uniqueUsername  = s"testuser-${AlphaNumericMother.random(8)}"
+    val registerRequest =
+      UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
     val loginRequest    = UserLoginRequest(uniqueUsername, "password123")
     for {
       _        <- authService.register(registerRequest)
@@ -60,8 +62,9 @@ class AuthServiceTest extends CatsEffectSuite {
   }
 
   test("login should fail with incorrect password") {
-    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
-    val registerRequest = UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val uniqueUsername  = s"testuser-${AlphaNumericMother.random(8)}"
+    val registerRequest =
+      UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
     val loginRequest    = UserLoginRequest(uniqueUsername, "wrongpassword")
     for {
       _      <- authService.register(registerRequest)
@@ -75,8 +78,9 @@ class AuthServiceTest extends CatsEffectSuite {
   }
 
   test("validateToken should validate a valid token") {
-    val uniqueUsername = s"testuser-${AlphaNumericMother.random(8)}"
-    val registerRequest = UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
+    val uniqueUsername  = s"testuser-${AlphaNumericMother.random(8)}"
+    val registerRequest =
+      UserCreateRequest(uniqueUsername, s"test-${AlphaNumericMother.random(8)}@example.com", "password123")
     for {
       loginResponse    <- authService.register(registerRequest)
       validationResult <- authService.validateToken(loginResponse.token)
