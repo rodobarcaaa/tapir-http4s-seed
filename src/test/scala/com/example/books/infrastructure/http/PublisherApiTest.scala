@@ -3,6 +3,7 @@ package com.example.books.infrastructure.http
 import cats.effect.IO
 import com.example.books.domain.publisher._
 import com.example.books.infrastructure.codecs.PublisherCodecs
+import com.example.books.infrastructure.helpers.AuthHelper
 import com.example.shared.domain.page.PageResponse
 import com.example.shared.domain.shared.IdMother
 import com.example.shared.infrastructure.http.{Fail, HasHttp4sRoutesSuite}
@@ -12,14 +13,14 @@ import org.http4s.circe.CirceEntityCodec._
 
 import java.util.UUID
 
-class PublisherApiTest extends HasHttp4sRoutesSuite with PublisherCodecs {
+class PublisherApiTest extends HasHttp4sRoutesSuite with PublisherCodecs with AuthHelper {
 
   override val routes: HttpRoutes[IO] = module.publisherApi.routes
 
   val publisher: Publisher = PublisherMother.random
   val publisherId: UUID    = publisher.id.value
 
-  test(POST(publisher, uri"publishers")).alias("CREATE") { response =>
+  test(POST(publisher, uri"publishers").withHeaders(defaultAuthHeader)).alias("CREATE") { response =>
     assertEquals(response.status, Status.Created)
   }
 
@@ -59,8 +60,9 @@ class PublisherApiTest extends HasHttp4sRoutesSuite with PublisherCodecs {
 
   lazy val updatedPublisher: Publisher = PublisherMother.random
 
-  test(PUT(updatedPublisher, uri"publishers" / s"$publisherId")).alias("UPDATE") { response =>
-    assertEquals(response.status, Status.NoContent)
+  test(PUT(updatedPublisher, uri"publishers" / s"$publisherId").withHeaders(defaultAuthHeader)).alias("UPDATE") {
+    response =>
+      assertEquals(response.status, Status.NoContent)
   }
 
   test(GET(uri"publishers" / s"$publisherId")).alias("UPDATED") { response =>
@@ -68,11 +70,11 @@ class PublisherApiTest extends HasHttp4sRoutesSuite with PublisherCodecs {
     assertIO(response.as[Publisher], updatedPublisher.copy(id = publisher.id))
   }
 
-  test(DELETE(uri"publishers" / s"$publisherId")).alias("EXISTS") { response =>
+  test(DELETE(uri"publishers" / s"$publisherId").withHeaders(defaultAuthHeader)).alias("EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test(DELETE(uri"publishers" / s"$notfoundId")).alias("NOT EXISTS") { response =>
+  test(DELETE(uri"publishers" / s"$notfoundId").withHeaders(defaultAuthHeader)).alias("NOT EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 

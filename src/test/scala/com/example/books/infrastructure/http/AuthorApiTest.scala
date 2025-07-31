@@ -3,6 +3,7 @@ package com.example.books.infrastructure.http
 import cats.effect.IO
 import com.example.books.domain.author._
 import com.example.books.infrastructure.codecs.AuthorCodecs
+import com.example.books.infrastructure.helpers.AuthHelper
 import com.example.shared.domain.page.PageResponse
 import com.example.shared.domain.shared.IdMother
 import com.example.shared.infrastructure.http.{Fail, HasHttp4sRoutesSuite}
@@ -12,14 +13,14 @@ import org.http4s.circe.CirceEntityCodec._
 
 import java.util.UUID
 
-class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs {
+class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs with AuthHelper {
 
   override val routes: HttpRoutes[IO] = module.authorApi.routes
 
   val author: Author = AuthorMother.random
   val authorId: UUID = author.id.value
 
-  test(POST(author, uri"authors")).alias("CREATE") { response =>
+  test(POST(author, uri"authors").withHeaders(defaultAuthHeader)).alias("CREATE") { response =>
     assertEquals(response.status, Status.Created)
   }
 
@@ -59,7 +60,7 @@ class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs {
 
   lazy val updatedAuthor: Author = AuthorMother.random
 
-  test(PUT(updatedAuthor, uri"authors" / s"$authorId")).alias("UPDATE") { response =>
+  test(PUT(updatedAuthor, uri"authors" / s"$authorId").withHeaders(defaultAuthHeader)).alias("UPDATE") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
@@ -68,11 +69,11 @@ class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs {
     assertIO(response.as[Author], updatedAuthor.copy(id = author.id))
   }
 
-  test(DELETE(uri"authors" / s"$authorId")).alias("EXISTS") { response =>
+  test(DELETE(uri"authors" / s"$authorId").withHeaders(defaultAuthHeader)).alias("EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test(DELETE(uri"authors" / s"$notfoundId")).alias("NOT EXISTS") { response =>
+  test(DELETE(uri"authors" / s"$notfoundId").withHeaders(defaultAuthHeader)).alias("NOT EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 

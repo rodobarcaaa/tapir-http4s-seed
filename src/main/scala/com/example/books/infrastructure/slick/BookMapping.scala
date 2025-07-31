@@ -34,7 +34,7 @@ trait BookMapping extends DynamicSortPage with AuthorMapping with PublisherMappi
       onDelete = ForeignKeyAction.Restrict
     )
 
-    override val select: Map[String, Rep[_]] = Map(
+    override val select: Map[String, Rep[?]] = Map(
       "id"    -> id,
       "isbn"  -> isbn,
       "title" -> title,

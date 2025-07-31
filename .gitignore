@@ -135,3 +135,7 @@ project/plugins/project/
 # End of https://www.gitignore.io/api/sbt,java,scala,intellij
 
 /.scannerwork/
+cs
+
+# Local SBT installation
+sbt/

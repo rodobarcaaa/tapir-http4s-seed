@@ -6,7 +6,7 @@ import sttp.tapir.Endpoint
 import sttp.tapir.server.ServerEndpoint.Full
 
 package object http {
-  type ServerEndpoints = List[Full[_, _, _, _, _, Any, IO]]
-  type ServerDocs      = List[Endpoint[_, _, _, _, Any]]
+  type ServerEndpoints = List[Full[?, ?, ?, ?, ?, Any, IO]]
+  type ServerDocs      = List[Endpoint[?, ?, ?, ?, Any]]
   type ServerRoutes    = HttpRoutes[IO]
 }

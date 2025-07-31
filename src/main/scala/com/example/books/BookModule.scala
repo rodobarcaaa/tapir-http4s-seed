@@ -1,5 +1,6 @@
 package com.example.books
 
+import com.example.auth.application.AuthService
 import com.example.books.application._
 import com.example.books.domain.author.AuthorRepository
 import com.example.books.domain.book.BookRepository
@@ -9,6 +10,9 @@ import com.example.books.infrastructure.repository._
 
 trait BookModule {
   import com.softwaremill.macwire._
+
+  // AuthService needs to be available from AuthModule
+  def authService: AuthService
 
   lazy val authorRepository: AuthorRepository = wire[SlickAuthorRepository]
   lazy val authorService: AuthorService       = wire[AuthorService]

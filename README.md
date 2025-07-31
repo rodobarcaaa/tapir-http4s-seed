@@ -33,6 +33,10 @@ Also, you can run only one suite like this
 sbt "to *SOMETest"
 ```
 
+## Authentication
+
+This project includes JWT-based authentication. See the [Authentication Guide](docs/AUTHENTICATION.md) for detailed usage instructions.
+
 ## Ref Documentation
 
 - Http4s: https://http4s.org/v0.23/docs/quickstart.html

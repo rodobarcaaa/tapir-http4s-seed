@@ -7,20 +7,35 @@ import scala.language.postfixOps
 val scala3Version = "3.7.0"
 
 val dependencies = {
-  val circeVersion      = "0.14.10"
-  val tapirVersion      = "1.11.9"
-  val http4sVersion     = "0.23.30"
-  val prometheusVersion = "0.16.0"
-  val macwireVersion    = "2.6.4"
-  val slickPgVersion    = "0.22.2"
+  val circeVersion              = "0.14.10"
+  val tapirVersion              = "1.11.9"
+  val http4sVersion             = "0.23.30"
+  val http4sBlazeVersion        = "0.23.16"
+  val http4sPrometheusVersion   = "0.25.0"
+  val prometheusVersion         = "0.16.0"
+  val macwireVersion            = "2.6.4"
+  val jwtVersion                = "10.0.1"
+  val configVersion             = "1.4.3"
+  val scalaLoggingVersion       = "3.9.5"
+  val logbackVersion            = "1.5.15"
+  val catsVersion               = "2.12.0"
+  val catsEffectVersion         = "3.6.3"
+  val openApiVersion            = "0.11.3"
+  val slickVersion              = "3.5.2"
+  val postgresqlVersion         = "42.7.4"
+  val fly4sVersion              = "0.0.20"
+  val bcryptVersion             = "0.4"
+  val munitVersion              = "1.0.3"
+  val munitCatsEffectVersion    = "2.0.0"
+  val http4sMunitVersion        = "0.15.1"
 
   Seq(
     // base - Use alternative to pureconfig for now
-    "com.typesafe"                  % "config"                    % "1.4.3",
-    "com.typesafe.scala-logging"    %% "scala-logging"             % "3.9.5",
-    "ch.qos.logback"                 % "logback-classic"           % "1.5.15",
-    "org.typelevel"                 %% "cats-core"                 % "2.12.0",
-    "org.typelevel"                 %% "cats-effect"               % "3.6.3",
+    "com.typesafe"                  % "config"                    % configVersion,
+    "com.typesafe.scala-logging"    %% "scala-logging"             % scalaLoggingVersion,
+    "ch.qos.logback"                 % "logback-classic"           % logbackVersion,
+    "org.typelevel"                 %% "cats-core"                 % catsVersion,
+    "org.typelevel"                 %% "cats-effect"               % catsEffectVersion,
     // tapir
     "com.softwaremill.sttp.tapir"   %% "tapir-core"                % tapirVersion,
     "com.softwaremill.sttp.tapir"   %% "tapir-cats"                % tapirVersion,
@@ -28,7 +43,7 @@ val dependencies = {
     "com.softwaremill.sttp.tapir"   %% "tapir-http4s-server"       % tapirVersion,
     "com.softwaremill.sttp.tapir"   %% "tapir-openapi-docs"        % tapirVersion,
     "com.softwaremill.sttp.tapir"   %% "tapir-swagger-ui-bundle"   % tapirVersion,
-    "com.softwaremill.sttp.apispec" %% "openapi-circe-yaml"        % "0.11.3",
+    "com.softwaremill.sttp.apispec" %% "openapi-circe-yaml"        % openApiVersion,
     // circe
     "io.circe"                      %% "circe-core"                % circeVersion,
     "io.circe"                      %% "circe-generic"             % circeVersion,
@@ -37,25 +52,29 @@ val dependencies = {
     "org.http4s"                    %% "http4s-core"               % http4sVersion,
     "org.http4s"                    %% "http4s-dsl"                % http4sVersion,
     "org.http4s"                    %% "http4s-circe"              % http4sVersion,
-    "org.http4s"                    %% "http4s-blaze-server"       % "0.23.16",
-    "org.http4s"                    %% "http4s-blaze-client"       % "0.23.16",
-    "org.http4s"                    %% "http4s-prometheus-metrics" % "0.25.0",
+    "org.http4s"                    %% "http4s-blaze-server"       % http4sBlazeVersion,
+    "org.http4s"                    %% "http4s-blaze-client"       % http4sBlazeVersion,
+    "org.http4s"                    %% "http4s-prometheus-metrics" % http4sPrometheusVersion,
     // slick
-    "com.typesafe.slick"            %% "slick"                     % "3.5.2",
-    "com.typesafe.slick"            %% "slick-hikaricp"            % "3.5.2",
-    "org.postgresql"                 % "postgresql"                % "42.7.4",
+    "com.typesafe.slick"            %% "slick"                     % slickVersion,
+    "com.typesafe.slick"            %% "slick-hikaricp"            % slickVersion,
+    "org.postgresql"                 % "postgresql"                % postgresqlVersion,
     // flyway 4 scala
-    "com.github.geirolz"            %% "fly4s-core"                % "0.0.20",
+    "com.github.geirolz"            %% "fly4s-core"                % fly4sVersion,
     // prometheus
     "io.prometheus"                  % "simpleclient"              % prometheusVersion,
     "io.prometheus"                  % "simpleclient_hotspot"      % prometheusVersion,
     // macwire
     "com.softwaremill.macwire"      %% "util"                      % macwireVersion,
     "com.softwaremill.macwire"      %% "macros"                    % macwireVersion % Provided,
+    // jwt authentication
+    "com.github.jwt-scala"          %% "jwt-core"                  % jwtVersion,
+    "com.github.jwt-scala"          %% "jwt-circe"                 % jwtVersion,
+    "org.mindrot"                    % "jbcrypt"                   % bcryptVersion,
     // munit
-    "org.scalameta"                 %% "munit"                     % "1.0.3"        % Test,
-    "org.typelevel"                 %% "munit-cats-effect"         % "2.0.0"        % Test,
-    "com.alejandrohdezma"           %% "http4s-munit"              % "0.15.1"       % Test
+    "org.scalameta"                 %% "munit"                     % munitVersion        % Test,
+    "org.typelevel"                 %% "munit-cats-effect"         % munitCatsEffectVersion        % Test,
+    "com.alejandrohdezma"           %% "http4s-munit"              % http4sMunitVersion       % Test
   )
 }
 

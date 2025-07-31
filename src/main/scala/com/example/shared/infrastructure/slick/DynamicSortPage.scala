@@ -15,9 +15,9 @@ trait DynamicSortPage {
   type ColumnOrdering = (String, Direction)
 
   trait SortColumnSelector {
-    val select: Map[String, Rep[_]]
+    val select: Map[String, Rep[?]]
 
-    def columnRep(field: String): Rep[_] = select.getOrElse(
+    def columnRep(field: String): Rep[?] = select.getOrElse(
       field,
       throw new IllegalArgumentException(s"Sort field($field) not allowed")
     )
@@ -36,8 +36,8 @@ trait DynamicSortPage {
     def dynamicSortBy(sorts: Seq[ColumnOrdering]): Query[A, B, Seq] = {
       sorts.foldRight(query) { // Fold right is reversing order
         case ((sortColumn, sortOrder), queryToSort) =>
-          val sortColumnRep: A => Rep[_]      = _.columnRep(sortColumn)
-          val sortOrderRep: Rep[_] => Ordered = ColumnOrdered(_, Ordering(sortOrder))
+          val sortColumnRep: A => Rep[?]      = _.columnRep(sortColumn)
+          val sortOrderRep: Rep[?] => Ordered = ColumnOrdered(_, Ordering(sortOrder))
           queryToSort.sortBy(sortColumnRep)(sortOrderRep)
       }
     }

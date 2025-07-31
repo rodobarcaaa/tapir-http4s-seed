@@ -14,7 +14,7 @@ import org.http4s.circe.CirceEntityCodec._
 
 import java.util.UUID
 
-class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper with PublisherHelper {
+class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper with PublisherHelper with AuthHelper {
 
   override val routes: HttpRoutes[IO] = module.bookApi.routes
 
@@ -23,17 +23,23 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
   val book: Book      = BookMother.random(authorId, publisherId)
   val bookId: UUID    = book.id.value
 
-  test(POST(book, uri"books")).alias("CREATE") { response =>
+  test(POST(book, uri"books").withHeaders(defaultAuthHeader)).alias("CREATE") { response =>
     assertEquals(response.status, Status.Created)
   }
 
-  test(POST(BookMother.random(IdMother.random, publisherId), uri"books")).alias("CONFLICT Author") { response =>
-    assertEquals(response.status, Status.Conflict)
+  test(POST(book, uri"books")).alias("CREATE UNAUTHORIZED") { response =>
+    assertEquals(response.status, Status.Unauthorized)
   }
 
-  test(POST(BookMother.random(authorId, IdMother.random), uri"books")).alias("CONFLICT Publisher") { response =>
-    assertEquals(response.status, Status.Conflict)
-  }
+  test(POST(BookMother.random(IdMother.random, publisherId), uri"books").withHeaders(defaultAuthHeader))
+    .alias("CONFLICT Author") { response =>
+      assertEquals(response.status, Status.Conflict)
+    }
+
+  test(POST(BookMother.random(authorId, IdMother.random), uri"books").withHeaders(defaultAuthHeader))
+    .alias("CONFLICT Publisher") { response =>
+      assertEquals(response.status, Status.Conflict)
+    }
 
   test(GET(uri"books" / s"$bookId")).alias("FOUND") { response =>
     assertEquals(response.status, Status.Ok)
@@ -99,7 +105,7 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
 
   lazy val updatedBook: Book = BookMother.random(authorId, publisherId)
 
-  test(PUT(updatedBook, uri"books" / s"$bookId")).alias("UPDATE") { response =>
+  test(PUT(updatedBook, uri"books" / s"$bookId").withHeaders(defaultAuthHeader)).alias("UPDATE") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
@@ -108,11 +114,11 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
     assertIO(response.as[Book], updatedBook.copy(id = book.id))
   }
 
-  test(DELETE(uri"books" / s"$bookId")).alias("EXISTS") { response =>
+  test(DELETE(uri"books" / s"$bookId").withHeaders(defaultAuthHeader)).alias("EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test(DELETE(uri"books" / s"$notfoundId")).alias("NOT EXISTS") { response =>
+  test(DELETE(uri"books" / s"$notfoundId").withHeaders(defaultAuthHeader)).alias("NOT EXISTS") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
