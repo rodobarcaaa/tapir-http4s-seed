@@ -48,80 +48,51 @@ class RoleBasedAuthorizationTest extends HasHttp4sRoutesSuite with BookCodecs wi
   // Test Book API endpoints
   override val routes: HttpRoutes[IO] = module.bookApi.routes
 
-  test("Admin should be able to create books") {
-    val adminToken = createAdminToken()
-    val response = POST(book, uri"books").withHeaders(jwtAuthHeader(adminToken)).unsafeRunSync()
+  test(POST(book, uri"books").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin CREATE") { response =>
     assertEquals(response.status, Status.Created)
   }
 
-  test("Customer should NOT be able to create books") {
-    val customerToken = createCustomerToken()
-    val response = POST(book, uri"books").withHeaders(jwtAuthHeader(customerToken)).unsafeRunSync()
+  test(POST(book, uri"books").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer CREATE - FORBIDDEN") { response =>
     assertEquals(response.status, Status.Forbidden)
   }
 
-  test("Admin should be able to update books") {
-    val adminToken = createAdminToken()
-    val bookId = book.id.value
-    val response = PUT(book, uri"books" / s"$bookId").withHeaders(jwtAuthHeader(adminToken)).unsafeRunSync()
+  test(PUT(book, uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin UPDATE") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test("Customer should NOT be able to update books") {
-    val customerToken = createCustomerToken()
-    val bookId = book.id.value
-    val response = PUT(book, uri"books" / s"$bookId").withHeaders(jwtAuthHeader(customerToken)).unsafeRunSync()
+  test(PUT(book, uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer UPDATE - FORBIDDEN") { response =>
     assertEquals(response.status, Status.Forbidden)
   }
 
-  test("Admin should be able to delete books") {
-    val adminToken = createAdminToken()
-    val bookId = book.id.value
-    val response = DELETE(uri"books" / s"$bookId").withHeaders(jwtAuthHeader(adminToken)).unsafeRunSync()
+  test(DELETE(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin DELETE") { response =>
     assertEquals(response.status, Status.NoContent)
   }
 
-  test("Customer should NOT be able to delete books") {
-    val customerToken = createCustomerToken()
-    val bookId = book.id.value
-    val response = DELETE(uri"books" / s"$bookId").withHeaders(jwtAuthHeader(customerToken)).unsafeRunSync()
+  test(DELETE(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer DELETE - FORBIDDEN") { response =>
     assertEquals(response.status, Status.Forbidden)
   }
 
-  test("Admin should be able to read books") {
-    val adminToken = createAdminToken()
-    val bookId = book.id.value
-    val response = GET(uri"books" / s"$bookId").withHeaders(jwtAuthHeader(adminToken)).unsafeRunSync()
+  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin READ") { response =>
     assertEquals(response.status, Status.Ok)
   }
 
-  test("Customer should be able to read books") {
-    val customerToken = createCustomerToken()
-    val bookId = book.id.value
-    val response = GET(uri"books" / s"$bookId").withHeaders(jwtAuthHeader(customerToken)).unsafeRunSync()
+  test(GET(uri"books" / s"${book.id.value}").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer READ") { response =>
     assertEquals(response.status, Status.Ok)
   }
 
-  test("Admin should be able to list books") {
-    val adminToken = createAdminToken()
-    val response = GET(uri"books").withHeaders(jwtAuthHeader(adminToken)).unsafeRunSync()
+  test(GET(uri"books").withHeaders(jwtAuthHeader(createAdminToken()))).alias("Admin LIST") { response =>
     assertEquals(response.status, Status.Ok)
   }
 
-  test("Customer should be able to list books") {
-    val customerToken = createCustomerToken()
-    val response = GET(uri"books").withHeaders(jwtAuthHeader(customerToken)).unsafeRunSync()
+  test(GET(uri"books").withHeaders(jwtAuthHeader(createCustomerToken()))).alias("Customer LIST") { response =>
     assertEquals(response.status, Status.Ok)
   }
 
-  test("Unauthenticated users should NOT be able to read books") {
-    val bookId = book.id.value
-    val response = GET(uri"books" / s"$bookId").unsafeRunSync()
+  test(GET(uri"books" / s"${book.id.value}")).alias("Unauthenticated READ - UNAUTHORIZED") { response =>
     assertEquals(response.status, Status.Unauthorized)
   }
 
-  test("Unauthenticated users should NOT be able to list books") {
-    val response = GET(uri"books").unsafeRunSync()
+  test(GET(uri"books")).alias("Unauthenticated LIST - UNAUTHORIZED") { response =>
     assertEquals(response.status, Status.Unauthorized)
   }
 }
