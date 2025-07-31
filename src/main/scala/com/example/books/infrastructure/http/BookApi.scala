@@ -1,5 +1,7 @@
 package com.example.books.infrastructure.http
 
+import cats.effect.IO
+import com.example.auth.application.AuthService
 import com.example.books.application.BookService
 import com.example.books.domain.book.{Book, BookFilters}
 import com.example.books.infrastructure.codecs.BookCodecs
@@ -9,23 +11,35 @@ import com.example.shared.infrastructure.http._
 
 import java.util.UUID
 
-class BookApi(service: BookService) extends HasTapirResource with BookCodecs with HasQueryFilter {
+class BookApi(service: BookService, val authService: AuthService) extends HasTapirResource with BookCodecs with HasQueryFilter with HasJwtAuth {
 
   // Init
   private val base = baseEndpoint.tag("Books").in("books")
 
   //  Create a new book
   private val post = base.post
+    .in(jwtAuth)
     .in(jsonBody[Book])
     .out(statusCode(Created))
-    .serverLogic { book => service.create(book).orError }
+    .serverLogic { case (token, book) =>
+      validateJwtToken(token).flatMap {
+        case Right(authUser) => service.create(book).orError
+        case Left(error)     => IO.pure(Left(error))
+      }
+    }
 
   //  Update a existing book
   private val put = base.put
     .in(pathId)
+    .in(jwtAuth)
     .in(jsonBody[Book])
     .out(statusCode(NoContent))
-    .serverLogic { case (id, book) => service.update(Id(id), book).orError }
+    .serverLogic { case ((id, token), book) =>
+      validateJwtToken(token).flatMap {
+        case Right(authUser) => service.update(Id(id), book).orError
+        case Left(error)     => IO.pure(Left(error))
+      }
+    }
 
   //  Get a book by id
   private val get = base.get
@@ -55,8 +69,14 @@ class BookApi(service: BookService) extends HasTapirResource with BookCodecs wit
   //  Delete a book by id
   private val delete = base.delete
     .in(pathId)
+    .in(jwtAuth)
     .out(statusCode(NoContent))
-    .serverLogic { id => service.delete(Id(id)).orError }
+    .serverLogic { case (id, token) =>
+      validateJwtToken(token).flatMap {
+        case Right(authUser) => service.delete(Id(id)).orError
+        case Left(error)     => IO.pure(Left(error))
+      }
+    }
 
   // Endpoints to Expose
   override val endpoints: ServerEndpoints = List(post, put, get, list, delete)
