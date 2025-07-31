@@ -1,8 +1,6 @@
 package com.example.books.infrastructure.http
 
-import cats.effect.IO
 import com.example.auth.application.AuthService
-import com.example.auth.domain.RoleAuthorization
 import com.example.books.application.PublisherService
 import com.example.books.domain.publisher.Publisher
 import com.example.books.infrastructure.codecs.PublisherCodecs
@@ -27,13 +25,8 @@ class PublisherApi(service: PublisherService, val authService: AuthService)
     .in(jsonBody[Publisher])
     .out(statusCode(Created))
     .serverLogic { case (token: String, publisher: Publisher) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.create(publisher).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.create(publisher).orError
       }
     }
 
@@ -44,13 +37,8 @@ class PublisherApi(service: PublisherService, val authService: AuthService)
     .in(jsonBody[Publisher])
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String, publisher: Publisher) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.update(Id(id), publisher).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.update(Id(id), publisher).orError
       }
     }
 
@@ -60,9 +48,8 @@ class PublisherApi(service: PublisherService, val authService: AuthService)
     .in(jwtAuth)
     .out(jsonBody[Publisher])
     .serverLogic { case (id: UUID, token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.find(Id(id)).orError(s"Publisher for id: $id Not Found")
-        case Left(error)     => IO.pure(Left(error))
+      withAuth(token) {
+        service.find(Id(id)).orError(s"Publisher for id: $id Not Found")
       }
     }
 
@@ -74,9 +61,8 @@ class PublisherApi(service: PublisherService, val authService: AuthService)
     .in(jwtAuth)
     .out(jsonBody[PageResponse[Publisher]])
     .serverLogic { case (pr: PageRequest, filter: Option[String], token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.list(pr, filter).orError
-        case Left(error)     => IO.pure(Left(error))
+      withAuth(token) {
+        service.list(pr, filter).orError
       }
     }
 
@@ -86,13 +72,8 @@ class PublisherApi(service: PublisherService, val authService: AuthService)
     .in(jwtAuth)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.delete(Id(id)).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.delete(Id(id)).orError
       }
     }
 

@@ -1,8 +1,6 @@
 package com.example.books.infrastructure.http
 
-import cats.effect.IO
 import com.example.auth.application.AuthService
-import com.example.auth.domain.RoleAuthorization
 import com.example.books.application.AuthorService
 import com.example.books.domain.author.Author
 import com.example.books.infrastructure.codecs.AuthorCodecs
@@ -27,13 +25,8 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .in(jsonBody[Author])
     .out(statusCode(Created))
     .serverLogic { case (token: String, author: Author) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.create(author).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.create(author).orError
       }
     }
 
@@ -44,13 +37,8 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .in(jsonBody[Author])
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String, author: Author) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.update(Id(id), author).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.update(Id(id), author).orError
       }
     }
 
@@ -60,9 +48,8 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .in(jwtAuth)
     .out(jsonBody[Author])
     .serverLogic { case (id: UUID, token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.find(Id(id)).orError(s"Author for id: $id Not Found")
-        case Left(error)     => IO.pure(Left(error))
+      withAuth(token) {
+        service.find(Id(id)).orError(s"Author for id: $id Not Found")
       }
     }
 
@@ -74,9 +61,8 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .in(jwtAuth)
     .out(jsonBody[PageResponse[Author]])
     .serverLogic { case (pr: PageRequest, filter: Option[String], token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.list(pr, filter).orError
-        case Left(error)     => IO.pure(Left(error))
+      withAuth(token) {
+        service.list(pr, filter).orError
       }
     }
 
@@ -86,13 +72,8 @@ class AuthorApi(service: AuthorService, val authService: AuthService)
     .in(jwtAuth)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.delete(Id(id)).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.delete(Id(id)).orError
       }
     }
 

@@ -1,8 +1,6 @@
 package com.example.books.infrastructure.http
 
-import cats.effect.IO
 import com.example.auth.application.AuthService
-import com.example.auth.domain.RoleAuthorization
 import com.example.books.application.BookService
 import com.example.books.domain.book.{Book, BookFilters}
 import com.example.books.infrastructure.codecs.BookCodecs
@@ -27,13 +25,8 @@ class BookApi(service: BookService, val authService: AuthService)
     .in(jsonBody[Book])
     .out(statusCode(Created))
     .serverLogic { case (token: String, book: Book) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.create(book).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.create(book).orError
       }
     }
 
@@ -44,13 +37,8 @@ class BookApi(service: BookService, val authService: AuthService)
     .in(jsonBody[Book])
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String, book: Book) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.update(Id(id), book).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.update(Id(id), book).orError
       }
     }
 
@@ -60,9 +48,8 @@ class BookApi(service: BookService, val authService: AuthService)
     .in(jwtAuth)
     .out(jsonBody[Book])
     .serverLogic { case (id: UUID, token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.find(Id(id)).orError(s"Book for id: $id Not Found")
-        case Left(error)     => IO.pure(Left(error))
+      withAuth(token) {
+        service.find(Id(id)).orError(s"Book for id: $id Not Found")
       }
     }
 
@@ -85,9 +72,8 @@ class BookApi(service: BookService, val authService: AuthService)
     .in(jwtAuth)
     .out(jsonBody[PageResponse[Book]])
     .serverLogic { case (pr: PageRequest, filters: BookFilters, token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) => service.list(pr, filters).orError
-        case Left(error)     => IO.pure(Left(error))
+      withAuth(token) {
+        service.list(pr, filters).orError
       }
     }
 
@@ -97,13 +83,8 @@ class BookApi(service: BookService, val authService: AuthService)
     .in(jwtAuth)
     .out(statusCode(NoContent))
     .serverLogic { case (id: UUID, token: String) =>
-      validateJwtToken(token).flatMap {
-        case Right(authUser) =>
-          RoleAuthorization.requireAdmin(authUser.user) match {
-            case Right(_)    => service.delete(Id(id)).orError
-            case Left(error) => IO.pure(Left(error))
-          }
-        case Left(error)     => IO.pure(Left(error))
+      withAdminAuth(token) {
+        service.delete(Id(id)).orError
       }
     }
 
