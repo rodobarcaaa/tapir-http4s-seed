@@ -13,28 +13,28 @@ trait MultiSortRepo extends DynamicSortPage {
 
   type MultiTables
 
-  implicit def select(multiTables: MultiTables, field: String): Rep[_]
+  implicit def select(multiTables: MultiTables, field: String): Rep[?]
 
   implicit class MultiSorteableQuery[A <: Any, B](query: Query[A, B, Seq]) {
 
-    def dynamicJoinSortBy(sorts: Seq[ColumnOrdering])(implicit select: (A, String) => Rep[_]): Query[A, B, Seq] = {
+    def dynamicJoinSortBy(sorts: Seq[ColumnOrdering])(implicit select: (A, String) => Rep[?]): Query[A, B, Seq] = {
       sorts.foldRight(query) { // Fold right is reversing order
         case ((sortColumn, sortOrder), queryToSort) =>
-          val sortColumnRep: A => Rep[_]      = select(_, sortColumn)
-          val sortOrderRep: Rep[_] => Ordered = ColumnOrdered(_, Ordering(sortOrder))
+          val sortColumnRep: A => Rep[?]      = select(_, sortColumn)
+          val sortOrderRep: Rep[?] => Ordered = ColumnOrdered(_, Ordering(sortOrder))
           queryToSort.sortBy(sortColumnRep)(sortOrderRep)
       }
     }
 
     def sortSlick(sort: Option[String], sortDefault: Option[String])(implicit
-        select: (A, String) => Rep[_]
+        select: (A, String) => Rep[?]
     ): Query[A, B, Seq] = {
       val sorts = extractSorts(sort.orElse(sortDefault))
       if (sorts.isEmpty) query else query.dynamicJoinSortBy(sorts)
     }
 
     def withSortPage(pr: PageRequest, sortDefault: Option[String] = Some("-id"))(implicit
-        select: (A, String) => Rep[_]
+        select: (A, String) => Rep[?]
     ): DBIOAction[PageResponse[B], NoStream, ER] = for {
       total    <- query.length.result
       elements <- sortSlick(pr.sort, sortDefault).pageSlick(pr).result

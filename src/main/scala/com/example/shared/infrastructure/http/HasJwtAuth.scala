@@ -3,7 +3,6 @@ package com.example.shared.infrastructure.http
 import cats.effect.IO
 import com.example.auth.application.AuthService
 import com.example.auth.domain.AuthenticatedUser
-import sttp.tapir.EndpointInput
 
 trait HasJwtAuth extends HasTapirResource {
 

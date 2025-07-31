@@ -15,7 +15,7 @@ class SlickBookRepository extends HasSlickPgProvider with BookRepository with Bo
 //
 //  override type MultiTables = (BookTable, PublisherTable, AuthorTable)
 //
-//  override implicit def select(multiTables: MultiTables, field: String): Rep[_] = {
+//  override implicit def select(multiTables: MultiTables, field: String): Rep[?] = {
 //    val (bookTable, publisherTable, authorTable) = multiTables
 //
 //    val columnFromBook = bookTable.select.get(field)

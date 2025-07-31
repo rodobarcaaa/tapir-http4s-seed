@@ -15,7 +15,7 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
   test("POST /auth/register should create a new user") {
     val request = Request[IO](Method.POST, uri"/auth/register")
       .withEntity(UserCreateRequest("testuser", "test@example.com", "password123"))
-    
+
     for {
       response     <- routes.orNotFound(request)
       responseBody <- response.as[UserLoginResponse]
@@ -29,9 +29,9 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
 
   test("POST /auth/register should fail with duplicate username") {
     val registerRequest = UserCreateRequest("duplicateuser", "duplicate@example.com", "password123")
-    val request1 = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-    val request2 = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-    
+    val request1        = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+    val request2        = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+
     for {
       _         <- routes.orNotFound(request1)
       response2 <- routes.orNotFound(request2)
@@ -42,10 +42,10 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
 
   test("POST /auth/login should authenticate user") {
     val registerRequest = UserCreateRequest("loginuser", "login@example.com", "password123")
-    val regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-    val loginRequest = UserLoginRequest("loginuser", "password123")
-    val loginReq = Request[IO](Method.POST, uri"/auth/login").withEntity(loginRequest)
-    
+    val regReq          = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+    val loginRequest    = UserLoginRequest("loginuser", "password123")
+    val loginReq        = Request[IO](Method.POST, uri"/auth/login").withEntity(loginRequest)
+
     for {
       _            <- routes.orNotFound(regReq)
       response     <- routes.orNotFound(loginReq)
@@ -58,11 +58,11 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
   }
 
   test("POST /auth/login should fail with wrong credentials") {
-    val registerRequest = UserCreateRequest("wronguser", "wrong@example.com", "password123")
-    val regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+    val registerRequest   = UserCreateRequest("wronguser", "wrong@example.com", "password123")
+    val regReq            = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
     val wrongLoginRequest = UserLoginRequest("wronguser", "wrongpassword")
-    val wrongReq = Request[IO](Method.POST, uri"/auth/login").withEntity(wrongLoginRequest)
-    
+    val wrongReq          = Request[IO](Method.POST, uri"/auth/login").withEntity(wrongLoginRequest)
+
     for {
       _        <- routes.orNotFound(regReq)
       response <- routes.orNotFound(wrongReq)
@@ -73,8 +73,8 @@ class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
 
   test("GET /auth/validate should validate token") {
     val registerRequest = UserCreateRequest("validateuser", "validate@example.com", "password123")
-    val regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-    
+    val regReq          = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+
     for {
       regResponse  <- routes.orNotFound(regReq)
       regBody      <- regResponse.as[UserLoginResponse]

@@ -18,7 +18,7 @@ trait PublisherMapping extends DynamicSortPage {
 
     def url = column[String]("url", O.Length(255), O.Unique)
 
-    override val select: Map[String, Rep[_]] = Map(
+    override val select: Map[String, Rep[?]] = Map(
       "id"            -> id,
       "name"          -> name,
       "publisherName" -> name,

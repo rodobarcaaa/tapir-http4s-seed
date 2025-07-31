@@ -67,7 +67,7 @@ trait HasSlickPgProvider extends MainModule {
 
   }
 
-  implicit class StreamExtensions(query: Query[_, _, Seq]) {
+  implicit class StreamExtensions(query: Query[?, ?, Seq]) {
     def resultStream[T](fetchSize: Int = 10000): DBIOAction[Any, Streaming[T], Nothing] =
       query.result
         .withStatementParameters(

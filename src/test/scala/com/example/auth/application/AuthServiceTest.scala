@@ -14,7 +14,7 @@ class AuthServiceTest extends CatsEffectSuite {
     Fly4sModule.migrateDbResource.use(_ => IO.unit).unsafeRunSync()
   }
 
-  lazy val module: MainModule = MainModule.initialize
+  lazy val module: MainModule  = MainModule.initialize
   private lazy val authService = module.authService
 
   test("register should create a new user successfully") {
@@ -29,7 +29,7 @@ class AuthServiceTest extends CatsEffectSuite {
   }
 
   test("register should fail with existing username") {
-    val request = UserCreateRequest("testuser2", "test2@example.com", "password123")
+    val request          = UserCreateRequest("testuser2", "test2@example.com", "password123")
     val duplicateRequest = UserCreateRequest("testuser2", "different2@example.com", "password123")
     for {
       _      <- authService.register(request)
@@ -44,7 +44,7 @@ class AuthServiceTest extends CatsEffectSuite {
 
   test("login should succeed with correct credentials") {
     val registerRequest = UserCreateRequest("testuser3", "test3@example.com", "password123")
-    val loginRequest = UserLoginRequest("testuser3", "password123")
+    val loginRequest    = UserLoginRequest("testuser3", "password123")
     for {
       _        <- authService.register(registerRequest)
       response <- authService.login(loginRequest)
@@ -56,7 +56,7 @@ class AuthServiceTest extends CatsEffectSuite {
 
   test("login should fail with incorrect password") {
     val registerRequest = UserCreateRequest("testuser4", "test4@example.com", "password123")
-    val loginRequest = UserLoginRequest("testuser4", "wrongpassword")
+    val loginRequest    = UserLoginRequest("testuser4", "wrongpassword")
     for {
       _      <- authService.register(registerRequest)
       result <- authService.login(loginRequest).attempt

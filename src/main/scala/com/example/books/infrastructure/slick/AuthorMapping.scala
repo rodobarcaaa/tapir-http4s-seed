@@ -20,7 +20,7 @@ trait AuthorMapping extends DynamicSortPage {
 
     def idx = index("idx_authors_unique_names", (firstName, lastName), unique = true)
 
-    override val select: Map[String, Rep[_]] = Map(
+    override val select: Map[String, Rep[?]] = Map(
       "id"         -> id,
       "firstName"  -> firstName,
       "lastName"   -> lastName,
