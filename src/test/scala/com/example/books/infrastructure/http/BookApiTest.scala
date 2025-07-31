@@ -31,13 +31,15 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
     assertEquals(response.status, Status.Unauthorized)
   }
 
-  test(POST(BookMother.random(IdMother.random, publisherId), uri"books").withHeaders(defaultAuthHeader)).alias("CONFLICT Author") { response =>
-    assertEquals(response.status, Status.Conflict)
-  }
+  test(POST(BookMother.random(IdMother.random, publisherId), uri"books").withHeaders(defaultAuthHeader))
+    .alias("CONFLICT Author") { response =>
+      assertEquals(response.status, Status.Conflict)
+    }
 
-  test(POST(BookMother.random(authorId, IdMother.random), uri"books").withHeaders(defaultAuthHeader)).alias("CONFLICT Publisher") { response =>
-    assertEquals(response.status, Status.Conflict)
-  }
+  test(POST(BookMother.random(authorId, IdMother.random), uri"books").withHeaders(defaultAuthHeader))
+    .alias("CONFLICT Publisher") { response =>
+      assertEquals(response.status, Status.Conflict)
+    }
 
   test(GET(uri"books" / s"$bookId")).alias("FOUND") { response =>
     assertEquals(response.status, Status.Ok)

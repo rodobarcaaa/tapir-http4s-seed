@@ -11,7 +11,11 @@ import com.example.shared.infrastructure.http._
 
 import java.util.UUID
 
-class BookApi(service: BookService, val authService: AuthService) extends HasTapirResource with BookCodecs with HasQueryFilter with HasJwtAuth {
+class BookApi(service: BookService, val authService: AuthService)
+    extends HasTapirResource
+    with BookCodecs
+    with HasQueryFilter
+    with HasJwtAuth {
 
   // Init
   private val base = baseEndpoint.tag("Books").in("books")

@@ -9,7 +9,11 @@ import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 import com.example.shared.infrastructure.http._
 
-class PublisherApi(service: PublisherService, val authService: AuthService) extends HasTapirResource with PublisherCodecs with HasQueryFilter with HasJwtAuth {
+class PublisherApi(service: PublisherService, val authService: AuthService)
+    extends HasTapirResource
+    with PublisherCodecs
+    with HasQueryFilter
+    with HasJwtAuth {
 
   // Init
   private val base = baseEndpoint.tag("Publishers").in("publishers")

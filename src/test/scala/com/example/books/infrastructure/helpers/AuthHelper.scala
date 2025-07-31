@@ -11,17 +11,21 @@ trait AuthHelper {
   private lazy val authService = module.authService
 
   // Create a test user and return JWT token
-  def createTestUserAndGetToken(username: String = "testuser", email: String = "test@example.com", password: String = "password123"): String = {
+  def createTestUserAndGetToken(
+      username: String = "testuser",
+      email: String = "test@example.com",
+      password: String = "password123"
+  ): String = {
     val createRequest = UserCreateRequest(username, email, password)
-    val response = authService.register(createRequest).unsafeRunSync()
+    val response      = authService.register(createRequest).unsafeRunSync()
     response.token
   }
 
   // Get JWT auth header
-  def jwtAuthHeader(token: String): Header.Raw = 
+  def jwtAuthHeader(token: String): Header.Raw =
     Authorization(Credentials.Token(AuthScheme.Bearer, token)).toRaw1
 
   // Create a default test token
-  lazy val defaultTestToken: String = createTestUserAndGetToken()
+  lazy val defaultTestToken: String      = createTestUserAndGetToken()
   lazy val defaultAuthHeader: Header.Raw = jwtAuthHeader(defaultTestToken)
 }

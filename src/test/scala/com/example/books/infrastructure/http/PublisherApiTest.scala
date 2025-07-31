@@ -60,8 +60,9 @@ class PublisherApiTest extends HasHttp4sRoutesSuite with PublisherCodecs with Au
 
   lazy val updatedPublisher: Publisher = PublisherMother.random
 
-  test(PUT(updatedPublisher, uri"publishers" / s"$publisherId").withHeaders(defaultAuthHeader)).alias("UPDATE") { response =>
-    assertEquals(response.status, Status.NoContent)
+  test(PUT(updatedPublisher, uri"publishers" / s"$publisherId").withHeaders(defaultAuthHeader)).alias("UPDATE") {
+    response =>
+      assertEquals(response.status, Status.NoContent)
   }
 
   test(GET(uri"publishers" / s"$publisherId")).alias("UPDATED") { response =>

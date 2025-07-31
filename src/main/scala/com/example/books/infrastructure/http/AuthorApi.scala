@@ -9,7 +9,11 @@ import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 import com.example.shared.infrastructure.http._
 
-class AuthorApi(service: AuthorService, val authService: AuthService) extends HasTapirResource with AuthorCodecs with HasQueryFilter with HasJwtAuth {
+class AuthorApi(service: AuthorService, val authService: AuthService)
+    extends HasTapirResource
+    with AuthorCodecs
+    with HasQueryFilter
+    with HasJwtAuth {
 
   // Init
   private val base = baseEndpoint.tag("Authors").in("authors")
