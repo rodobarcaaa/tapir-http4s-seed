@@ -25,7 +25,7 @@ class BookApi(service: BookService, val authService: AuthService)
     .in(jwtAuth)
     .in(jsonBody[Book])
     .out(statusCode(Created))
-    .serverLogic { case (token, book) =>
+    .serverLogic { case (token: String, book: Book) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.create(book).orError
         case Left(error)     => IO.pure(Left(error))
@@ -38,7 +38,7 @@ class BookApi(service: BookService, val authService: AuthService)
     .in(jwtAuth)
     .in(jsonBody[Book])
     .out(statusCode(NoContent))
-    .serverLogic { case ((id, token), book) =>
+    .serverLogic { case (id: UUID, token: String, book: Book) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.update(Id(id), book).orError
         case Left(error)     => IO.pure(Left(error))
@@ -75,7 +75,7 @@ class BookApi(service: BookService, val authService: AuthService)
     .in(pathId)
     .in(jwtAuth)
     .out(statusCode(NoContent))
-    .serverLogic { case (id, token) =>
+    .serverLogic { case (id: UUID, token: String) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.delete(Id(id)).orError
         case Left(error)     => IO.pure(Left(error))

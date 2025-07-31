@@ -9,6 +9,8 @@ import com.example.shared.domain.common.Id
 import com.example.shared.domain.page.{PageRequest, PageResponse}
 import com.example.shared.infrastructure.http._
 
+import java.util.UUID
+
 class PublisherApi(service: PublisherService, val authService: AuthService)
     extends HasTapirResource
     with PublisherCodecs
@@ -23,7 +25,7 @@ class PublisherApi(service: PublisherService, val authService: AuthService)
     .in(jwtAuth)
     .in(jsonBody[Publisher])
     .out(statusCode(Created))
-    .serverLogic { case (token, publisher) =>
+    .serverLogic { case (token: String, publisher: Publisher) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.create(publisher).orError
         case Left(error)     => IO.pure(Left(error))
@@ -36,7 +38,7 @@ class PublisherApi(service: PublisherService, val authService: AuthService)
     .in(jwtAuth)
     .in(jsonBody[Publisher])
     .out(statusCode(NoContent))
-    .serverLogic { case ((id, token), publisher) =>
+    .serverLogic { case (id: UUID, token: String, publisher: Publisher) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.update(Id(id), publisher).orError
         case Left(error)     => IO.pure(Left(error))
@@ -62,7 +64,7 @@ class PublisherApi(service: PublisherService, val authService: AuthService)
     .in(pathId)
     .in(jwtAuth)
     .out(statusCode(NoContent))
-    .serverLogic { case (id, token) =>
+    .serverLogic { case (id: UUID, token: String) =>
       validateJwtToken(token).flatMap {
         case Right(authUser) => service.delete(Id(id)).orError
         case Left(error)     => IO.pure(Left(error))

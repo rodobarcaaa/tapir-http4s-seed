@@ -1,35 +1,23 @@
 package com.example.auth.infrastructure.http
 
 import cats.effect.IO
-import com.example.auth.application.AuthService
 import com.example.auth.domain.{UserCreateRequest, UserLoginRequest, UserLoginResponse}
 import com.example.auth.infrastructure.codecs.AuthCodecs
-import com.example.auth.infrastructure.repository.{InMemoryUserRepository, SlickJwtRepository, SlickPasswordRepository}
-import munit.CatsEffectSuite
+import com.example.shared.infrastructure.http.{Fail, HasHttp4sRoutesSuite}
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec._
 import org.http4s.headers.Authorization
-import org.http4s.implicits._
 
-class AuthApiTest extends CatsEffectSuite with AuthCodecs {
+class AuthApiTest extends HasHttp4sRoutesSuite with AuthCodecs {
 
-  val jwtSecret = "test-secret-key"
-
-  def createAuthApi(): IO[AuthApi] = {
-    for {
-      userRepository    <- InMemoryUserRepository.create()
-      passwordRepository = SlickPasswordRepository()
-      jwtRepository      = SlickJwtRepository(jwtSecret)
-      authService        = new AuthService(userRepository, passwordRepository, jwtRepository)
-    } yield new AuthApi(authService)
-  }
+  override val routes: HttpRoutes[IO] = module.authApi.routes
 
   test("POST /auth/register should create a new user") {
+    val request = Request[IO](Method.POST, uri"/auth/register")
+      .withEntity(UserCreateRequest("testuser", "test@example.com", "password123"))
+    
     for {
-      authApi      <- createAuthApi()
-      request       = Request[IO](Method.POST, uri"/auth/register")
-                        .withEntity(UserCreateRequest("testuser", "test@example.com", "password123"))
-      response     <- authApi.routes.orNotFound(request)
+      response     <- routes.orNotFound(request)
       responseBody <- response.as[UserLoginResponse]
     } yield {
       assertEquals(response.status, Status.Created)
@@ -40,29 +28,27 @@ class AuthApiTest extends CatsEffectSuite with AuthCodecs {
   }
 
   test("POST /auth/register should fail with duplicate username") {
+    val registerRequest = UserCreateRequest("duplicateuser", "duplicate@example.com", "password123")
+    val request1 = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+    val request2 = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+    
     for {
-      authApi        <- createAuthApi()
-      registerRequest = UserCreateRequest("duplicateuser", "duplicate@example.com", "password123")
-      request1        = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-      _              <- authApi.routes.orNotFound(request1)
-      // Try to register same user again
-      request2        = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-      response2      <- authApi.routes.orNotFound(request2)
+      _         <- routes.orNotFound(request1)
+      response2 <- routes.orNotFound(request2)
     } yield {
       assertEquals(response2.status, Status.Conflict)
     }
   }
 
   test("POST /auth/login should authenticate user") {
+    val registerRequest = UserCreateRequest("loginuser", "login@example.com", "password123")
+    val regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+    val loginRequest = UserLoginRequest("loginuser", "password123")
+    val loginReq = Request[IO](Method.POST, uri"/auth/login").withEntity(loginRequest)
+    
     for {
-      authApi        <- createAuthApi()
-      registerRequest = UserCreateRequest("loginuser", "login@example.com", "password123")
-      regReq          = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-      _              <- authApi.routes.orNotFound(regReq)
-
-      loginRequest  = UserLoginRequest("loginuser", "password123")
-      loginReq      = Request[IO](Method.POST, uri"/auth/login").withEntity(loginRequest)
-      response     <- authApi.routes.orNotFound(loginReq)
+      _            <- routes.orNotFound(regReq)
+      response     <- routes.orNotFound(loginReq)
       responseBody <- response.as[UserLoginResponse]
     } yield {
       assertEquals(response.status, Status.Ok)
@@ -72,31 +58,29 @@ class AuthApiTest extends CatsEffectSuite with AuthCodecs {
   }
 
   test("POST /auth/login should fail with wrong credentials") {
+    val registerRequest = UserCreateRequest("wronguser", "wrong@example.com", "password123")
+    val regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+    val wrongLoginRequest = UserLoginRequest("wronguser", "wrongpassword")
+    val wrongReq = Request[IO](Method.POST, uri"/auth/login").withEntity(wrongLoginRequest)
+    
     for {
-      authApi        <- createAuthApi()
-      registerRequest = UserCreateRequest("wronguser", "wrong@example.com", "password123")
-      regReq          = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-      _              <- authApi.routes.orNotFound(regReq)
-
-      wrongLoginRequest = UserLoginRequest("wronguser", "wrongpassword")
-      wrongReq          = Request[IO](Method.POST, uri"/auth/login").withEntity(wrongLoginRequest)
-      response         <- authApi.routes.orNotFound(wrongReq)
+      _        <- routes.orNotFound(regReq)
+      response <- routes.orNotFound(wrongReq)
     } yield {
       assertEquals(response.status, Status.Unauthorized)
     }
   }
 
   test("GET /auth/validate should validate token") {
+    val registerRequest = UserCreateRequest("validateuser", "validate@example.com", "password123")
+    val regReq = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
+    
     for {
-      authApi        <- createAuthApi()
-      registerRequest = UserCreateRequest("validateuser", "validate@example.com", "password123")
-      regReq          = Request[IO](Method.POST, uri"/auth/register").withEntity(registerRequest)
-      regResponse    <- authApi.routes.orNotFound(regReq)
-      regBody        <- regResponse.as[UserLoginResponse]
-
+      regResponse  <- routes.orNotFound(regReq)
+      regBody      <- regResponse.as[UserLoginResponse]
       validateReq   = Request[IO](Method.GET, uri"/auth/validate")
                         .withHeaders(Authorization(Credentials.Token(AuthScheme.Bearer, regBody.token)))
-      response     <- authApi.routes.orNotFound(validateReq)
+      response     <- routes.orNotFound(validateReq)
       responseBody <- response.as[String]
     } yield {
       assertEquals(response.status, Status.Ok)
