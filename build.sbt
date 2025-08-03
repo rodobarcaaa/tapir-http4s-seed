@@ -7,31 +7,31 @@ import scala.language.postfixOps
 val scala3Version = "3.7.0"
 
 val dependencies = {
-  val circeVersion              = "0.14.10"
-  val tapirVersion              = "1.11.9"
-  val http4sVersion             = "0.23.30"
-  val http4sBlazeVersion        = "0.23.16"
-  val http4sPrometheusVersion   = "0.25.0"
-  val prometheusVersion         = "0.16.0"
-  val macwireVersion            = "2.6.4"
-  val jwtVersion                = "10.0.1"
-  val configVersion             = "1.4.3"
-  val scalaLoggingVersion       = "3.9.5"
-  val logbackVersion            = "1.5.15"
-  val catsVersion               = "2.12.0"
-  val catsEffectVersion         = "3.6.3"
-  val openApiVersion            = "0.11.3"
-  val slickVersion              = "3.5.2"
-  val postgresqlVersion         = "42.7.4"
-  val fly4sVersion              = "0.0.20"
-  val bcryptVersion             = "0.4"
-  val munitVersion              = "1.0.3"
-  val munitCatsEffectVersion    = "2.0.0"
-  val http4sMunitVersion        = "0.15.1"
+  val circeVersion            = "0.14.10"
+  val tapirVersion            = "1.11.40"
+  val http4sVersion           = "0.23.30"
+  val http4sBlazeVersion      = "0.23.16"
+  val http4sPrometheusVersion = "0.25.0"
+  val prometheusVersion       = "0.16.0"
+  val macwireVersion          = "2.6.4"
+  val jwtVersion              = "10.0.1"
+  val configVersion           = "1.4.3"
+  val scalaLoggingVersion     = "3.9.5"
+  val logbackVersion          = "1.5.15"
+  val catsVersion             = "2.12.0"
+  val catsEffectVersion       = "3.6.3"
+  val openApiVersion          = "0.11.3"
+  val slickVersion            = "3.5.2"
+  val postgresqlVersion       = "42.7.4"
+  val fly4sVersion            = "0.0.20"
+  val bcryptVersion           = "0.4"
+  val munitVersion            = "1.0.3"
+  val munitCatsEffectVersion  = "2.0.0"
+  val http4sMunitVersion      = "0.15.1"
 
   Seq(
     // base - Use alternative to pureconfig for now
-    "com.typesafe"                  % "config"                    % configVersion,
+    "com.typesafe"                   % "config"                    % configVersion,
     "com.typesafe.scala-logging"    %% "scala-logging"             % scalaLoggingVersion,
     "ch.qos.logback"                 % "logback-classic"           % logbackVersion,
     "org.typelevel"                 %% "cats-core"                 % catsVersion,
@@ -66,15 +66,15 @@ val dependencies = {
     "io.prometheus"                  % "simpleclient_hotspot"      % prometheusVersion,
     // macwire
     "com.softwaremill.macwire"      %% "util"                      % macwireVersion,
-    "com.softwaremill.macwire"      %% "macros"                    % macwireVersion % Provided,
+    "com.softwaremill.macwire"      %% "macros"                    % macwireVersion         % Provided,
     // jwt authentication
     "com.github.jwt-scala"          %% "jwt-core"                  % jwtVersion,
     "com.github.jwt-scala"          %% "jwt-circe"                 % jwtVersion,
     "org.mindrot"                    % "jbcrypt"                   % bcryptVersion,
     // munit
-    "org.scalameta"                 %% "munit"                     % munitVersion        % Test,
-    "org.typelevel"                 %% "munit-cats-effect"         % munitCatsEffectVersion        % Test,
-    "com.alejandrohdezma"           %% "http4s-munit"              % http4sMunitVersion       % Test
+    "org.scalameta"                 %% "munit"                     % munitVersion           % Test,
+    "org.typelevel"                 %% "munit-cats-effect"         % munitCatsEffectVersion % Test,
+    "com.alejandrohdezma"           %% "http4s-munit"              % http4sMunitVersion     % Test
   )
 }
 
