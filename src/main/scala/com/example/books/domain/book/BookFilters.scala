@@ -9,3 +9,7 @@ final case class BookFilters(
     publisherId: Option[UUID] = None,
     authorId: Option[UUID] = None
 )
+
+object BookFilters {
+  val empty: BookFilters = BookFilters()
+}

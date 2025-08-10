@@ -4,7 +4,7 @@ import cats.effect.IO
 import com.example.MainModule
 import com.example.auth.domain.{Role, UserCreateRequest, UserLoginRequest}
 import com.example.global.infrastructure.slick.Fly4sModule
-import com.example.shared.domain.shared.AlphaNumericMother
+import com.example.shared.domain.shared.{AlphaNumericMother, IdMother}
 import com.example.shared.infrastructure.http.Fail
 import munit.CatsEffectSuite
 
@@ -153,6 +153,33 @@ class AuthServiceTest extends CatsEffectSuite {
         assertEquals(authUser.user.username, uniqueUsername)
         assertEquals(authUser.user.role, Role.Admin)
       }
+    }
+  }
+
+  test("getUserInfo should return user info for existing user") {
+    val uniqueUsername  = s"testuser-${AlphaNumericMother.random(8)}"
+    val uniqueEmail     = s"test-${AlphaNumericMother.random(8)}@example.com"
+    val registerRequest = UserCreateRequest(uniqueUsername, uniqueEmail, "password123")
+    for {
+      loginResponse <- authService.register(registerRequest)
+      authUser      <- authService.validateToken(loginResponse.token)
+      userInfo      <- authService.getUserInfo(authUser.get.user.id)
+    } yield {
+      assert(userInfo.isDefined)
+      userInfo.foreach { info =>
+        assertEquals(info.username, uniqueUsername)
+        assertEquals(info.email, uniqueEmail)
+        assertEquals(info.role, Role.Customer)
+      }
+    }
+  }
+
+  test("getUserInfo should return None for non-existing user") {
+    val nonExistentUserId = IdMother.random
+    for {
+      userInfo <- authService.getUserInfo(nonExistentUserId)
+    } yield {
+      assert(userInfo.isEmpty)
     }
   }
 }
