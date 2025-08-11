@@ -17,13 +17,13 @@ class AuthorServiceTest extends CatsEffectSuite {
     Fly4sModule.migrateDbResource.use(_ => IO.unit).unsafeRunSync()
   }
 
-  lazy val module: MainModule = MainModule.initialize
+  lazy val module: MainModule    = MainModule.initialize
   private lazy val authorService = module.authorService
 
   test("create should create a new author successfully") {
     val author = AuthorMother.random
     for {
-      _ <- authorService.create(author)
+      _     <- authorService.create(author)
       found <- authorService.find(author.id)
     } yield {
       assert(found.isDefined)
@@ -49,10 +49,10 @@ class AuthorServiceTest extends CatsEffectSuite {
 
   test("update should update an existing author") {
     val originalAuthor = AuthorMother.random
-    val updatedAuthor = originalAuthor.copy(firstName = Name("UpdatedFirstName"))
+    val updatedAuthor  = originalAuthor.copy(firstName = Name("UpdatedFirstName"))
     for {
-      _ <- authorService.create(originalAuthor)
-      _ <- authorService.update(originalAuthor.id, updatedAuthor)
+      _     <- authorService.create(originalAuthor)
+      _     <- authorService.update(originalAuthor.id, updatedAuthor)
       found <- authorService.find(originalAuthor.id)
     } yield {
       assert(found.isDefined)
@@ -74,12 +74,12 @@ class AuthorServiceTest extends CatsEffectSuite {
   }
 
   test("list should return paginated authors") {
-    val author1 = AuthorMother.random
-    val author2 = AuthorMother.random
+    val author1     = AuthorMother.random
+    val author2     = AuthorMother.random
     val pageRequest = PageRequest(1, 10)
     for {
-      _ <- authorService.create(author1)
-      _ <- authorService.create(author2)
+      _      <- authorService.create(author1)
+      _      <- authorService.create(author2)
       result <- authorService.list(pageRequest, None)
     } yield {
       assert(result.elements.nonEmpty)
@@ -90,12 +90,12 @@ class AuthorServiceTest extends CatsEffectSuite {
 
   test("list should filter authors by name") {
     val specificName = s"SpecificName${scala.util.Random.alphanumeric.take(5).mkString}"
-    val author1 = AuthorMother(firstName = Name(specificName))
-    val author2 = AuthorMother.random
-    val pageRequest = PageRequest(1, 10)
+    val author1      = AuthorMother(firstName = Name(specificName))
+    val author2      = AuthorMother.random
+    val pageRequest  = PageRequest(1, 10)
     for {
-      _ <- authorService.create(author1)
-      _ <- authorService.create(author2)
+      _      <- authorService.create(author1)
+      _      <- authorService.create(author2)
       result <- authorService.list(pageRequest, Some(specificName))
     } yield {
       assert(result.elements.nonEmpty)
@@ -107,10 +107,10 @@ class AuthorServiceTest extends CatsEffectSuite {
   test("delete should remove an existing author") {
     val author = AuthorMother.random
     for {
-      _ <- authorService.create(author)
+      _           <- authorService.create(author)
       foundBefore <- authorService.find(author.id)
-      _ <- authorService.delete(author.id)
-      foundAfter <- authorService.find(author.id)
+      _           <- authorService.delete(author.id)
+      foundAfter  <- authorService.find(author.id)
     } yield {
       assert(foundBefore.isDefined)
       assert(foundAfter.isEmpty)

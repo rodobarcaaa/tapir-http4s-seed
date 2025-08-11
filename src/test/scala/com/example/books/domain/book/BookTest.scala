@@ -93,10 +93,10 @@ class BookTest extends FunSuite {
   test("Book validation should fail for invalid fields") {
     val invalidBook = Book(
       IdMother.random,
-      BookIsbn(""), // invalid
-      BookTitle(""), // invalid
+      BookIsbn(""),        // invalid
+      BookTitle(""),       // invalid
       BookDescription(""), // invalid
-      BookYear(1800), // invalid
+      BookYear(1800),      // invalid
       IdMother.random,
       IdMother.random
     )
@@ -104,10 +104,10 @@ class BookTest extends FunSuite {
   }
 
   test("Book apply should create Book from tuple") {
-    val id = IdMother.random
-    val authorId = IdMother.random
+    val id          = IdMother.random
+    val authorId    = IdMother.random
     val publisherId = IdMother.random
-    val book = Book.apply(
+    val book        = Book.apply(
       id.value,
       "978-0134685991",
       "Clean Code",
@@ -126,7 +126,7 @@ class BookTest extends FunSuite {
   }
 
   test("Book unapply should extract tuple from Book") {
-    val book = BookMother.random(IdMother.random, IdMother.random)
+    val book   = BookMother.random(IdMother.random, IdMother.random)
     val result = Book.unapply.apply(book)
     assert(result.isDefined)
     result.foreach { case (id, isbn, title, description, year, publisherId, authorId) =>

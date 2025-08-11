@@ -27,7 +27,7 @@ class PublisherTest extends FunSuite {
   }
 
   test("Publisher apply should create Publisher from tuple") {
-    val id = IdMother.random
+    val id        = IdMother.random
     val publisher = Publisher.apply(id.value, "Penguin Books", "www.penguin.com")
     assertEquals(publisher.id, id)
     assertEquals(publisher.name.value, "Penguin Books")
@@ -36,7 +36,7 @@ class PublisherTest extends FunSuite {
 
   test("Publisher unapply should extract tuple from Publisher") {
     val publisher = PublisherMother.random
-    val result = Publisher.unapply.apply(publisher)
+    val result    = Publisher.unapply.apply(publisher)
     assert(result.isDefined)
     result.foreach { case (id, name, url) =>
       assertEquals(id, publisher.id.value)

@@ -17,13 +17,13 @@ class PublisherServiceTest extends CatsEffectSuite {
     Fly4sModule.migrateDbResource.use(_ => IO.unit).unsafeRunSync()
   }
 
-  lazy val module: MainModule = MainModule.initialize
+  lazy val module: MainModule       = MainModule.initialize
   private lazy val publisherService = module.publisherService
 
   test("create should create a new publisher successfully") {
     val publisher = PublisherMother.random
     for {
-      _ <- publisherService.create(publisher)
+      _     <- publisherService.create(publisher)
       found <- publisherService.find(publisher.id)
     } yield {
       assert(found.isDefined)
@@ -49,10 +49,10 @@ class PublisherServiceTest extends CatsEffectSuite {
 
   test("update should update an existing publisher") {
     val originalPublisher = PublisherMother.random
-    val updatedPublisher = originalPublisher.copy(name = Name("Updated Publisher Name"))
+    val updatedPublisher  = originalPublisher.copy(name = Name("Updated Publisher Name"))
     for {
-      _ <- publisherService.create(originalPublisher)
-      _ <- publisherService.update(originalPublisher.id, updatedPublisher)
+      _     <- publisherService.create(originalPublisher)
+      _     <- publisherService.update(originalPublisher.id, updatedPublisher)
       found <- publisherService.find(originalPublisher.id)
     } yield {
       assert(found.isDefined)
@@ -74,12 +74,12 @@ class PublisherServiceTest extends CatsEffectSuite {
   }
 
   test("list should return paginated publishers") {
-    val publisher1 = PublisherMother.random
-    val publisher2 = PublisherMother.random
+    val publisher1  = PublisherMother.random
+    val publisher2  = PublisherMother.random
     val pageRequest = PageRequest(1, 10)
     for {
-      _ <- publisherService.create(publisher1)
-      _ <- publisherService.create(publisher2)
+      _      <- publisherService.create(publisher1)
+      _      <- publisherService.create(publisher2)
       result <- publisherService.list(pageRequest, None)
     } yield {
       assert(result.elements.nonEmpty)
@@ -90,12 +90,12 @@ class PublisherServiceTest extends CatsEffectSuite {
 
   test("list should filter publishers by name") {
     val specificName = s"SpecificPub${scala.util.Random.alphanumeric.take(5).mkString}"
-    val publisher1 = PublisherMother(name = Name(specificName))
-    val publisher2 = PublisherMother.random
-    val pageRequest = PageRequest(1, 10)
+    val publisher1   = PublisherMother(name = Name(specificName))
+    val publisher2   = PublisherMother.random
+    val pageRequest  = PageRequest(1, 10)
     for {
-      _ <- publisherService.create(publisher1)
-      _ <- publisherService.create(publisher2)
+      _      <- publisherService.create(publisher1)
+      _      <- publisherService.create(publisher2)
       result <- publisherService.list(pageRequest, Some(specificName))
     } yield {
       assert(result.elements.nonEmpty)
@@ -107,10 +107,10 @@ class PublisherServiceTest extends CatsEffectSuite {
   test("delete should remove an existing publisher") {
     val publisher = PublisherMother.random
     for {
-      _ <- publisherService.create(publisher)
+      _           <- publisherService.create(publisher)
       foundBefore <- publisherService.find(publisher.id)
-      _ <- publisherService.delete(publisher.id)
-      foundAfter <- publisherService.find(publisher.id)
+      _           <- publisherService.delete(publisher.id)
+      foundAfter  <- publisherService.find(publisher.id)
     } yield {
       assert(foundBefore.isDefined)
       assert(foundAfter.isEmpty)

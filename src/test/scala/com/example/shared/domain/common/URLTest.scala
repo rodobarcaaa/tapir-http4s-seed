@@ -41,7 +41,7 @@ class URLTest extends FunSuite {
 
   test("URL validation should pass for URL without protocol (actual regex behavior)") {
     val urlWithoutProtocol = URL("www.example.com")
-    val validation = urlWithoutProtocol.validate()
+    val validation         = urlWithoutProtocol.validate()
     assert(validation.isValid)
   }
 

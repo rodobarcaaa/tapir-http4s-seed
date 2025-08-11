@@ -19,19 +19,19 @@ class BookServiceTest extends CatsEffectSuite {
     Fly4sModule.migrateDbResource.use(_ => IO.unit).unsafeRunSync()
   }
 
-  lazy val module: MainModule = MainModule.initialize
-  private lazy val bookService = module.bookService
-  private lazy val authorService = module.authorService
+  lazy val module: MainModule       = MainModule.initialize
+  private lazy val bookService      = module.bookService
+  private lazy val authorService    = module.authorService
   private lazy val publisherService = module.publisherService
 
   test("create should create a new book successfully") {
-    val author = AuthorMother.random
+    val author    = AuthorMother.random
     val publisher = PublisherMother.random
     for {
-      _ <- authorService.create(author)
-      _ <- publisherService.create(publisher)
-      book = BookMother.random(author.id, publisher.id)
-      _ <- bookService.create(book)
+      _     <- authorService.create(author)
+      _     <- publisherService.create(publisher)
+      book   = BookMother.random(author.id, publisher.id)
+      _     <- bookService.create(book)
       found <- bookService.find(book.id)
     } yield {
       assert(found.isDefined)
@@ -46,21 +46,21 @@ class BookServiceTest extends CatsEffectSuite {
   }
 
   test("create should fail with invalid book data") {
-    val author = AuthorMother.random
+    val author    = AuthorMother.random
     val publisher = PublisherMother.random
     for {
-      _ <- authorService.create(author)
-      _ <- publisherService.create(publisher)
+      _          <- authorService.create(author)
+      _          <- publisherService.create(publisher)
       invalidBook = Book(
-        IdMother.random,
-        BookIsbn(""), // Invalid empty ISBN
-        BookTitle(""),  // Invalid empty title
-        BookDescription(""),  // Invalid empty description
-        BookYear(1800), // Invalid year
-        publisher.id,
-        author.id
-      )
-      result <- bookService.create(invalidBook).attempt
+                      IdMother.random,
+                      BookIsbn(""),        // Invalid empty ISBN
+                      BookTitle(""),       // Invalid empty title
+                      BookDescription(""), // Invalid empty description
+                      BookYear(1800),      // Invalid year
+                      publisher.id,
+                      author.id
+                    )
+      result     <- bookService.create(invalidBook).attempt
     } yield {
       assert(result.isLeft)
       result.left.foreach { error =>
@@ -70,16 +70,16 @@ class BookServiceTest extends CatsEffectSuite {
   }
 
   test("update should update an existing book") {
-    val author = AuthorMother.random
+    val author    = AuthorMother.random
     val publisher = PublisherMother.random
     for {
-      _ <- authorService.create(author)
-      _ <- publisherService.create(publisher)
+      _           <- authorService.create(author)
+      _           <- publisherService.create(publisher)
       originalBook = BookMother.random(author.id, publisher.id)
-      _ <- bookService.create(originalBook)
-      updatedBook = originalBook.copy(title = BookTitle("Updated Title"))
-      _ <- bookService.update(originalBook.id, updatedBook)
-      found <- bookService.find(originalBook.id)
+      _           <- bookService.create(originalBook)
+      updatedBook  = originalBook.copy(title = BookTitle("Updated Title"))
+      _           <- bookService.update(originalBook.id, updatedBook)
+      found       <- bookService.find(originalBook.id)
     } yield {
       assert(found.isDefined)
       found.foreach { foundBook =>
@@ -100,17 +100,17 @@ class BookServiceTest extends CatsEffectSuite {
   }
 
   test("list should return paginated books") {
-    val author = AuthorMother.random
+    val author    = AuthorMother.random
     val publisher = PublisherMother.random
     for {
-      _ <- authorService.create(author)
-      _ <- publisherService.create(publisher)
-      book1 = BookMother.random(author.id, publisher.id)
-      book2 = BookMother.random(author.id, publisher.id)
-      _ <- bookService.create(book1)
-      _ <- bookService.create(book2)
+      _          <- authorService.create(author)
+      _          <- publisherService.create(publisher)
+      book1       = BookMother.random(author.id, publisher.id)
+      book2       = BookMother.random(author.id, publisher.id)
+      _          <- bookService.create(book1)
+      _          <- bookService.create(book2)
       pageRequest = PageRequest(1, 10)
-      result <- bookService.list(pageRequest, BookFilters.empty)
+      result     <- bookService.list(pageRequest, BookFilters.empty)
     } yield {
       assert(result.elements.nonEmpty)
       assert(result.elements.exists(_.id == book1.id))
@@ -120,18 +120,18 @@ class BookServiceTest extends CatsEffectSuite {
 
   test("list should filter books by title") {
     val specificTitle = s"Specific Book Title ${scala.util.Random.alphanumeric.take(5).mkString}"
-    val author = AuthorMother.random
-    val publisher = PublisherMother.random
+    val author        = AuthorMother.random
+    val publisher     = PublisherMother.random
     for {
-      _ <- authorService.create(author)
-      _ <- publisherService.create(publisher)
-      book1 = BookMother(author.id, publisher.id, title = BookTitle(specificTitle))
-      book2 = BookMother.random(author.id, publisher.id)
-      _ <- bookService.create(book1)
-      _ <- bookService.create(book2)
+      _          <- authorService.create(author)
+      _          <- publisherService.create(publisher)
+      book1       = BookMother(author.id, publisher.id, title = BookTitle(specificTitle))
+      book2       = BookMother.random(author.id, publisher.id)
+      _          <- bookService.create(book1)
+      _          <- bookService.create(book2)
       pageRequest = PageRequest(1, 10)
-      filters = BookFilters(filter = Some(specificTitle))
-      result <- bookService.list(pageRequest, filters)
+      filters     = BookFilters(filter = Some(specificTitle))
+      result     <- bookService.list(pageRequest, filters)
     } yield {
       assert(result.elements.nonEmpty)
       assert(result.elements.exists(_.id == book1.id))
@@ -140,16 +140,16 @@ class BookServiceTest extends CatsEffectSuite {
   }
 
   test("delete should remove an existing book") {
-    val author = AuthorMother.random
+    val author    = AuthorMother.random
     val publisher = PublisherMother.random
     for {
-      _ <- authorService.create(author)
-      _ <- publisherService.create(publisher)
-      book = BookMother.random(author.id, publisher.id)
-      _ <- bookService.create(book)
+      _           <- authorService.create(author)
+      _           <- publisherService.create(publisher)
+      book         = BookMother.random(author.id, publisher.id)
+      _           <- bookService.create(book)
       foundBefore <- bookService.find(book.id)
-      _ <- bookService.delete(book.id)
-      foundAfter <- bookService.find(book.id)
+      _           <- bookService.delete(book.id)
+      foundAfter  <- bookService.find(book.id)
     } yield {
       assert(foundBefore.isDefined)
       assert(foundAfter.isEmpty)

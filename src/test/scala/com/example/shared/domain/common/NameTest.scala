@@ -21,7 +21,7 @@ class NameTest extends FunSuite {
 
   test("Name validation should accept custom tag") {
     val invalidName = Name("")
-    val validation = invalidName.validate("firstName")
+    val validation  = invalidName.validate("firstName")
     assert(validation.isInvalid)
     // The error message should contain the custom tag
     validation.fold(
@@ -31,10 +31,10 @@ class NameTest extends FunSuite {
   }
 
   test("Name validation should accept custom max length") {
-    val name = Name("This is a longer name")
+    val name            = Name("This is a longer name")
     val shortValidation = name.validate(maxLength = 10)
-    val longValidation = name.validate(maxLength = 50)
-    
+    val longValidation  = name.validate(maxLength = 50)
+
     assert(shortValidation.isInvalid)
     assert(longValidation.isValid)
   }

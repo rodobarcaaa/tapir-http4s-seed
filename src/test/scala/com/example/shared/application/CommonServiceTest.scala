@@ -45,11 +45,13 @@ class CommonServiceTest extends CatsEffectSuite {
   test("validateRequest should fail with multiple validation errors") {
     val requestWithMultipleErrors = new HasValidated {
       override def validated: ValidatedNel[String, Unit] = {
-        cats.data.Validated.invalid(cats.data.NonEmptyList.of(
-          "error 1",
-          "error 2",
-          "error 3"
-        ))
+        cats.data.Validated.invalid(
+          cats.data.NonEmptyList.of(
+            "error 1",
+            "error 2",
+            "error 3"
+          )
+        )
       }
     }
     for {

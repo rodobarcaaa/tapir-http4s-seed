@@ -24,7 +24,7 @@ class PageResponseTest extends FunSuite {
 
   test("PageResponse map should transform elements") {
     val response = PageResponse(1, 10, 2, None, Seq(1, 2))
-    val mapped = response.map(_.toString)
+    val mapped   = response.map(_.toString)
     assertEquals(mapped.page, 1)
     assertEquals(mapped.size, 10)
     assertEquals(mapped.total, 2)
@@ -34,9 +34,9 @@ class PageResponseTest extends FunSuite {
 
   test("PageResponse companion apply should create from PageRequest") {
     val pageRequest = PageRequest(2, 15, Some("name"))
-    val elements = Seq("a", "b", "c")
-    val response = PageResponse(pageRequest, 45, elements)
-    
+    val elements    = Seq("a", "b", "c")
+    val response    = PageResponse(pageRequest, 45, elements)
+
     assertEquals(response.page, 2)
     assertEquals(response.size, 15)
     assertEquals(response.total, 45)
@@ -46,9 +46,9 @@ class PageResponseTest extends FunSuite {
 
   test("PageResponse companion apply should handle None sort") {
     val pageRequest = PageRequest(1, 10)
-    val elements = Seq("x", "y")
-    val response = PageResponse(pageRequest, 20, elements)
-    
+    val elements    = Seq("x", "y")
+    val response    = PageResponse(pageRequest, 20, elements)
+
     assertEquals(response.page, 1)
     assertEquals(response.size, 10)
     assertEquals(response.total, 20)

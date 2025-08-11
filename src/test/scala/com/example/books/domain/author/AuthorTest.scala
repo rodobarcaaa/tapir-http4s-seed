@@ -34,7 +34,7 @@ class AuthorTest extends FunSuite {
   }
 
   test("Author apply should create Author from tuple") {
-    val id = IdMother.random
+    val id     = IdMother.random
     val author = Author.apply(id.value, "John", "Doe")
     assertEquals(author.id, id)
     assertEquals(author.firstName.value, "John")

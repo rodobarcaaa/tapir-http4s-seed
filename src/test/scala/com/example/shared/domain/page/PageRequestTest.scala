@@ -23,10 +23,10 @@ class PageRequestTest extends FunSuite {
   test("PageRequest should calculate offset correctly") {
     val page1 = PageRequest(1, 10)
     assertEquals(page1.offset, 0)
-    
+
     val page2 = PageRequest(2, 10)
     assertEquals(page2.offset, 10)
-    
+
     val page3 = PageRequest(3, 15)
     assertEquals(page3.offset, 30)
   }
@@ -35,7 +35,7 @@ class PageRequestTest extends FunSuite {
     interceptMessage[IllegalArgumentException]("requirement failed: page must be greater than 0") {
       PageRequest(0, 10)
     }
-    
+
     interceptMessage[IllegalArgumentException]("requirement failed: page must be greater than 0") {
       PageRequest(-1, 10)
     }
