@@ -74,9 +74,10 @@ class AuthorServiceTest extends CatsEffectSuite {
   }
 
   test("list should return paginated authors") {
-    val author1     = AuthorMother.random
-    val author2     = AuthorMother.random
-    val pageRequest = PageRequest(1, 10)
+    val uniqueId = scala.util.Random.alphanumeric.take(8).mkString
+    val author1  = AuthorMother(firstName = Name(s"TestAuthor1_$uniqueId"))
+    val author2  = AuthorMother(firstName = Name(s"TestAuthor2_$uniqueId"))
+    val pageRequest = PageRequest(1, 100) // Use larger page size to capture authors in test environment
     for {
       _      <- authorService.create(author1)
       _      <- authorService.create(author2)
@@ -85,6 +86,9 @@ class AuthorServiceTest extends CatsEffectSuite {
       assert(result.elements.nonEmpty)
       assert(result.elements.exists(_.id == author1.id))
       assert(result.elements.exists(_.id == author2.id))
+      // Also verify that the authors can be found by their unique names
+      assert(result.elements.exists(_.firstName.value == s"TestAuthor1_$uniqueId"))
+      assert(result.elements.exists(_.firstName.value == s"TestAuthor2_$uniqueId"))
     }
   }
 

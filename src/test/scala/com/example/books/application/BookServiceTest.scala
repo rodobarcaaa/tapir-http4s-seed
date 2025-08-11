@@ -72,19 +72,20 @@ class BookServiceTest extends CatsEffectSuite {
   test("update should update an existing book") {
     val author    = AuthorMother.random
     val publisher = PublisherMother.random
+    val uniqueId  = scala.util.Random.alphanumeric.take(8).mkString
     for {
       _           <- authorService.create(author)
       _           <- publisherService.create(publisher)
       originalBook = BookMother.random(author.id, publisher.id)
       _           <- bookService.create(originalBook)
-      updatedBook  = originalBook.copy(title = BookTitle("Updated Title"))
+      updatedBook  = originalBook.copy(title = BookTitle(s"Updated Title $uniqueId"))
       _           <- bookService.update(originalBook.id, updatedBook)
       found       <- bookService.find(originalBook.id)
     } yield {
       assert(found.isDefined)
       found.foreach { foundBook =>
         assertEquals(foundBook.id, originalBook.id)
-        assertEquals(foundBook.title.value, "Updated Title")
+        assertEquals(foundBook.title.value, s"Updated Title $uniqueId")
         assertEquals(foundBook.isbn, originalBook.isbn)
       }
     }
@@ -100,21 +101,25 @@ class BookServiceTest extends CatsEffectSuite {
   }
 
   test("list should return paginated books") {
-    val author    = AuthorMother.random
-    val publisher = PublisherMother.random
+    val author      = AuthorMother.random
+    val publisher   = PublisherMother.random
+    val uniqueId    = scala.util.Random.alphanumeric.take(8).mkString
     for {
       _          <- authorService.create(author)
       _          <- publisherService.create(publisher)
-      book1       = BookMother.random(author.id, publisher.id)
-      book2       = BookMother.random(author.id, publisher.id)
+      book1       = BookMother(author.id, publisher.id, title = BookTitle(s"TestBook1_$uniqueId"))
+      book2       = BookMother(author.id, publisher.id, title = BookTitle(s"TestBook2_$uniqueId"))
       _          <- bookService.create(book1)
       _          <- bookService.create(book2)
-      pageRequest = PageRequest(1, 10)
+      pageRequest = PageRequest(1, 100) // Use larger page size to capture books in test environment
       result     <- bookService.list(pageRequest, BookFilters.empty)
     } yield {
       assert(result.elements.nonEmpty)
       assert(result.elements.exists(_.id == book1.id))
       assert(result.elements.exists(_.id == book2.id))
+      // Also verify by title
+      assert(result.elements.exists(_.title.value == s"TestBook1_$uniqueId"))
+      assert(result.elements.exists(_.title.value == s"TestBook2_$uniqueId"))
     }
   }
 

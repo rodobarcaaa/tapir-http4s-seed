@@ -49,7 +49,8 @@ class PublisherServiceTest extends CatsEffectSuite {
 
   test("update should update an existing publisher") {
     val originalPublisher = PublisherMother.random
-    val updatedPublisher  = originalPublisher.copy(name = Name("Updated Publisher Name"))
+    val uniqueId          = scala.util.Random.alphanumeric.take(8).mkString
+    val updatedPublisher  = originalPublisher.copy(name = Name(s"Updated Publisher Name $uniqueId"))
     for {
       _     <- publisherService.create(originalPublisher)
       _     <- publisherService.update(originalPublisher.id, updatedPublisher)
@@ -58,7 +59,7 @@ class PublisherServiceTest extends CatsEffectSuite {
       assert(found.isDefined)
       found.foreach { foundPublisher =>
         assertEquals(foundPublisher.id, originalPublisher.id)
-        assertEquals(foundPublisher.name.value, "Updated Publisher Name")
+        assertEquals(foundPublisher.name.value, s"Updated Publisher Name $uniqueId")
         assertEquals(foundPublisher.url, originalPublisher.url)
       }
     }
@@ -74,9 +75,10 @@ class PublisherServiceTest extends CatsEffectSuite {
   }
 
   test("list should return paginated publishers") {
-    val publisher1  = PublisherMother.random
-    val publisher2  = PublisherMother.random
-    val pageRequest = PageRequest(1, 10)
+    val uniqueId    = scala.util.Random.alphanumeric.take(8).mkString
+    val publisher1  = PublisherMother(name = Name(s"TestPub1_$uniqueId"))
+    val publisher2  = PublisherMother(name = Name(s"TestPub2_$uniqueId"))
+    val pageRequest = PageRequest(1, 100) // Use larger page size to capture publishers in test environment
     for {
       _      <- publisherService.create(publisher1)
       _      <- publisherService.create(publisher2)
@@ -85,6 +87,9 @@ class PublisherServiceTest extends CatsEffectSuite {
       assert(result.elements.nonEmpty)
       assert(result.elements.exists(_.id == publisher1.id))
       assert(result.elements.exists(_.id == publisher2.id))
+      // Also verify by name
+      assert(result.elements.exists(_.name.value == s"TestPub1_$uniqueId"))
+      assert(result.elements.exists(_.name.value == s"TestPub2_$uniqueId"))
     }
   }
 
