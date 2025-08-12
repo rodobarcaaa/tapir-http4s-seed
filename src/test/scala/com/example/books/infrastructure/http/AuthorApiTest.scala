@@ -36,9 +36,10 @@ class AuthorApiTest extends HasHttp4sRoutesSuite with AuthorCodecs with AuthHelp
     assertIO(response.as[Fail.NotFound], Fail.NotFound(s"Author for id: $notfoundId Not Found"))
   }
 
-  test(GET(uri"authors").withHeaders(defaultAuthHeader)).alias("LIST COMMON") { response =>
-    assertEquals(response.status, Status.Ok)
-    assertIO(response.as[PageResponse[Author]].map(_.elements.contains(author)), true)
+  test(GET(uri"authors".withQueryParams(Map("size" -> "100"))).withHeaders(defaultAuthHeader)).alias("LIST COMMON") {
+    response =>
+      assertEquals(response.status, Status.Ok)
+      assertIO(response.as[PageResponse[Author]].map(_.elements.contains(author)), true)
   }
 
   test(GET(uri"authors".withQueryParams(Map("filter" -> author.firstName.value))).withHeaders(defaultAuthHeader))

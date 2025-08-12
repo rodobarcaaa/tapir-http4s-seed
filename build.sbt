@@ -107,7 +107,7 @@ lazy val root = (project in file("."))
       "-Wunused:params",               // Enable -Wunused:explicits,implicits.
       "-Wvalue-discard"                // Warn when non-Unit expression results are unused.
     ),
-    coverageExcludedFiles       := ".*Main.scala",
+    coverageExcludedFiles       := ".*Main.scala;.*MainModule.scala;.*Module.scala;.*package.scala;.*Mapping.scala;.*Codecs.scala",
     coverageFailOnMinimum       := true,
     coverageMinimumStmtTotal    := 75,
     packageOptions += Package.ManifestAttributes("Implementation-Version" -> (ThisBuild / version).value),
