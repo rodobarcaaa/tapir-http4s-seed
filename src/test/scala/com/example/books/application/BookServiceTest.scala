@@ -101,18 +101,18 @@ class BookServiceTest extends CatsEffectSuite {
   }
 
   test("list should return paginated books") {
-    val author      = AuthorMother.random
-    val publisher   = PublisherMother.random
-    val uniqueId    = scala.util.Random.alphanumeric.take(8).mkString
+    val author    = AuthorMother.random
+    val publisher = PublisherMother.random
+    val uniqueId  = scala.util.Random.alphanumeric.take(8).mkString
     for {
-      _          <- authorService.create(author)
-      _          <- publisherService.create(publisher)
-      book1       = BookMother(author.id, publisher.id, title = BookTitle(s"TestBook1_$uniqueId"))
-      book2       = BookMother(author.id, publisher.id, title = BookTitle(s"TestBook2_$uniqueId"))
-      _          <- bookService.create(book1)
-      _          <- bookService.create(book2)
+      _      <- authorService.create(author)
+      _      <- publisherService.create(publisher)
+      book1   = BookMother(author.id, publisher.id, title = BookTitle(s"TestBook1_$uniqueId"))
+      book2   = BookMother(author.id, publisher.id, title = BookTitle(s"TestBook2_$uniqueId"))
+      _      <- bookService.create(book1)
+      _      <- bookService.create(book2)
       pageRequest = PageRequest(1, 100) // Use larger page size to capture books in test environment
-      result     <- bookService.list(pageRequest, BookFilters.empty)
+      result <- bookService.list(pageRequest, BookFilters.empty)
     } yield {
       assert(result.elements.nonEmpty)
       assert(result.elements.exists(_.id == book1.id))

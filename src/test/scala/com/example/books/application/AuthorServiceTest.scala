@@ -74,9 +74,9 @@ class AuthorServiceTest extends CatsEffectSuite {
   }
 
   test("list should return paginated authors") {
-    val uniqueId = scala.util.Random.alphanumeric.take(8).mkString
-    val author1  = AuthorMother(firstName = Name(s"TestAuthor1_$uniqueId"))
-    val author2  = AuthorMother(firstName = Name(s"TestAuthor2_$uniqueId"))
+    val uniqueId    = scala.util.Random.alphanumeric.take(8).mkString
+    val author1     = AuthorMother(firstName = Name(s"TestAuthor1_$uniqueId"))
+    val author2     = AuthorMother(firstName = Name(s"TestAuthor2_$uniqueId"))
     val pageRequest = PageRequest(1, 100) // Use larger page size to capture authors in test environment
     for {
       _      <- authorService.create(author1)

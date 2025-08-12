@@ -36,9 +36,10 @@ class PublisherApiTest extends HasHttp4sRoutesSuite with PublisherCodecs with Au
     assertIO(response.as[Fail.NotFound], Fail.NotFound(s"Publisher for id: $notfoundId Not Found"))
   }
 
-  test(GET(uri"publishers".withQueryParams(Map("size" -> "100"))).withHeaders(defaultAuthHeader)).alias("LIST COMMON") { response =>
-    assertEquals(response.status, Status.Ok)
-    assertIO(response.as[PageResponse[Publisher]].map(_.elements.contains(publisher)), true)
+  test(GET(uri"publishers".withQueryParams(Map("size" -> "100"))).withHeaders(defaultAuthHeader)).alias("LIST COMMON") {
+    response =>
+      assertEquals(response.status, Status.Ok)
+      assertIO(response.as[PageResponse[Publisher]].map(_.elements.contains(publisher)), true)
   }
 
   test(GET(uri"publishers".withQueryParams(Map("filter" -> publisher.name.value))).withHeaders(defaultAuthHeader))

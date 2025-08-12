@@ -53,9 +53,10 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
     assertIO(response.as[Fail.NotFound], Fail.NotFound(s"Book for id: $notfoundId Not Found"))
   }
 
-  test(GET(uri"books".withQueryParams(Map("size" -> "100"))).withHeaders(defaultAuthHeader)).alias("LIST COMMON") { response =>
-    assertEquals(response.status, Status.Ok)
-    assertIO(response.as[PageResponse[Book]].map(_.elements.contains(book)), true)
+  test(GET(uri"books".withQueryParams(Map("size" -> "100"))).withHeaders(defaultAuthHeader)).alias("LIST COMMON") {
+    response =>
+      assertEquals(response.status, Status.Ok)
+      assertIO(response.as[PageResponse[Book]].map(_.elements.contains(book)), true)
   }
 
   test(GET(uri"books".withQueryParams(Map("filter" -> book.title.value))).withHeaders(defaultAuthHeader))
@@ -76,7 +77,10 @@ class BookApiTest extends HasHttp4sRoutesSuite with BookCodecs with AuthorHelper
       )
     }
 
-  test(GET(uri"books".withQueryParams(Map("year" -> book.year.value.toString, "size" -> "100"))).withHeaders(defaultAuthHeader))
+  test(
+    GET(uri"books".withQueryParams(Map("year" -> book.year.value.toString, "size" -> "100")))
+      .withHeaders(defaultAuthHeader)
+  )
     .alias("LIST WITH FILTERS (year)") { response =>
       assertEquals(response.status, Status.Ok)
       assertIO(
