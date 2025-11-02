@@ -7,7 +7,7 @@ import scala.language.postfixOps
 val scala3Version = "3.7.0"
 
 val dependencies = {
-  val circeVersion            = "0.14.10"
+  val circeVersion            = "0.14.15"
   val tapirVersion            = "1.11.42"
   val http4sVersion           = "0.23.30"
   val http4sBlazeVersion      = "0.23.16"
